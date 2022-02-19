@@ -5,7 +5,7 @@
 
 #include <mt_gem.h>
 
-typedef short int16_t;
+typedef short int16;
 struct win_data {
   int handle;     /* identifying handle of the window */
 
@@ -13,14 +13,14 @@ struct win_data {
 };
 
 
-void getinfo(short ap_gtype);
+void getinfo(int16 ap_gtype);
 void event_loop(struct win_data * wd);
 void draw_example (int app_handle, char* text);
 void open_vwork (void);
 void start_program (void);
 
 /* GEM arrays */
-short work_in[11],
+int16 work_in[11],
   work_out[57],
   contrl[12],
   intin[128],
@@ -28,7 +28,7 @@ short work_in[11],
   intout[128],
   ptsout[128];
 
-short app_handle; /* application graphics handle */
+int16 app_handle; /* application graphics handle */
 
 int main(int argc, char** argv)
 {
