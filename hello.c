@@ -15,7 +15,7 @@ struct win_data {
 
 void getinfo(short ap_gtype);
 void event_loop(struct win_data * wd);
-void draw_example (int app_handle, struct win_data * wd);
+void draw_example (int app_handle, char* text);
 void open_vwork (void);
 void start_program (void);
 
@@ -30,15 +30,9 @@ short work_in[11],
 
 short app_handle; /* application graphics handle */
 
-
-
-
 int main(int argc, char** argv)
 {
   int rc;
-
-  printf("Hello World!\n");
-
 
   short applId = appl_init();
 
@@ -121,13 +115,10 @@ void start_program (void) {
   wind_open(wd.handle, fullx, fully, 300, 200);
   printf("Window opened\n");
 
-  /* create any application-specific data: the string to show, in this case */
   wd.text = "Hello";
 
-  /* display content in window */
-  draw_example (app_handle, &wd);
+  draw_example (app_handle, "Hello GEM!");
 
-  /* 2. process events for our window */
   event_loop (&wd);
 
   /* 3. close and remove our window */
@@ -142,14 +133,13 @@ void event_loop (struct win_data * wd) {
     short rc = evnt_mesag (msg_buf);
 
     printf("%d\n", rc);
+    printf("Recevied message: %d", msg_buf[0]);
 
   } while (msg_buf[0] != WM_CLOSED);
 
 }
 
-void draw_example (int app_handle, struct win_data * wd) {
-
-  v_gtext (app_handle, 10, 60, "Cheese-ston!");
+void draw_example (int app_handle, char* text) {
+  v_gtext (app_handle, 10, 60, text);
 
 }
-
