@@ -6,6 +6,7 @@
 #include <mt_gem.h>
 
 typedef unsigned short uint16;
+typedef short          int16;
 typedef uint16         bool;
 
 #define true  1
@@ -17,14 +18,21 @@ typedef uint16         bool;
 
 struct win_data {
   int handle;     /* identifying handle of the window */
-  char * text;    /* text to display in window */
+  char* text;     /* text to display in window */
 };
+
+typedef struct {
+  int16 x;
+  int16 y;
+  int16 width;
+  int16 height;
+} Rectangle;
 
 void getinfo(uint16 ap_gtype);
 void event_loop(struct win_data * wd);
-void draw_example (uint16 app_handle, char* text);
+void draw_example (uint16 app_handle, Rectangle* working_area, char* text);
 void do_redraw (struct win_data * wd, GRECT * rec1);
-void draw_interior (struct win_data * wd, GRECT clip);
+void draw_within_clip (struct win_data * wd, GRECT clip);
 void set_clip (bool flag, GRECT rec);
 void open_vwork (void);
 void start_program (void);
@@ -99,15 +107,36 @@ void start_program() {
 }
 
 void event_loop (struct win_data * wd) {
-  short msg_buf[8];
+  uint16 msg_buf[8];
+  int16 x;
+  int16 y;
+  int16 w;
+  int16 h;
+  uint16 handle;
+  uint16 rc;
 
   do {
-    evnt_mesag(msg_buf);
+    rc = evnt_mesag(msg_buf);
+    handle = msg_buf[3];
 
-    switch (msg_buf[0]) {                                 	// (1)
-		case WM_REDRAW:   				// (2)
-			do_redraw (wd, (GRECT *)&msg_buf[4]);	// (3)
-			break;
+    switch (msg_buf[0]) {
+      case WM_REDRAW:
+        printf("WM_REDRAW\n");
+        do_redraw (wd, (GRECT *)&msg_buf[4]);	// (3)
+        break;
+      case WM_TOPPED:
+        printf("WM_TOPPED\n");
+        wind_set(msg_buf[3], WF_TOP, 0, 0);
+        break;
+      case WM_MOVED:
+        x = msg_buf[4];
+        y = msg_buf[5];
+        w = msg_buf[6];
+        h = msg_buf[7];
+        printf("WM_MOVED %d %d %d %d\n", x, y, w, h);
+        printf("%d\n", handle);
+        wind_set(msg_buf[3], WF_CURRXYWH, x, y, w, h);
+        break;
     }
   } while (msg_buf[0] != WM_CLOSED);
 }
@@ -115,52 +144,49 @@ void event_loop (struct win_data * wd) {
 void do_redraw (struct win_data * wd, GRECT * rec1) {
 	GRECT rec2;
 
-	wind_update (BEG_UPDATE);			                     // (1)
+	wind_update (BEG_UPDATE);
 
 	wind_get (wd->handle, WF_FIRSTXYWH,
-            &rec2.g_x, &rec2.g_y, &rec2.g_w, &rec2.g_h);   // (2)
-	while (rec2.g_w && rec2.g_h) {			               // (3)
-		if (rc_intersect (rec1, &rec2)) {	               // (4)
-			draw_interior (wd, rec2);	                     // (5)
+            &rec2.g_x, &rec2.g_y, &rec2.g_w, &rec2.g_h);
+	while (rec2.g_w && rec2.g_h) {
+		if (rc_intersect (rec1, &rec2)) {
+			draw_within_clip (wd, rec2);
 		}
 		wind_get (wd->handle, WF_NEXTXYWH,
-              &rec2.g_x, &rec2.g_y, &rec2.g_w, &rec2.g_h); // (6)
+              &rec2.g_x, &rec2.g_y, &rec2.g_w, &rec2.g_h);
 	}
 
-	wind_update (END_UPDATE);			                     // (7)
+	wind_update (END_UPDATE);
 }
 
-/* Draw interior of window, within given clipping rectangle */
-void draw_interior(struct win_data * wd, GRECT clip) {
+void draw_within_clip(struct win_data * wd, GRECT clip) {
 	uint16 pxy[4];
-	uint16 wrkx, wrky, wrkw, wrkh; /* some variables describing current working area */
+  Rectangle working_area;
 
-	/* set up drawing, by hiding mouse and setting clipping on */
 	graf_mouse (M_OFF, 0L);
 	set_clip (true, clip);
-	wind_get (wd->handle, WF_WORKXYWH, &wrkx, &wrky, &wrkw, &wrkh);
+	wind_get (wd->handle, WF_WORKXYWH, &working_area.x, &working_area.y,
+            &working_area.width, &working_area.height);
 
 	/* clears the display */
 	vsf_color (app_handle, WHITE);
-	pxy[0] = wrkx;
-	pxy[1] = wrky;
-	pxy[2] = wrkx + wrkw - 1;
-	pxy[3] = wrky + wrkh - 1;
-	vr_recfl (app_handle, pxy);
+	pxy[0] = working_area.x;
+	pxy[1] = working_area.y;
+	pxy[2] = working_area.x + working_area.width - 1;
+	pxy[3] = working_area.y + working_area.height - 1;
+	vr_recfl(app_handle, pxy);
 
-	/* draws our specific code */
-	draw_example (app_handle, "Lalalalala I am some text");
+	draw_example (app_handle, &working_area, "Lalalalala I am some text");
 
-	/* tidies up */
 	set_clip (false, clip);
 	graf_mouse (M_ON, 0L);
 }
 
-void draw_example (uint16 app_handle, char* text) {
+void draw_example (uint16 app_handle, Rectangle* working_area, char* text){
   vsf_color(app_handle, BLACK);
-  v_gtext (app_handle, 10, 60, text);
+  v_gtext (app_handle, working_area->x + 10, working_area->y + 60, text);
 
-  v_circle(app_handle, 40, 100, 10);
+  v_circle(app_handle, working_area->x + 40, working_area->y + 100, 10);
 }
 
 void set_clip (bool flag, GRECT rec) {
