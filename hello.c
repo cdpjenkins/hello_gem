@@ -116,46 +116,63 @@ void start_program() {
 }
 
 void event_loop (struct win_data * wd) {
-  uint16 msg_buf[8];
   int16 x;
   int16 y;
   int16 w;
   int16 h;
   uint16 handle;
   uint16 rc;
+  uint16 ev_mmgpbuff[8];
 
   do {
-    rc = evnt_mesag(msg_buf);
-    handle = msg_buf[3];
+    uint16 events;
+    uint16 ev_mmox, ev_mmoy;
+    uint16 ev_mmobutton, ev_mmokstate;
+    uint16 ev_mkreturn, ev_mbreturn;
 
-    switch (msg_buf[0]) {
-      case WM_REDRAW:
-        printf("WM_REDRAW\n");
-        do_redraw(wd, (GRECT *)&msg_buf[4]);
-        break;
-      case WM_TOPPED:
-        printf("WM_TOPPED\n");
-        wind_set(msg_buf[3], WF_TOP, 0, 0);
-        break;
-      case WM_MOVED:
-        x = msg_buf[4];
-        y = msg_buf[5];
-        w = msg_buf[6];
-        h = msg_buf[7];
-        printf("WM_MOVED %d %d %d %d\n", x, y, w, h);
-        printf("%d\n", handle);
-        wind_set(msg_buf[3], WF_CURRXYWH, x, y, w, h);
-        break;
-      case WM_FULLED:
-        printf("WM_FULLED\n");
-        do_fulled(handle);
-        break;
-      case WM_SIZED:
-        printf("WM_SIZED\n");
-	      do_sized(handle, msg_buf);
-	      break;
+    events = evnt_multi ( MU_TIMER | MU_WHEEL | MU_MESAG,
+                          1, 7, 3, 0, 0, 0, 0, 0, 0, 0, 0, 1000, 0,
+                          ev_mmgpbuff,
+                          1000, 0,
+                          &ev_mmox, &ev_mmoy, &ev_mmobutton, &ev_mmokstate,
+                          &ev_mkreturn, &ev_mbreturn );
+
+    printf("%X\n", events);
+
+    if (events & MU_MESAG) {
+      handle = ev_mmgpbuff[3];
+      switch (ev_mmgpbuff[0]) {
+        case WM_REDRAW:
+          printf("WM_REDRAW\n");
+          do_redraw(wd, (GRECT *)&ev_mmgpbuff[4]);
+          break;
+        case WM_TOPPED:
+          printf("WM_TOPPED\n");
+          wind_set(ev_mmgpbuff[3], WF_TOP, 0, 0);
+          break;
+        case WM_MOVED:
+          x = ev_mmgpbuff[4];
+          y = ev_mmgpbuff[5];
+          w = ev_mmgpbuff[6];
+          h = ev_mmgpbuff[7];
+          printf("WM_MOVED %d %d %d %d\n", x, y, w, h);
+          printf("%d\n", handle);
+          wind_set(ev_mmgpbuff[3], WF_CURRXYWH, x, y, w, h);
+          break;
+        case WM_FULLED:
+          printf("WM_FULLED\n");
+          do_fulled(handle);
+          break;
+        case WM_SIZED:
+          printf("WM_SIZED\n");
+          do_sized(handle, ev_mmgpbuff);
+          break;
+      }
     }
-  } while (msg_buf[0] != WM_CLOSED);
+    if (events & MU_TIMER) {
+      printf("MU_TIMER\n");
+    }
+  } while (ev_mmgpbuff[0] != WM_CLOSED);
 }
 
 void do_redraw (struct win_data * wd, GRECT * rec1) {
