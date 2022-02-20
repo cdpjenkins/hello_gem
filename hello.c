@@ -17,7 +17,7 @@ typedef uint16         bool;
 #define BLACK 1
 
 struct win_data {
-  int handle;     /* identifying handle of the window */
+  int16 handle;     /* identifying handle of the window */
   char* text;     /* text to display in window */
 };
 
@@ -34,8 +34,10 @@ void draw_example (uint16 app_handle, Rectangle* working_area, char* text);
 void do_redraw (struct win_data * wd, GRECT * rec1);
 void draw_within_clip (struct win_data * wd, GRECT clip);
 void set_clip (bool flag, GRECT rec);
-void open_vwork (void);
-void start_program (void);
+void open_vwork();
+void start_program();
+bool is_full_window(uint16 handle);
+void do_fulled(uint16 handle);
 
 uint16 high_word(void* ptr);
 uint16 low_word(void* ptr);
@@ -68,13 +70,13 @@ int main(int argc, char** argv)
 
 void open_vwork() {
 	int i;
-	int dum;
+	int16 dum;
 
 	app_handle = graf_handle (&dum, &dum, &dum, &dum);
 	work_in[0] = 2 + Getrez();
 	for (i = 1; i < 10; work_in[i++] = 1);
 	work_in[10] = 2;
-	v_opnvwk (work_in, &app_handle, work_out);
+	v_opnvwk(work_in, &app_handle, work_out);
 
   printf("done open_vwork\n");
 }
@@ -92,7 +94,7 @@ void start_program() {
 
   printf("WF_WORKXYWH: %d %d %d %d\n", fullx, fully, fullw, fullh);
 
-  wd.handle = wind_create(NAME|CLOSER|MOVER|SIZER, fullx, fully, fullw, fullh);
+  wd.handle = wind_create(NAME|CLOSER|MOVER|SIZER|FULLER, fullx, fully, fullw, fullh);
 
   rc = wind_set_str(wd.handle, WF_NAME, "Hello GEM!", 0, 0);
   printf("wnd_set done: %d\n", rc);
@@ -137,6 +139,10 @@ void event_loop (struct win_data * wd) {
         printf("%d\n", handle);
         wind_set(msg_buf[3], WF_CURRXYWH, x, y, w, h);
         break;
+      case WM_FULLED:
+        printf("WM_FULLED\n");
+        do_fulled(handle);
+        break;
     }
   } while (msg_buf[0] != WM_CLOSED);
 }
@@ -168,7 +174,6 @@ void draw_within_clip(struct win_data * wd, GRECT clip) {
 	wind_get (wd->handle, WF_WORKXYWH, &working_area.x, &working_area.y,
             &working_area.width, &working_area.height);
 
-	/* clears the display */
 	vsf_color (app_handle, WHITE);
 	pxy[0] = working_area.x;
 	pxy[1] = working_area.y;
@@ -198,4 +203,45 @@ void set_clip (bool flag, GRECT rec) {
   pxy[3] = rec.g_y + rec.g_h - 1;
 
   vs_clip (app_handle, flag, pxy);
+}
+
+bool is_full_window(uint16 handle) {
+	int16 curx, cury, curw, curh;
+	int16 fullx, fully, fullw, fullh;
+
+	wind_get (handle, WF_CURRXYWH, &curx, &cury, &curw, &curh);
+	wind_get (handle, WF_FULLXYWH, &fullx, &fully, &fullw, &fullh);
+	if (curx != fullx || cury != fully || curw != fullw || curh != fullh) {
+		return false;
+	} else {
+		return true;
+	}
+}
+
+void do_fulled(uint16 handle) {
+	if (is_full_window(handle)) {
+		int16 oldx, oldy, oldw, oldh;
+		int16 fullx, fully, fullw, fullh;
+
+    printf("Shrink to restore!\n");
+
+		wind_get (handle, WF_PREVXYWH, &oldx, &oldy, &oldw, &oldh);
+		wind_get (handle, WF_FULLXYWH, &fullx, &fully, &fullw, &fullh);
+		graf_shrinkbox (oldx, oldy, oldw, oldh, fullx, fully, fullw, fullh);
+		wind_set (handle, WF_CURRXYWH, oldx, oldy, oldw, oldh);
+
+	} else {
+		int16 curx, cury, curw, curh;
+		int16 fullx, fully, fullw, fullh;
+
+    printf("Expand to full!\n");
+
+		wind_get (handle, WF_CURRXYWH, &curx, &cury, &curw, &curh);
+		wind_get (handle, WF_FULLXYWH, &fullx, &fully, &fullw, &fullh);
+
+    printf("Expand to full! %d %d %d %d\n", fullx, fully, fullw, fullh);
+
+		graf_growbox (curx, cury, curw, curh, fullx, fully, fullw, fullh);
+		wind_set (handle, WF_CURRXYWH, fullx, fully, fullw, fullh);
+	}
 }
