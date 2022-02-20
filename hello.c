@@ -43,7 +43,7 @@ void open_vwork();
 void start_program();
 bool is_full_window(uint16 handle);
 void do_fulled(uint16 handle);
-void do_sized(uint16 handle, int16* msg_buf);
+void do_sized(uint16 handle, int16 x, int16 y, int16 w, int16 h);
 
 uint16 high_word(void* ptr);
 uint16 low_word(void* ptr);
@@ -139,7 +139,7 @@ void event_loop (struct win_data * wd) {
     events = evnt_multi ( MU_TIMER | MU_WHEEL | MU_MESAG,
                           1, 7, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                           ev_mmgpbuff,
-                          20, 0,
+                          10, 0,
                           &ev_mmox, &ev_mmoy, &ev_mmobutton, &ev_mmokstate,
                           &ev_mkreturn, &ev_mbreturn );
 
@@ -171,7 +171,11 @@ void event_loop (struct win_data * wd) {
           break;
         case WM_SIZED:
           printf("WM_SIZED\n");
-          do_sized(handle, ev_mmgpbuff);
+          x = ev_mmgpbuff[4];
+          y = ev_mmgpbuff[5];
+          w = ev_mmgpbuff[6];
+          h = ev_mmgpbuff[7];
+          do_sized(handle, x, y, w, h);
           break;
       }
     }
@@ -190,7 +194,7 @@ void event_loop (struct win_data * wd) {
 void do_redraw (struct win_data * wd, GRECT * rec1) {
 	GRECT rec2;
 
-	wind_update (BEG_UPDATE);
+	wind_update(BEG_UPDATE);
 
 	wind_get (wd->handle, WF_FIRSTXYWH,
             &rec2.g_x, &rec2.g_y, &rec2.g_w, &rec2.g_h);
@@ -202,7 +206,7 @@ void do_redraw (struct win_data * wd, GRECT * rec1) {
               &rec2.g_x, &rec2.g_y, &rec2.g_w, &rec2.g_h);
 	}
 
-	wind_update (END_UPDATE);
+	wind_update(END_UPDATE);
 }
 
 void draw_within_clip(struct win_data * wd, GRECT clip) {
@@ -286,10 +290,9 @@ void do_fulled(uint16 handle) {
 	}
 }
 
-void do_sized(uint16 handle, int16* msg_buf) {
-	if (msg_buf[6] < MIN_WIDTH) msg_buf[6] = MIN_WIDTH;	  // (1)
-	if (msg_buf[7] < MIN_HEIGHT) msg_buf[7] = MIN_HEIGHT;
+void do_sized(uint16 handle, int16 x, int16 y, int16 w, int16 h) {
+	if (w < MIN_WIDTH) w = MIN_WIDTH;
+	if (h < MIN_HEIGHT) h = MIN_HEIGHT;
 
-	wind_set (handle, WF_CURRXYWH,
-		  msg_buf[4], msg_buf[5], msg_buf[6], msg_buf[7]); // (2)
+	wind_set (handle, WF_CURRXYWH, x, y, w, h);
 }
