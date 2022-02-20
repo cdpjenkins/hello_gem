@@ -16,6 +16,9 @@ typedef uint16         bool;
 #define WHITE 0
 #define BLACK 1
 
+#define MIN_WIDTH 50
+#define MIN_HEIGHT 50
+
 struct win_data {
   int16 handle;     /* identifying handle of the window */
   char* text;     /* text to display in window */
@@ -38,6 +41,7 @@ void open_vwork();
 void start_program();
 bool is_full_window(uint16 handle);
 void do_fulled(uint16 handle);
+void do_sized(uint16 handle, int16* msg_buf);
 
 uint16 high_word(void* ptr);
 uint16 low_word(void* ptr);
@@ -143,6 +147,10 @@ void event_loop (struct win_data * wd) {
         printf("WM_FULLED\n");
         do_fulled(handle);
         break;
+      case WM_SIZED:
+        printf("WM_SIZED\n");
+	      do_sized(handle, msg_buf);
+	      break;
     }
   } while (msg_buf[0] != WM_CLOSED);
 }
@@ -244,4 +252,12 @@ void do_fulled(uint16 handle) {
 		graf_growbox (curx, cury, curw, curh, fullx, fully, fullw, fullh);
 		wind_set (handle, WF_CURRXYWH, fullx, fully, fullw, fullh);
 	}
+}
+
+void do_sized(uint16 handle, int16* msg_buf) {
+	if (msg_buf[6] < MIN_WIDTH) msg_buf[6] = MIN_WIDTH;	  // (1)
+	if (msg_buf[7] < MIN_HEIGHT) msg_buf[7] = MIN_HEIGHT;
+
+	wind_set (handle, WF_CURRXYWH,
+		  msg_buf[4], msg_buf[5], msg_buf[6], msg_buf[7]); // (2)
 }
