@@ -5,9 +5,8 @@
 
 #include <mt_gem.h>
 
-typedef unsigned short uint16;
-typedef short          int16;
-typedef uint16         bool;
+#include "types.h"
+#include "dots.h"
 
 #define true  1
 #define false 0
@@ -49,6 +48,13 @@ void do_sized(uint16 handle, int16* msg_buf);
 uint16 high_word(void* ptr);
 uint16 low_word(void* ptr);
 
+Dot dot = {
+  .x = 250,
+  .y = 250,
+  .vx = 1,
+  .vy = 2
+};
+
 /* GEM arrays */
 uint16 work_in[11],
   work_out[57],
@@ -69,7 +75,7 @@ int main(int argc, char** argv)
   open_vwork();
   start_program();
   rsrc_free();
-  v_clsvwk (app_handle);
+  v_clsvwk(app_handle);
 
   appl_exit();
   exit(0);
@@ -131,9 +137,9 @@ void event_loop (struct win_data * wd) {
     uint16 ev_mkreturn, ev_mbreturn;
 
     events = evnt_multi ( MU_TIMER | MU_WHEEL | MU_MESAG,
-                          1, 7, 3, 0, 0, 0, 0, 0, 0, 0, 0, 1000, 0,
+                          1, 7, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                           ev_mmgpbuff,
-                          1000, 0,
+                          20, 0,
                           &ev_mmox, &ev_mmoy, &ev_mmobutton, &ev_mmokstate,
                           &ev_mkreturn, &ev_mbreturn );
 
@@ -170,7 +176,13 @@ void event_loop (struct win_data * wd) {
       }
     }
     if (events & MU_TIMER) {
+      GRECT r;
       printf("MU_TIMER\n");
+
+      wind_get(wd->handle, WF_WORKXYWH, &r.g_x, &r.g_y, &r.g_w, &r.g_h);
+      do_redraw(wd, &r);
+
+      dot_move(&dot);
     }
   } while (ev_mmgpbuff[0] != WM_CLOSED);
 }
@@ -219,7 +231,7 @@ void draw_example (uint16 app_handle, Rectangle* working_area, char* text){
   vsf_color(app_handle, BLACK);
   v_gtext (app_handle, working_area->x + 10, working_area->y + 60, text);
 
-  v_circle(app_handle, 250, 250, 100);
+  v_circle(app_handle, dot.x, dot.y, 5);
 }
 
 void set_clip (bool flag, GRECT rec) {
