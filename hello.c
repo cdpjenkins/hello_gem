@@ -19,6 +19,9 @@ typedef uint16         bool;
 #define MIN_WIDTH 50
 #define MIN_HEIGHT 50
 
+#define WIDTH 500
+#define HEIGHT 500
+
 struct win_data {
   int16 handle;     /* identifying handle of the window */
   char* text;     /* text to display in window */
@@ -103,7 +106,7 @@ void start_program() {
   rc = wind_set_str(wd.handle, WF_NAME, "Hello GEM!", 0, 0);
   printf("wnd_set done: %d\n", rc);
 
-  wind_open(wd.handle, fullx, fully, 300, 200);
+  wind_open(wd.handle, fullx, fully, WIDTH, HEIGHT);
   printf("Window opened\n");
 
   event_loop (&wd);
@@ -128,7 +131,7 @@ void event_loop (struct win_data * wd) {
     switch (msg_buf[0]) {
       case WM_REDRAW:
         printf("WM_REDRAW\n");
-        do_redraw (wd, (GRECT *)&msg_buf[4]);	// (3)
+        do_redraw(wd, (GRECT *)&msg_buf[4]);
         break;
       case WM_TOPPED:
         printf("WM_TOPPED\n");
@@ -199,7 +202,7 @@ void draw_example (uint16 app_handle, Rectangle* working_area, char* text){
   vsf_color(app_handle, BLACK);
   v_gtext (app_handle, working_area->x + 10, working_area->y + 60, text);
 
-  v_circle(app_handle, working_area->x + 40, working_area->y + 100, 10);
+  v_circle(app_handle, 250, 250, 100);
 }
 
 void set_clip (bool flag, GRECT rec) {
