@@ -10,18 +10,20 @@
 void grid_init(ConwayGrid* grid) {
     grid->current_grid = grid->grid1;
     grid->next_grid = grid->grid2;
+    grid->width = GRID_WIDTH;
+    grid->height = GRID_HEIGHT;
 }
 
 void grid_init_to_blank(ConwayGrid* grid) {
     grid_init(grid);
 
     // I'm not even sure if you can do this!
-    memset(grid->grid1, 0, sizeof(bool) * GRID_WIDTH * GRID_HEIGHT);
-    memset(grid->grid2, 0, sizeof(bool) * GRID_WIDTH * GRID_HEIGHT);
+    memset(grid->grid1, 0, sizeof(bool) * grid->width * grid->height);
+    memset(grid->grid2, 0, sizeof(bool) * grid->width * grid->height);
 }
 
-static int grid_index(int column, int row) {
-    return row * GRID_WIDTH + column;
+static int grid_index(ConwayGrid* grid, int column, int row) {
+    return row * grid->width + column;
 }
 
 void grid_import_from_file(char* filename, ConwayGrid* grid) {
@@ -37,15 +39,15 @@ void grid_import_from_file(char* filename, ConwayGrid* grid) {
         exit(1);
     }
 
-    for (y = 0; fgets(row_string, MAX_LINE_LENGTH, fp) != NULL && y < GRID_HEIGHT; y++) {
+    for (y = 0; fgets(row_string, MAX_LINE_LENGTH, fp) != NULL && y < grid->height; y++) {
         char* ptr;
         char c;
 
-        for (ptr = row_string, x = 0; ptr != NULL && x < GRID_WIDTH; ptr++, x++) {
+        for (ptr = row_string, x = 0; ptr != NULL && x < grid->width; ptr++, x++) {
             if (*ptr == 'x') {
-                grid->current_grid[grid_index(x, y)] = TRUE;
+                grid->current_grid[grid_index(grid, x, y)] = TRUE;
             } else {
-                grid->current_grid[grid_index(x, y)] = FALSE;
+                grid->current_grid[grid_index(grid, x, y)] = FALSE;
             }
         }
     }
@@ -54,9 +56,9 @@ void grid_import_from_file(char* filename, ConwayGrid* grid) {
 void grid_print(ConwayGrid* grid) {
     int x, y;
 
-    for (y = 0; y < GRID_HEIGHT; y++) {
-        for (x = 0; x < GRID_WIDTH; x++) {
-            if (grid->current_grid[grid_index(x, y)]) {
+    for (y = 0; y < grid->height; y++) {
+        for (x = 0; x < grid->width; x++) {
+            if (grid->current_grid[grid_index(grid, x, y)]) {
                 printf("x");
             } else {
                 printf(".");
@@ -68,11 +70,11 @@ void grid_print(ConwayGrid* grid) {
 }
 
 bool grid_cell_alive_at(ConwayGrid* grid, int x, int y) {
-    if (x < 0 || x >= GRID_WIDTH
-     || y < 0 || y >= GRID_HEIGHT) {
+    if (x < 0 || x >= grid->width
+     || y < 0 || y >= grid->height) {
         return FALSE;
     } else {
-        if (grid->current_grid[grid_index(x, y)]) {
+        if (grid->current_grid[grid_index(grid, x, y)]) {
             return TRUE;
         } else {
             return FALSE;
@@ -99,8 +101,8 @@ void grid_step(ConwayGrid* grid) {
     bool* temp_grid_ptr;
     int x, y;
 
-    for (x = 0; x < GRID_WIDTH; x++) {
-        for (y = 0; y < GRID_WIDTH; y++) {
+    for (x = 0; x < grid->width; x++) {
+        for (y = 0; y < grid->height; y++) {
             bool new_value;
             int live_neighbours;
             
@@ -111,7 +113,7 @@ void grid_step(ConwayGrid* grid) {
                 new_value = live_neighbours == 3;
             }
 
-            grid->next_grid[grid_index(x, y)] = new_value;
+            grid->next_grid[grid_index(grid, x, y)] = new_value;
         }
     }
 

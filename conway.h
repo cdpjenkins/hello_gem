@@ -13,6 +13,8 @@ typedef struct {
     bool grid2[GRID_WIDTH * GRID_HEIGHT];
     bool* current_grid;
     bool* next_grid;
+    int width;
+    int height;
 } ConwayGrid;
 
 void grid_init_to_blank();

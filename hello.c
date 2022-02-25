@@ -100,17 +100,11 @@ void start_program() {
   short rc;
 
   graf_mouse (ARROW, 0L);
-
   grid_import_from_file("glider.txt", &grid);
-
   wind_get(0, WF_WORKXYWH, &fullx, &fully, &fullw, &fullh);
-
   wd.handle = wind_create(NAME|CLOSER|MOVER|SIZER|FULLER, fullx, fully, fullw, fullh);
-
   rc = wind_set_str(wd.handle, WF_NAME, "Hello GEM!", 0, 0);
-
   wind_open(wd.handle, fullx, fully, WIDTH, HEIGHT);
-  printf("Window opened\n");
 
   event_loop (&wd);
 
@@ -247,7 +241,6 @@ void draw_conway_grid(uint16 app_handle, Rectangle* working_area, ConwayGrid* gr
   // todo move width and height into the freaking grid
   for (x = 0; x < 10; x++) {
     for (y = 0; y < 10; y++) {
-      printf("%d %d %d\n", x, y, grid_cell_alive_at(grid, x, y));
       if (grid_cell_alive_at(grid, x, y)) {
         vsf_color(app_handle, BLACK);
       } else {
