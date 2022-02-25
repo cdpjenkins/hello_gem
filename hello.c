@@ -7,6 +7,7 @@
 
 #include "types.h"
 #include "dots.h"
+#include "conway.h"
 
 #define true  1
 #define false 0
@@ -44,6 +45,7 @@ void start_program();
 bool is_full_window(uint16 handle);
 void do_fulled(uint16 handle);
 void do_sized(uint16 handle, int16 x, int16 y, int16 w, int16 h);
+void draw_conway_grid(uint16 app_handle, Rectangle* working_area, ConwayGrid* grid);
 
 uint16 high_word(void* ptr);
 uint16 low_word(void* ptr);
@@ -54,6 +56,8 @@ Dot dot = {
   .vx = 1,
   .vy = 2
 };
+
+ConwayGrid grid;
 
 /* GEM arrays */
 uint16 work_in[11],
@@ -69,8 +73,6 @@ uint16 app_handle;
 int main(int argc, char** argv)
 {
   short applId = appl_init();
-
-  printf("%x\n", applId);
 
   open_vwork();
   start_program();
@@ -90,8 +92,6 @@ void open_vwork() {
 	for (i = 1; i < 10; work_in[i++] = 1);
 	work_in[10] = 2;
 	v_opnvwk(work_in, &app_handle, work_out);
-
-  printf("done open_vwork\n");
 }
 
 void start_program() {
@@ -101,16 +101,13 @@ void start_program() {
 
   graf_mouse (ARROW, 0L);
 
-  printf("done graf_mouse\n");
+  grid_import_from_file("glider.txt", &grid);
 
   wind_get(0, WF_WORKXYWH, &fullx, &fully, &fullw, &fullh);
-
-  printf("WF_WORKXYWH: %d %d %d %d\n", fullx, fully, fullw, fullh);
 
   wd.handle = wind_create(NAME|CLOSER|MOVER|SIZER|FULLER, fullx, fully, fullw, fullh);
 
   rc = wind_set_str(wd.handle, WF_NAME, "Hello GEM!", 0, 0);
-  printf("wnd_set done: %d\n", rc);
 
   wind_open(wd.handle, fullx, fully, WIDTH, HEIGHT);
   printf("Window opened\n");
@@ -139,7 +136,7 @@ void event_loop (struct win_data * wd) {
     events = evnt_multi ( MU_TIMER | MU_WHEEL | MU_MESAG,
                           1, 7, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                           ev_mmgpbuff,
-                          10, 0,
+                          200, 0,
                           &ev_mmox, &ev_mmoy, &ev_mmobutton, &ev_mmokstate,
                           &ev_mkreturn, &ev_mbreturn );
 
@@ -183,6 +180,9 @@ void event_loop (struct win_data * wd) {
       GRECT r;
       printf("MU_TIMER\n");
 
+      grid_step(&grid);
+      grid_print(&grid);
+
       wind_get(wd->handle, WF_WORKXYWH, &r.g_x, &r.g_y, &r.g_w, &r.g_h);
       do_redraw(wd, &r);
 
@@ -191,7 +191,7 @@ void event_loop (struct win_data * wd) {
   } while (ev_mmgpbuff[0] != WM_CLOSED);
 }
 
-void do_redraw (struct win_data * wd, GRECT * rec1) {
+void do_redraw(struct win_data * wd, GRECT * rec1) {
 	GRECT rec2;
 
 	wind_update(BEG_UPDATE);
@@ -200,9 +200,9 @@ void do_redraw (struct win_data * wd, GRECT * rec1) {
             &rec2.g_x, &rec2.g_y, &rec2.g_w, &rec2.g_h);
 	while (rec2.g_w && rec2.g_h) {
 		if (rc_intersect (rec1, &rec2)) {
-			draw_within_clip (wd, rec2);
+			draw_within_clip(wd, rec2);
 		}
-		wind_get (wd->handle, WF_NEXTXYWH,
+		wind_get(wd->handle, WF_NEXTXYWH,
               &rec2.g_x, &rec2.g_y, &rec2.g_w, &rec2.g_h);
 	}
 
@@ -218,17 +218,18 @@ void draw_within_clip(struct win_data * wd, GRECT clip) {
 	wind_get (wd->handle, WF_WORKXYWH, &working_area.x, &working_area.y,
             &working_area.width, &working_area.height);
 
-	vsf_color (app_handle, WHITE);
+	vsf_color(app_handle, WHITE);
 	pxy[0] = working_area.x;
 	pxy[1] = working_area.y;
 	pxy[2] = working_area.x + working_area.width - 1;
 	pxy[3] = working_area.y + working_area.height - 1;
 	vr_recfl(app_handle, pxy);
 
-	draw_example (app_handle, &working_area, "Lalalalala I am some text");
+	// draw_example (app_handle, &working_area, "Lalalalala I am some text");
+  draw_conway_grid(app_handle, &working_area, &grid);
 
 	set_clip (false, clip);
-	graf_mouse (M_ON, 0L);
+	graf_mouse(M_ON, 0L);
 }
 
 void draw_example (uint16 app_handle, Rectangle* working_area, char* text){
@@ -238,7 +239,31 @@ void draw_example (uint16 app_handle, Rectangle* working_area, char* text){
   v_circle(app_handle, dot.x, dot.y, 5);
 }
 
-void set_clip (bool flag, GRECT rec) {
+void draw_conway_grid(uint16 app_handle, Rectangle* working_area, ConwayGrid* grid) {
+  int x, y;
+  int16 x1, y1, x2, y2;
+  int16 pxyarray[4];
+
+  // todo move width and height into the freaking grid
+  for (x = 0; x < 10; x++) {
+    for (y = 0; y < 10; y++) {
+      printf("%d %d %d\n", x, y, grid_cell_alive_at(grid, x, y));
+      if (grid_cell_alive_at(grid, x, y)) {
+        vsf_color(app_handle, BLACK);
+      } else {
+        vsf_color(app_handle, WHITE);
+      }
+
+      pxyarray[0] = working_area->x + x * 10;
+      pxyarray[1] = working_area->y + y * 10;
+      pxyarray[2] = working_area->x + x * 10 + 9;
+      pxyarray[3] = working_area->y + y * 10 + 9;
+      vr_recfl(app_handle, pxyarray);
+    }
+  }
+}
+
+void set_clip(bool flag, GRECT rec) {
   uint16 pxy[4];
 
   pxy[0] = rec.g_x;
@@ -267,23 +292,16 @@ void do_fulled(uint16 handle) {
 		int16 oldx, oldy, oldw, oldh;
 		int16 fullx, fully, fullw, fullh;
 
-    printf("Shrink to restore!\n");
-
 		wind_get (handle, WF_PREVXYWH, &oldx, &oldy, &oldw, &oldh);
 		wind_get (handle, WF_FULLXYWH, &fullx, &fully, &fullw, &fullh);
 		graf_shrinkbox (oldx, oldy, oldw, oldh, fullx, fully, fullw, fullh);
 		wind_set (handle, WF_CURRXYWH, oldx, oldy, oldw, oldh);
-
 	} else {
 		int16 curx, cury, curw, curh;
 		int16 fullx, fully, fullw, fullh;
 
-    printf("Expand to full!\n");
-
 		wind_get (handle, WF_CURRXYWH, &curx, &cury, &curw, &curh);
 		wind_get (handle, WF_FULLXYWH, &fullx, &fully, &fullw, &fullh);
-
-    printf("Expand to full! %d %d %d %d\n", fullx, fully, fullw, fullh);
 
 		graf_growbox (curx, cury, curw, curh, fullx, fully, fullw, fullh);
 		wind_set (handle, WF_CURRXYWH, fullx, fully, fullw, fullh);

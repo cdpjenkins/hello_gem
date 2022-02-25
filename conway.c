@@ -3,18 +3,9 @@
 #include <string.h>
 
 #include "types.h"
-
-#define GRID_WIDTH 10
-#define GRID_HEIGHT 10
+#include "conway.h"
 
 #define MAX_LINE_LENGTH 1000
-
-typedef struct {
-    bool grid1[GRID_WIDTH * GRID_HEIGHT];
-    bool grid2[GRID_WIDTH * GRID_HEIGHT];
-    bool* current_grid;
-    bool* next_grid;
-} ConwayGrid;
 
 void grid_init(ConwayGrid* grid) {
     grid->current_grid = grid->grid1;
@@ -76,26 +67,30 @@ void grid_print(ConwayGrid* grid) {
     printf("\n");
 }
 
-static bool cell_alive_at(ConwayGrid* grid, int x, int y) {
+bool grid_cell_alive_at(ConwayGrid* grid, int x, int y) {
     if (x < 0 || x >= GRID_WIDTH
      || y < 0 || y >= GRID_HEIGHT) {
         return FALSE;
     } else {
-        return grid->current_grid[grid_index(x, y)];
+        if (grid->current_grid[grid_index(x, y)]) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
     }
 }
 
 static int num_living_neighbours(ConwayGrid* grid, int x, int y) {
     int a1, a2, a3, a4, a5, a6, a7, a8;
 
-    a1 = cell_alive_at(grid, x-1, y-1) ? 1 : 0;
-    a2 = cell_alive_at(grid, x, y-1) ? 1 : 0;
-    a3 = cell_alive_at(grid, x+1, y-1) ? 1 : 0;
-    a4 = cell_alive_at(grid, x-1, y) ? 1 : 0;
-    a5 = cell_alive_at(grid, x+1, y) ? 1 : 0;
-    a6 = cell_alive_at(grid, x-1, y+1) ? 1 : 0;
-    a7 = cell_alive_at(grid, x, y+1) ? 1 : 0;
-    a8 = cell_alive_at(grid, x+1, y+1) ? 1 : 0;
+    a1 = grid_cell_alive_at(grid, x-1, y-1) ? 1 : 0;
+    a2 = grid_cell_alive_at(grid, x, y-1) ? 1 : 0;
+    a3 = grid_cell_alive_at(grid, x+1, y-1) ? 1 : 0;
+    a4 = grid_cell_alive_at(grid, x-1, y) ? 1 : 0;
+    a5 = grid_cell_alive_at(grid, x+1, y) ? 1 : 0;
+    a6 = grid_cell_alive_at(grid, x-1, y+1) ? 1 : 0;
+    a7 = grid_cell_alive_at(grid, x, y+1) ? 1 : 0;
+    a8 = grid_cell_alive_at(grid, x+1, y+1) ? 1 : 0;
 
     return a1 + a2 + a3 + a4 + a5 + a6 + a7 + a8;
 }
@@ -110,7 +105,7 @@ void grid_step(ConwayGrid* grid) {
             int live_neighbours;
             
             live_neighbours = num_living_neighbours(grid, x, y);
-            if (cell_alive_at(grid, x, y)) {
+            if (grid_cell_alive_at(grid, x, y)) {
                 new_value = live_neighbours == 2 || live_neighbours == 3;
             } else {
                 new_value = live_neighbours == 3;
