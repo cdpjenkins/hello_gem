@@ -18,5 +18,6 @@ typedef struct {
 void grid_init_to_blank();
 void grid_import_from_file(char* filename, ConwayGrid* grid);
 void grid_print(ConwayGrid* grid);
+void grid_step(ConwayGrid* grid);
 
 #endif // CONWAY_H
