@@ -22,6 +22,8 @@
 #define WIDTH 500
 #define HEIGHT 500
 
+#define WAIT_BETWEEN_FRAMES 50
+
 struct win_data {
   int16 handle;     /* identifying handle of the window */
   char* text;     /* text to display in window */
@@ -100,7 +102,7 @@ void start_program() {
   short rc;
 
   graf_mouse (ARROW, 0L);
-  grid_import_from_file("glider.txt", &grid);
+  grid_import_from_file("gosper_glider_gun.txt", &grid);
   wind_get(0, WF_WORKXYWH, &fullx, &fully, &fullw, &fullh);
   wd.handle = wind_create(NAME|CLOSER|MOVER|SIZER|FULLER, fullx, fully, fullw, fullh);
   rc = wind_set_str(wd.handle, WF_NAME, "Hello GEM!", 0, 0);
@@ -130,21 +132,16 @@ void event_loop (struct win_data * wd) {
     events = evnt_multi ( MU_TIMER | MU_WHEEL | MU_MESAG,
                           1, 7, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                           ev_mmgpbuff,
-                          200, 0,
+                          WAIT_BETWEEN_FRAMES, 0,
                           &ev_mmox, &ev_mmoy, &ev_mmobutton, &ev_mmokstate,
                           &ev_mkreturn, &ev_mbreturn );
-
-    printf("%X\n", events);
-
     if (events & MU_MESAG) {
       handle = ev_mmgpbuff[3];
       switch (ev_mmgpbuff[0]) {
         case WM_REDRAW:
-          printf("WM_REDRAW\n");
           do_redraw(wd, (GRECT *)&ev_mmgpbuff[4]);
           break;
         case WM_TOPPED:
-          printf("WM_TOPPED\n");
           wind_set(ev_mmgpbuff[3], WF_TOP, 0, 0);
           break;
         case WM_MOVED:
@@ -152,16 +149,12 @@ void event_loop (struct win_data * wd) {
           y = ev_mmgpbuff[5];
           w = ev_mmgpbuff[6];
           h = ev_mmgpbuff[7];
-          printf("WM_MOVED %d %d %d %d\n", x, y, w, h);
-          printf("%d\n", handle);
           wind_set(ev_mmgpbuff[3], WF_CURRXYWH, x, y, w, h);
           break;
         case WM_FULLED:
-          printf("WM_FULLED\n");
           do_fulled(handle);
           break;
         case WM_SIZED:
-          printf("WM_SIZED\n");
           x = ev_mmgpbuff[4];
           y = ev_mmgpbuff[5];
           w = ev_mmgpbuff[6];
@@ -172,10 +165,9 @@ void event_loop (struct win_data * wd) {
     }
     if (events & MU_TIMER) {
       GRECT r;
-      printf("MU_TIMER\n");
 
       grid_step(&grid);
-      grid_print(&grid);
+      // grid_print(&grid);
 
       wind_get(wd->handle, WF_WORKXYWH, &r.g_x, &r.g_y, &r.g_w, &r.g_h);
       do_redraw(wd, &r);
@@ -239,8 +231,8 @@ void draw_conway_grid(uint16 app_handle, Rectangle* working_area, ConwayGrid* gr
   int16 pxyarray[4];
 
   // todo move width and height into the freaking grid
-  for (x = 0; x < 10; x++) {
-    for (y = 0; y < 10; y++) {
+  for (x = 0; x < grid->width; x++) {
+    for (y = 0; y < grid->height; y++) {
       if (grid_cell_alive_at(grid, x, y)) {
         vsf_color(app_handle, BLACK);
       } else {

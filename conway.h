@@ -3,8 +3,8 @@
 
 #include "types.h"
 
-#define GRID_WIDTH 10
-#define GRID_HEIGHT 10
+#define GRID_WIDTH 150
+#define GRID_HEIGHT 50
 
 #define MAX_LINE_LENGTH 1000
 
