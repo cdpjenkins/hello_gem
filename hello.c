@@ -20,7 +20,7 @@
 #define MIN_HEIGHT 50
 
 #define WIDTH 500
-#define HEIGHT 500
+#define HEIGHT 380
 
 #define WAIT_BETWEEN_FRAMES 50
 
@@ -102,10 +102,10 @@ void start_program() {
   short rc;
 
   graf_mouse (ARROW, 0L);
-  grid_import_from_file("gosper_glider_gun.txt", &grid);
+  grid_import_from_file("gosper.txt", &grid);
   wind_get(0, WF_WORKXYWH, &fullx, &fully, &fullw, &fullh);
   wd.handle = wind_create(NAME|CLOSER|MOVER|SIZER|FULLER, fullx, fully, fullw, fullh);
-  rc = wind_set_str(wd.handle, WF_NAME, "Hello GEM!", 0, 0);
+  rc = wind_set_str(wd.handle, WF_NAME, "Conway's Game Of Life", 0, 0);
   wind_open(wd.handle, fullx, fully, WIDTH, HEIGHT);
 
   event_loop (&wd);
@@ -178,44 +178,44 @@ void event_loop (struct win_data * wd) {
 }
 
 void do_redraw(struct win_data * wd, GRECT * rec1) {
-	GRECT rec2;
+  GRECT rec2;
 
-	wind_update(BEG_UPDATE);
+  wind_update(BEG_UPDATE);
 
-	wind_get (wd->handle, WF_FIRSTXYWH,
+  wind_get (wd->handle, WF_FIRSTXYWH,
             &rec2.g_x, &rec2.g_y, &rec2.g_w, &rec2.g_h);
-	while (rec2.g_w && rec2.g_h) {
-		if (rc_intersect (rec1, &rec2)) {
-			draw_within_clip(wd, rec2);
-		}
-		wind_get(wd->handle, WF_NEXTXYWH,
+  while (rec2.g_w && rec2.g_h) {
+    if (rc_intersect (rec1, &rec2)) {
+      draw_within_clip(wd, rec2);
+    }
+    wind_get(wd->handle, WF_NEXTXYWH,
               &rec2.g_x, &rec2.g_y, &rec2.g_w, &rec2.g_h);
-	}
+  }
 
-	wind_update(END_UPDATE);
+  wind_update(END_UPDATE);
 }
 
 void draw_within_clip(struct win_data * wd, GRECT clip) {
-	uint16 pxy[4];
+  uint16 pxy[4];
   Rectangle working_area;
 
-	graf_mouse (M_OFF, 0L);
-	set_clip (true, clip);
-	wind_get (wd->handle, WF_WORKXYWH, &working_area.x, &working_area.y,
+  graf_mouse (M_OFF, 0L);
+  set_clip (true, clip);
+  wind_get (wd->handle, WF_WORKXYWH, &working_area.x, &working_area.y,
             &working_area.width, &working_area.height);
 
-	vsf_color(app_handle, WHITE);
-	pxy[0] = working_area.x;
-	pxy[1] = working_area.y;
-	pxy[2] = working_area.x + working_area.width - 1;
-	pxy[3] = working_area.y + working_area.height - 1;
-	vr_recfl(app_handle, pxy);
+  vsf_color(app_handle, WHITE);
+  pxy[0] = working_area.x;
+  pxy[1] = working_area.y;
+  pxy[2] = working_area.x + working_area.width - 1;
+  pxy[3] = working_area.y + working_area.height - 1;
+  vr_recfl(app_handle, pxy);
 
-	// draw_example (app_handle, &working_area, "Lalalalala I am some text");
+  // draw_example (app_handle, &working_area, "Lalalalala I am some text");
   draw_conway_grid(app_handle, &working_area, &grid);
 
-	set_clip (false, clip);
-	graf_mouse(M_ON, 0L);
+  set_clip (false, clip);
+  graf_mouse(M_ON, 0L);
 }
 
 void draw_example (uint16 app_handle, Rectangle* working_area, char* text){
@@ -231,19 +231,16 @@ void draw_conway_grid(uint16 app_handle, Rectangle* working_area, ConwayGrid* gr
   int16 pxyarray[4];
 
   // todo move width and height into the freaking grid
+  vsf_color(app_handle, BLACK);
   for (x = 0; x < grid->width; x++) {
     for (y = 0; y < grid->height; y++) {
       if (grid_cell_alive_at(grid, x, y)) {
-        vsf_color(app_handle, BLACK);
-      } else {
-        vsf_color(app_handle, WHITE);
-      }
-
-      pxyarray[0] = working_area->x + x * 10;
-      pxyarray[1] = working_area->y + y * 10;
-      pxyarray[2] = working_area->x + x * 10 + 9;
-      pxyarray[3] = working_area->y + y * 10 + 9;
-      vr_recfl(app_handle, pxyarray);
+        pxyarray[0] = working_area->x + x * grid->cell_width;
+        pxyarray[1] = working_area->y + y * grid->cell_height;
+        pxyarray[2] = working_area->x + (x+1) * grid->cell_width - 2;
+        pxyarray[3] = working_area->y + (y+1) * grid->cell_height - 2;
+        vr_recfl(app_handle, pxyarray);
+      }     
     }
   }
 }

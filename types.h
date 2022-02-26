@@ -3,6 +3,7 @@
 
 typedef unsigned short uint16;
 typedef short          int16;
+typedef unsigned char  uint8;
 typedef short          bool;
 
 #define TRUE 1

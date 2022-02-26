@@ -3,8 +3,10 @@
 
 #include "types.h"
 
-#define GRID_WIDTH 150
-#define GRID_HEIGHT 50
+#define GRID_WIDTH 60
+#define GRID_HEIGHT 30
+#define CELL_WIDTH 16
+#define CELL_HEIGHT 16
 
 #define MAX_LINE_LENGTH 1000
 
@@ -15,6 +17,8 @@ typedef struct {
     bool* next_grid;
     int width;
     int height;
+    int cell_width;
+    int cell_height;
 } ConwayGrid;
 
 void grid_init_to_blank();

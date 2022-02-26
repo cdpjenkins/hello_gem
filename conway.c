@@ -12,6 +12,8 @@ void grid_init(ConwayGrid* grid) {
     grid->next_grid = grid->grid2;
     grid->width = GRID_WIDTH;
     grid->height = GRID_HEIGHT;
+    grid->cell_width = CELL_WIDTH;
+    grid->cell_height = CELL_HEIGHT;
 }
 
 void grid_init_to_blank(ConwayGrid* grid) {
