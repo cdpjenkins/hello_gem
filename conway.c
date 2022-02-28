@@ -14,6 +14,7 @@ void grid_init(ConwayGrid* grid) {
     grid->height = GRID_HEIGHT;
     grid->cell_width = CELL_WIDTH;
     grid->cell_height = CELL_HEIGHT;
+    grid->running = FALSE;
 }
 
 void grid_init_to_blank(ConwayGrid* grid) {
@@ -24,7 +25,7 @@ void grid_init_to_blank(ConwayGrid* grid) {
     memset(grid->grid2, 0, sizeof(bool) * grid->width * grid->height);
 }
 
-static int grid_index(ConwayGrid* grid, int column, int row) {
+static inline int grid_index(ConwayGrid* grid, int column, int row) {
     return row * grid->width + column;
 }
 
@@ -46,10 +47,11 @@ void grid_import_from_file(char* filename, ConwayGrid* grid) {
         char c;
 
         for (ptr = row_string, x = 0; ptr != NULL && x < grid->width; ptr++, x++) {
+            int i = grid_index(grid, x, y);
             if (*ptr == 'x') {
-                grid->current_grid[grid_index(grid, x, y)] = TRUE;
+                grid->current_grid[i] = TRUE;
             } else {
-                grid->current_grid[grid_index(grid, x, y)] = FALSE;
+                grid->current_grid[i] = FALSE;
             }
         }
     }
@@ -103,23 +105,33 @@ void grid_step(ConwayGrid* grid) {
     bool* temp_grid_ptr;
     int x, y;
 
-    for (x = 0; x < grid->width; x++) {
-        for (y = 0; y < grid->height; y++) {
-            bool new_value;
-            int live_neighbours;
-            
-            live_neighbours = num_living_neighbours(grid, x, y);
-            if (grid_cell_alive_at(grid, x, y)) {
-                new_value = live_neighbours == 2 || live_neighbours == 3;
-            } else {
-                new_value = live_neighbours == 3;
+    if (grid->running) {
+        for (x = 0; x < grid->width; x++) {
+            for (y = 0; y < grid->height; y++) {
+                bool new_value;
+                int live_neighbours;
+                
+                live_neighbours = num_living_neighbours(grid, x, y);
+                if (grid_cell_alive_at(grid, x, y)) {
+                    new_value = live_neighbours == 2 || live_neighbours == 3;
+                } else {
+                    new_value = live_neighbours == 3;
+                }
+
+                grid->next_grid[grid_index(grid, x, y)] = new_value;
             }
-
-            grid->next_grid[grid_index(grid, x, y)] = new_value;
         }
-    }
 
-    temp_grid_ptr = grid->next_grid;
-    grid->next_grid = grid->current_grid;
-    grid->current_grid = temp_grid_ptr;
+        temp_grid_ptr = grid->next_grid;
+        grid->next_grid = grid->current_grid;
+        grid->current_grid = temp_grid_ptr;
+    }
+}
+
+void grid_run(ConwayGrid* grid) {
+    grid->running = TRUE;
+}
+
+void grid_pause(ConwayGrid* grid) {
+    grid->running = FALSE;
 }

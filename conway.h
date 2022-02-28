@@ -19,6 +19,7 @@ typedef struct {
     int height;
     int cell_width;
     int cell_height;
+    bool running;
 } ConwayGrid;
 
 void grid_init_to_blank();
@@ -26,5 +27,7 @@ void grid_import_from_file(char* filename, ConwayGrid* grid);
 void grid_print(ConwayGrid* grid);
 void grid_step(ConwayGrid* grid);
 bool grid_cell_alive_at(ConwayGrid* grid, int x, int y);
+void grid_run(ConwayGrid* grid);
+void grid_pause(ConwayGrid* grid);
 
 #endif // CONWAY_H
