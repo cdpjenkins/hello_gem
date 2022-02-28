@@ -19,14 +19,14 @@
 #define MIN_WIDTH 50
 #define MIN_HEIGHT 50
 
-#define WIDTH 500
-#define HEIGHT 380
+#define INITIAL_WIDTH 500
+#define INITIAL_HEIGHT 380
 
-#define WAIT_BETWEEN_FRAMES 50
+#define MS_BETWEEN_FRAMES 10
 
 struct win_data {
-  int16 handle;     /* identifying handle of the window */
-  char* text;     /* text to display in window */
+  int16 handle;
+  char title[255];
 };
 
 typedef struct {
@@ -72,9 +72,10 @@ uint16 work_in[11],
 
 uint16 app_handle;
 
-int main(int argc, char** argv)
-{
-  short applId = appl_init();
+int main(int argc, char** argv) {
+  short appl_id;
+
+  appl_id = appl_init();
 
   open_vwork();
   start_program();
@@ -89,7 +90,7 @@ void open_vwork() {
 	int i;
 	int16 dum;
 
-	app_handle = graf_handle (&dum, &dum, &dum, &dum);
+	app_handle = graf_handle(&dum, &dum, &dum, &dum);
 	work_in[0] = 2 + Getrez();
 	for (i = 1; i < 10; work_in[i++] = 1);
 	work_in[10] = 2;
@@ -104,9 +105,10 @@ void start_program() {
   graf_mouse (ARROW, 0L);
   grid_import_from_file("gosper.txt", &grid);
   wind_get(0, WF_WORKXYWH, &fullx, &fully, &fullw, &fullh);
-  wd.handle = wind_create(NAME|CLOSER|MOVER|SIZER|FULLER, fullx, fully, fullw, fullh);
-  rc = wind_set_str(wd.handle, WF_NAME, "Conway's Game Of Life", 0, 0);
-  wind_open(wd.handle, fullx, fully, WIDTH, HEIGHT);
+  wd.handle = wind_create(NAME|CLOSER|MOVER|SIZER|FULLER|INFO, fullx, fully, fullw, fullh);
+  wind_set_str(wd.handle, WF_NAME, "Conway's Game Of Life", 0, 0);
+  wind_set_str(wd.handle, WF_INFO, "", 0, 0);
+  wind_open(wd.handle, fullx, fully, INITIAL_WIDTH, INITIAL_HEIGHT);
 
   event_loop (&wd);
 
@@ -129,12 +131,12 @@ void event_loop (struct win_data * wd) {
     uint16 ev_mmobutton, ev_mmokstate;
     uint16 ev_mkreturn, ev_mbreturn;
 
-    events = evnt_multi ( MU_TIMER | MU_WHEEL | MU_MESAG,
-                          1, 7, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          ev_mmgpbuff,
-                          WAIT_BETWEEN_FRAMES, 0,
-                          &ev_mmox, &ev_mmoy, &ev_mmobutton, &ev_mmokstate,
-                          &ev_mkreturn, &ev_mbreturn );
+    events = evnt_multi(MU_TIMER | MU_MESAG | MU_KEYBD,
+                        1, 7, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        ev_mmgpbuff,
+                        MS_BETWEEN_FRAMES,
+                        &ev_mmox, &ev_mmoy, &ev_mmobutton, &ev_mmokstate,
+                        &ev_mkreturn, &ev_mbreturn );
     if (events & MU_MESAG) {
       handle = ev_mmgpbuff[3];
       switch (ev_mmgpbuff[0]) {
@@ -173,6 +175,10 @@ void event_loop (struct win_data * wd) {
       do_redraw(wd, &r);
 
       dot_move(&dot);
+    }
+    if (events & MU_KEYBD) {
+     sprintf(wd->title, "%4X %4X", ev_mmokstate, ev_mkreturn);
+      wind_set_str(wd->handle, WF_INFO, wd->title, 0, 0);
     }
   } while (ev_mmgpbuff[0] != WM_CLOSED);
 }
