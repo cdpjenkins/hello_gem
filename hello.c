@@ -184,13 +184,13 @@ void event_loop (struct win_data * wd) {
       keycode = ev_mkreturn >> 8;
       ascii = ev_mkreturn && 0x00FF;
 
-      sprintf(wd->title, "%4X %4X, %2X %2X", ev_mmokstate, ev_mkreturn, keycode, ascii);
-      wind_set_str(wd->handle, WF_INFO, wd->title, 0, 0);
 
       if (keycode == 0X13) {
+        wind_set_str(wd->handle, WF_INFO, "Running", 0, 0);
         grid_run(&grid);
       }
       if (keycode == 0x19) {
+      wind_set_str(wd->handle, WF_INFO, "Paused", 0, 0);
         grid_pause(&grid);
       }
     }
