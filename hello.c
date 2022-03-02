@@ -22,7 +22,7 @@
 #define INITIAL_WIDTH 500
 #define INITIAL_HEIGHT 380
 
-#define MS_BETWEEN_FRAMES 10
+#define MS_BETWEEN_FRAMES 1200
 
 struct win_data {
   int16 handle;
