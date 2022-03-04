@@ -103,7 +103,7 @@ void start_program() {
   short rc;
 
   graf_mouse (ARROW, 0L);
-  grid_import_from_file("gosper.txt", &grid);
+  grid_import_from_file("gosper.cwy", &grid);
   wind_get(0, WF_WORKXYWH, &fullx, &fully, &fullw, &fullh);
   wd.handle = wind_create(NAME|CLOSER|MOVER|SIZER|FULLER|INFO, fullx, fully, fullw, fullh);
   wind_set_str(wd.handle, WF_NAME, "Conway's Game Of Life", 0, 0);
