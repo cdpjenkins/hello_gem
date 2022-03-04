@@ -29,5 +29,7 @@ void grid_step(ConwayGrid* grid);
 bool grid_cell_alive_at(ConwayGrid* grid, int x, int y);
 void grid_run(ConwayGrid* grid);
 void grid_pause(ConwayGrid* grid);
+void grid_screen_coords_to_grid_coords(int x, int y, int* grid_x, int* grid_y);
+void grid_invert_cell(ConwayGrid* grid, int grid_x, int grid_y);
 
 #endif // CONWAY_H

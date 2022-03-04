@@ -135,3 +135,16 @@ void grid_run(ConwayGrid* grid) {
 void grid_pause(ConwayGrid* grid) {
     grid->running = FALSE;
 }
+
+void grid_screen_coords_to_grid_coords(int x, int y, int* grid_x, int* grid_y) {
+    *grid_x = x / CELL_WIDTH;
+    *grid_y = y / CELL_HEIGHT;
+}
+
+void grid_invert_cell(ConwayGrid* grid, int grid_x, int grid_y) {
+    if (!grid->running) {
+        bool cell_value = grid->current_grid[grid_index(grid, grid_x, grid_y)];
+
+        grid->current_grid[grid_index(grid, grid_x, grid_y)] = !cell_value;
+    }
+}

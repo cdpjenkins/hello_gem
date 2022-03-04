@@ -133,12 +133,12 @@ void event_loop (struct win_data * wd) {
     uint16 ev_mmobutton, ev_mmokstate;
     uint16 ev_mkreturn, ev_mbreturn;
 
-    events = evnt_multi(MU_TIMER | MU_MESAG | MU_KEYBD,
-                        1, 7, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    events = evnt_multi(MU_TIMER | MU_MESAG | MU_BUTTON | MU_KEYBD,
+                        1, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                         ev_mmgpbuff,
                         MS_BETWEEN_FRAMES,
                         &ev_mmox, &ev_mmoy, &ev_mmobutton, &ev_mmokstate,
-                        &ev_mkreturn, &ev_mbreturn );
+                        &ev_mkreturn, &ev_mbreturn);
     if (events & MU_MESAG) {
       handle = ev_mmgpbuff[3];
       switch (ev_mmgpbuff[0]) {
@@ -193,6 +193,16 @@ void event_loop (struct win_data * wd) {
       wind_set_str(wd->handle, WF_INFO, "Paused", 0, 0);
         grid_pause(&grid);
       }
+    }
+    if (events & MU_BUTTON) {
+      int grid_x, grid_y;
+      GRECT rec2;
+
+      wind_get (wd->handle, WF_FIRSTXYWH,
+          &rec2.g_x, &rec2.g_y, &rec2.g_w, &rec2.g_h);
+      grid_screen_coords_to_grid_coords(ev_mmox - rec2.g_x, ev_mmoy - rec2.g_y, &grid_x, &grid_y);
+      grid_invert_cell(&grid, grid_x, grid_y);
+      do_redraw(wd, &rec2);
     }
   } while (ev_mmgpbuff[0] != WM_CLOSED);
 }
