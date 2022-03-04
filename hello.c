@@ -73,10 +73,20 @@ uint16 app_handle;
 
 int main(int argc, char** argv) {
   short appl_id;
+  char* input_file;
+
+  if (argc == 2) {
+    input_file = argv[1];
+  } else {
+    input_file = "gosper.cwy";
+  }
 
   appl_id = appl_init();
 
   open_vwork();
+  
+  grid_import_from_file(input_file, &grid);
+
   start_program();
   rsrc_free();
   v_clsvwk(app_handle);
@@ -102,7 +112,6 @@ void start_program() {
   short rc;
 
   graf_mouse (ARROW, 0L);
-  grid_import_from_file("gosper.cwy", &grid);
   wind_get(0, WF_WORKXYWH, &fullx, &fully, &fullw, &fullh);
   wd.handle = wind_create(NAME|CLOSER|MOVER|SIZER|FULLER|INFO, fullx, fully, fullw, fullh);
   wind_set_str(wd.handle, WF_NAME, "Conway's Game Of Life", 0, 0);
@@ -125,6 +134,7 @@ void event_loop (struct win_data * wd) {
   uint16 handle;
   uint16 rc;
   uint16 ev_mmgpbuff[8];
+  bool quit = FALSE;
 
   do {
     uint16 events;
@@ -164,6 +174,8 @@ void event_loop (struct win_data * wd) {
           h = ev_mmgpbuff[7];
           do_sized(handle, x, y, w, h);
           break;
+        case WM_CLOSED:
+          quit = TRUE;
       }
     }
     if (events & MU_TIMER) {
@@ -192,6 +204,9 @@ void event_loop (struct win_data * wd) {
       wind_set_str(wd->handle, WF_INFO, "Paused", 0, 0);
         grid_pause(&grid);
       }
+      if (keycode == 0x10) {
+        quit = TRUE;
+      }
     }
     if (events & MU_BUTTON) {
       int grid_x, grid_y;
@@ -203,7 +218,7 @@ void event_loop (struct win_data * wd) {
       grid_invert_cell(&grid, grid_x, grid_y);
       do_redraw(wd, &rec2);
     }
-  } while (ev_mmgpbuff[0] != WM_CLOSED);
+  } while (!quit);
 }
 
 void do_redraw(struct win_data * wd, GRECT * rec1) {
