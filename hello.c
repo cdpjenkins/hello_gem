@@ -7,7 +7,7 @@
 
 #include "types.h"
 #include "dots.h"
-#include "conway.h"
+#include "conway_grid.h"
 
 #define true  1
 #define false 0

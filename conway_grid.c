@@ -3,7 +3,7 @@
 #include <string.h>
 
 #include "types.h"
-#include "conway.h"
+#include "conway_grid.h"
 
 #define MAX_LINE_LENGTH 1000
 

@@ -1,5 +1,5 @@
-#ifndef CONWAY_H
-#define CONWAY_H
+#ifndef CONWAY_GRID_H
+#define CONWAY_GRID_H
 
 #include "types.h"
 
@@ -32,4 +32,4 @@ void grid_pause(ConwayGrid* grid);
 void grid_screen_coords_to_grid_coords(int x, int y, int* grid_x, int* grid_y);
 void grid_invert_cell(ConwayGrid* grid, int grid_x, int grid_y);
 
-#endif // CONWAY_H
+#endif // CONWAY_GRID_H

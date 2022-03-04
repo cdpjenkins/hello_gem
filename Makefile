@@ -1,9 +1,9 @@
 CFLAGS=-O3
 
-all: hello conway
+all: hello conway_test
 
-hello: dots.c hello.c conway.c
-	m68k-atari-mint-gcc ${CFLAGS} dots.c hello.c conway.c -o hello.prg  -lgem -lgcc
+hello: dots.c hello.c conway_grid.c
+	m68k-atari-mint-gcc ${CFLAGS} dots.c hello.c conway_grid.c -o hello.prg  -lgem -lgcc
 
-conway: conway.c conway_main.c
-	m68k-atari-mint-gcc  ${CFLAGS} conway.c conway_main.c -o conway.prg  -lgem -lgcc
+conway_test: conway_grid.c conway_test.c
+	m68k-atari-mint-gcc  ${CFLAGS} conway_grid.c conway_test.c -o test.prg  -lgem -lgcc
