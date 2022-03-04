@@ -12,7 +12,6 @@
 #define true  1
 #define false 0
 
-/* I'm totally not sure about these :-) */
 #define WHITE 0
 #define BLACK 1
 
@@ -22,7 +21,7 @@
 #define INITIAL_WIDTH 500
 #define INITIAL_HEIGHT 380
 
-#define MS_BETWEEN_FRAMES 1200
+#define MS_BETWEEN_FRAMES 100
 
 struct win_data {
   int16 handle;
