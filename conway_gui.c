@@ -8,6 +8,7 @@
 #include "types.h"
 #include "dots.h"
 #include "conway_grid.h"
+#include "conway.rsh"
 
 #define true  1
 #define false 0
@@ -47,6 +48,10 @@ bool is_full_window(uint16 handle);
 void do_fulled(uint16 handle);
 void do_sized(uint16 handle, int16 x, int16 y, int16 w, int16 h);
 void draw_conway_grid(uint16 app_handle, Rectangle* working_area, ConwayGrid* grid);
+void do_menu(struct win_data* wd, int menu_item, bool* quit);
+void pause();
+void run();
+
 
 uint16 high_word(void* ptr);
 uint16 low_word(void* ptr);
@@ -70,6 +75,9 @@ uint16 work_in[11],
   ptsout[128];
 
 uint16 app_handle;
+struct win_data wd;
+OBJECT* menu_addr;
+
 
 int main(int argc, char** argv) {
   short appl_id;
@@ -107,9 +115,23 @@ void open_vwork() {
 }
 
 void start_program() {
-  struct win_data wd;
   short fullx, fully, fullw, fullh;
   short rc;
+
+  rc = rsrc_load ("conway.rsc");
+  if (!rc) {
+    printf("Failed to load conway.rsc\n");
+    exit(1);
+  }
+
+  /* 1. install the menu bar */
+  rsrc_gaddr(R_TREE, CONWAY_MENUBAR, &menu_addr);
+  rc = menu_bar(menu_addr, true);
+
+  if (!rc) {
+    printf("rc %d\n", rc);
+    exit(1);
+  }
 
   graf_mouse (ARROW, 0L);
   wind_get(0, WF_WORKXYWH, &fullx, &fully, &fullw, &fullh);
@@ -118,15 +140,18 @@ void start_program() {
   wind_set_str(wd.handle, WF_INFO, "", 0, 0);
   wind_open(wd.handle, fullx, fully, INITIAL_WIDTH, INITIAL_HEIGHT);
 
-  grid_run(&grid);
+  run();
 
   event_loop(&wd);
 
   wind_close (wd.handle);
+
+  menu_bar(menu_addr, false);
+
   wind_delete (wd.handle);
 }
 
-void event_loop (struct win_data * wd) {
+void event_loop (struct win_data* wd) {
   int16 x;
   int16 y;
   int16 w;
@@ -174,6 +199,10 @@ void event_loop (struct win_data * wd) {
           h = ev_mmgpbuff[7];
           do_sized(handle, x, y, w, h);
           break;
+        case MN_SELECTED:
+          do_menu(wd, ev_mmgpbuff[4], &quit);
+        	menu_tnormal(menu_addr, ev_mmgpbuff[3], true);
+		break;
         case WM_CLOSED:
           quit = TRUE;
       }
@@ -197,12 +226,10 @@ void event_loop (struct win_data * wd) {
 
 
       if (keycode == 0X13) {
-        wind_set_str(wd->handle, WF_INFO, "Running", 0, 0);
-        grid_run(&grid);
+        run();
       }
       if (keycode == 0x19) {
-      wind_set_str(wd->handle, WF_INFO, "Paused", 0, 0);
-        grid_pause(&grid);
+        pause();
       }
       if (keycode == 0x10) {
         quit = TRUE;
@@ -339,4 +366,31 @@ void do_sized(uint16 handle, int16 x, int16 y, int16 w, int16 h) {
 	if (h < MIN_HEIGHT) h = MIN_HEIGHT;
 
 	wind_set (handle, WF_CURRXYWH, x, y, w, h);
+}
+
+void do_menu(struct win_data* wd, int menu_item, bool* quit) {
+	switch (menu_item) {
+		case CONWAY_MENUBAR_RUN:
+      if (grid.running) {
+        pause();
+      } else {
+        run();
+      }
+			break;
+    case CONWAY_MENUBAR_QUIT:
+      *quit = TRUE;
+      break;
+	}
+}
+
+void pause() {
+  grid_pause(&grid);
+  wind_set_str(wd.handle, WF_INFO, "Paused", 0, 0);
+  menu_icheck(menu_addr, CONWAY_MENUBAR_RUN, FALSE);
+}
+
+void run() {
+  grid_run(&grid);
+  wind_set_str(wd.handle, WF_INFO, "Running", 0, 0);
+  menu_icheck(menu_addr, CONWAY_MENUBAR_RUN, TRUE);
 }
