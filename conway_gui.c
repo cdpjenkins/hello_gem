@@ -211,13 +211,11 @@ void event_loop (struct win_data* wd) {
     if (events & MU_TIMER) {
       GRECT r;
 
-      grid_step(&grid);
-      // grid_print(&grid);
-
-      wind_get(wd->handle, WF_WORKXYWH, &r.g_x, &r.g_y, &r.g_w, &r.g_h);
-      do_redraw(wd, &r);
-
-      dot_move(&dot);
+      if (grid.running) {
+        grid_step(&grid);
+        wind_get(wd->handle, WF_WORKXYWH, &r.g_x, &r.g_y, &r.g_w, &r.g_h);
+        do_redraw(wd, &r);
+      }
     }
     if (events & MU_KEYBD) {
       uint8 keycode, ascii;
@@ -276,13 +274,6 @@ void draw_within_clip(struct win_data * wd, GRECT clip) {
   wind_get(wd->handle, WF_WORKXYWH, &working_area.x, &working_area.y,
            &working_area.width, &working_area.height);
 
-  // vsf_color(app_handle, WHITE);
-  // pxy[0] = working_area.x;
-  // pxy[1] = working_area.y;
-  // pxy[2] = working_area.x + working_area.width - 1;
-  // pxy[3] = working_area.y + working_area.height - 1;
-  // vr_recfl(app_handle, pxy);
-
   // draw_example (app_handle, &working_area, "Lalalalala I am some text");
   draw_conway_grid(app_handle, &working_area, &grid);
 
@@ -304,7 +295,6 @@ void draw_conway_grid(uint16 app_handle, Rectangle* working_area, ConwayGrid* gr
   int16 sx;
   int16 sy;
 
-  // todo move width and height into the freaking grid
   vsf_color(app_handle, BLACK);
   for (y = 0, sy = working_area->y;
        y < grid->height;
