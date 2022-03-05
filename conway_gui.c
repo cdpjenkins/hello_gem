@@ -48,6 +48,7 @@ bool is_full_window(uint16 handle);
 void do_fulled(uint16 handle);
 void do_sized(uint16 handle, int16 x, int16 y, int16 w, int16 h);
 void draw_conway_grid(uint16 app_handle, Rectangle* working_area, ConwayGrid* grid);
+static void draw_rectangle(int16 x, int16 y, int16 width, int16 height, int16 colour);
 void do_menu(struct win_data* wd, int menu_item, bool* quit);
 void pause();
 void run();
@@ -270,17 +271,17 @@ void draw_within_clip(struct win_data * wd, GRECT clip) {
   uint16 pxy[4];
   Rectangle working_area;
 
-  graf_mouse (M_OFF, 0L);
+  graf_mouse(M_OFF, 0L);
   set_clip (true, clip);
-  wind_get (wd->handle, WF_WORKXYWH, &working_area.x, &working_area.y,
-            &working_area.width, &working_area.height);
+  wind_get(wd->handle, WF_WORKXYWH, &working_area.x, &working_area.y,
+           &working_area.width, &working_area.height);
 
-  vsf_color(app_handle, WHITE);
-  pxy[0] = working_area.x;
-  pxy[1] = working_area.y;
-  pxy[2] = working_area.x + working_area.width - 1;
-  pxy[3] = working_area.y + working_area.height - 1;
-  vr_recfl(app_handle, pxy);
+  // vsf_color(app_handle, WHITE);
+  // pxy[0] = working_area.x;
+  // pxy[1] = working_area.y;
+  // pxy[2] = working_area.x + working_area.width - 1;
+  // pxy[3] = working_area.y + working_area.height - 1;
+  // vr_recfl(app_handle, pxy);
 
   // draw_example (app_handle, &working_area, "Lalalalala I am some text");
   draw_conway_grid(app_handle, &working_area, &grid);
@@ -303,17 +304,42 @@ void draw_conway_grid(uint16 app_handle, Rectangle* working_area, ConwayGrid* gr
 
   // todo move width and height into the freaking grid
   vsf_color(app_handle, BLACK);
-  for (x = 0; x < grid->width; x++) {
-    for (y = 0; y < grid->height; y++) {
+  for (y = 0; y < grid->height; y++) {
+    int16 sy;
+    for (x = 0; x < grid->width; x++) {
+      int16 sx;
+
+      sx = working_area->x + x * grid->cell_width;
+      sy = working_area->y + y * grid->cell_height;
+
+      draw_rectangle(sx,
+                     sy,
+                     grid->cell_width,
+                     grid->cell_height,
+                     WHITE);
+
       if (grid_cell_alive_at(grid, x, y)) {
-        pxyarray[0] = working_area->x + x * grid->cell_width;
-        pxyarray[1] = working_area->y + y * grid->cell_height;
-        pxyarray[2] = working_area->x + (x+1) * grid->cell_width - 2;
-        pxyarray[3] = working_area->y + (y+1) * grid->cell_height - 2;
-        vr_recfl(app_handle, pxyarray);
-      }     
+        draw_rectangle(sx,
+                       sy,
+                       grid->cell_width - 1,
+                       grid->cell_height - 1,
+                       BLACK);
+      }
     }
   }
+}
+
+static void draw_rectangle(int16 x, int16 y, int16 width, int16 height, int16 colour) {
+    int16 pxyarray[4];
+
+    pxyarray[0] = x;
+    pxyarray[1] = y;
+    pxyarray[2] = x + width - 1;
+    pxyarray[3] = y + height - 1;
+    
+    vsf_color(app_handle, colour);
+
+    vr_recfl(app_handle, pxyarray);
 }
 
 void set_clip(bool flag, GRECT rec) {
