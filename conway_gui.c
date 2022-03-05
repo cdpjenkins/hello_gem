@@ -301,23 +301,19 @@ void draw_conway_grid(uint16 app_handle, Rectangle* working_area, ConwayGrid* gr
   int x, y;
   int16 x1, y1, x2, y2;
   int16 pxyarray[4];
+  int16 sx;
+  int16 sy;
 
   // todo move width and height into the freaking grid
   vsf_color(app_handle, BLACK);
-  for (y = 0; y < grid->height; y++) {
-    int16 sy;
-    for (x = 0; x < grid->width; x++) {
-      int16 sx;
-
+  for (y = 0, sy = working_area->y;
+       y < grid->height;
+       y++, sy+=grid->cell_height) {
+    draw_rectangle(working_area->x, sy, working_area->width, grid->cell_height, WHITE);
+    for (x = 0, sx = working_area->x;
+         x < grid->width;
+         x++, sx += grid->cell_width) {
       sx = working_area->x + x * grid->cell_width;
-      sy = working_area->y + y * grid->cell_height;
-
-      draw_rectangle(sx,
-                     sy,
-                     grid->cell_width,
-                     grid->cell_height,
-                     WHITE);
-
       if (grid_cell_alive_at(grid, x, y)) {
         draw_rectangle(sx,
                        sy,
@@ -326,6 +322,14 @@ void draw_conway_grid(uint16 app_handle, Rectangle* working_area, ConwayGrid* gr
                        BLACK);
       }
     }
+  }
+  if (sy < working_area->y + working_area->height) {
+    draw_rectangle(working_area->x,
+                  sy,
+                  working_area->width,
+                  working_area->y + working_area->height - sy,
+                  WHITE);
+
   }
 }
 
