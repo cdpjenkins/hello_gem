@@ -215,8 +215,6 @@ void event_loop (struct win_data* wd) {
         grid_step(&grid);
         wind_get(wd->handle, WF_WORKXYWH, &r.g_x, &r.g_y, &r.g_w, &r.g_h);
         do_redraw(wd, &r);
-
-        grid_save_to_file(&grid, "out.cwy");
       }
     }
     if (events & MU_KEYBD) {
@@ -402,6 +400,9 @@ void do_menu(struct win_data* wd, int menu_item, bool* quit) {
     case CONWAY_MENUBAR_QUIT:
       *quit = TRUE;
       break;
+    case CONWAY_MENUBAR_SAVE:
+      grid_save_to_file(&grid, "out.cwy");
+
 	}
 }
 
