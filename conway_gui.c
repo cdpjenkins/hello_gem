@@ -94,7 +94,7 @@ int main(int argc, char** argv) {
 
   open_vwork();
   
-  grid_import_from_file(input_file, &grid);
+  grid_load_from_file(input_file, &grid);
 
   start_program();
   rsrc_free();
@@ -215,6 +215,8 @@ void event_loop (struct win_data* wd) {
         grid_step(&grid);
         wind_get(wd->handle, WF_WORKXYWH, &r.g_x, &r.g_y, &r.g_w, &r.g_h);
         do_redraw(wd, &r);
+
+        grid_save_to_file(&grid, "out.cwy");
       }
     }
     if (events & MU_KEYBD) {

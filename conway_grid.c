@@ -29,7 +29,7 @@ static inline int grid_index(ConwayGrid* grid, int column, int row) {
     return row * grid->width + column;
 }
 
-void grid_import_from_file(char* filename, ConwayGrid* grid) {
+void grid_load_from_file(char* filename, ConwayGrid* grid) {
     FILE *fp;
     char row_string[MAX_LINE_LENGTH];
     int x, y;
@@ -55,6 +55,33 @@ void grid_import_from_file(char* filename, ConwayGrid* grid) {
             }
         }
     }
+
+    fclose(fp);
+}
+
+void grid_save_to_file(ConwayGrid* grid, char* filename) {
+    FILE *fp;
+    uint16 x, y;
+
+    fp = fopen(filename, "w");
+    if (!fp) {
+        printf("Failed to open %s for writing\n", filename);
+        perror("arghghghgh");
+        exit(1);
+    }
+
+    for (y = 0; y < grid->height; y++) {
+        for (x = 0; x < grid->width; x++) {
+            if (grid_cell_alive_at(grid, x, y)) {
+                fprintf(fp, "x");
+            } else {
+                fprintf(fp, ".");
+            }
+        }
+        fprintf(fp, "\n");
+    }
+
+    fclose(fp);
 }
 
 void grid_print(ConwayGrid* grid) {

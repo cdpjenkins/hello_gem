@@ -23,7 +23,8 @@ typedef struct {
 } ConwayGrid;
 
 void grid_init_to_blank();
-void grid_import_from_file(char* filename, ConwayGrid* grid);
+void grid_load_from_file(char* filename, ConwayGrid* grid);
+void grid_save_to_file(ConwayGrid* grid, char* filename);
 void grid_print(ConwayGrid* grid);
 void grid_step(ConwayGrid* grid);
 bool grid_cell_alive_at(ConwayGrid* grid, int x, int y);
