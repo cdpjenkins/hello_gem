@@ -3,7 +3,7 @@
 
 #include <mint/osbind.h>
 
-#include <mt_gem.h>
+#include <gem.h>
 
 #include "types.h"
 #include "dots.h"
@@ -137,8 +137,8 @@ void start_program() {
   graf_mouse (ARROW, 0L);
   wind_get(0, WF_WORKXYWH, &fullx, &fully, &fullw, &fullh);
   wd.handle = wind_create(NAME|CLOSER|MOVER|SIZER|FULLER|INFO, fullx, fully, fullw, fullh);
-  wind_set_str(wd.handle, WF_NAME, "Conway's Game Of Life", 0, 0);
-  wind_set_str(wd.handle, WF_INFO, "", 0, 0);
+  wind_set_str(wd.handle, WF_NAME, "Conway's Game Of Life");
+  wind_set_str(wd.handle, WF_INFO, "");
   wind_open(wd.handle, fullx, fully, INITIAL_WIDTH, INITIAL_HEIGHT);
 
   run();
@@ -181,7 +181,7 @@ void event_loop (struct win_data* wd) {
           do_redraw(wd, (GRECT *)&ev_mmgpbuff[4]);
           break;
         case WM_TOPPED:
-          wind_set(ev_mmgpbuff[3], WF_TOP, 0, 0);
+          wind_set(ev_mmgpbuff[3], WF_TOP, 0, 0, 0, 0);
           break;
         case WM_MOVED:
           x = ev_mmgpbuff[4];
@@ -408,12 +408,12 @@ void do_menu(struct win_data* wd, int menu_item, bool* quit) {
 
 void pause() {
   grid_pause(&grid);
-  wind_set_str(wd.handle, WF_INFO, "Paused", 0, 0);
+  wind_set_str(wd.handle, WF_INFO, "Paused");
   menu_icheck(menu_addr, CONWAY_MENUBAR_RUN, FALSE);
 }
 
 void run() {
   grid_run(&grid);
-  wind_set_str(wd.handle, WF_INFO, "Running", 0, 0);
+  wind_set_str(wd.handle, WF_INFO, "Running");
   menu_icheck(menu_addr, CONWAY_MENUBAR_RUN, TRUE);
 }
