@@ -22,6 +22,7 @@ public:
     void pause();
     void screen_coords_to_grid_coords(int x, int y, int* grid_x, int* grid_y);
     void invert_cell(int grid_x, int grid_y);
+    bool cell_alive_at(int x, int y);
 
     bool grid1[GRID_WIDTH * GRID_HEIGHT];
     bool grid2[GRID_WIDTH * GRID_HEIGHT];
@@ -33,8 +34,8 @@ public:
     int cell_height;
     bool running;
 
-// private:
-    bool cell_alive_at(int x, int y);
+private:
+    int num_living_neighbours(int x, int y);
 };
 
 static inline int grid_index(ConwayGrid* grid, int column, int row) {

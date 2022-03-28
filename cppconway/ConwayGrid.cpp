@@ -108,21 +108,20 @@ bool ConwayGrid::cell_alive_at(int x, int y) {
     }
 }
 
-static int num_living_neighbours(ConwayGrid* grid, int x, int y) {
+int ConwayGrid::num_living_neighbours(int x, int y) {
     int a1, a2, a3, a4, a5, a6, a7, a8;
 
-    a1 = grid->cell_alive_at(x-1, y-1) ? 1 : 0;
-    a2 = grid->cell_alive_at(x, y-1) ? 1 : 0;
-    a3 = grid->cell_alive_at(x+1, y-1) ? 1 : 0;
-    a4 = grid->cell_alive_at(x-1, y) ? 1 : 0;
-    a5 = grid->cell_alive_at(x+1, y) ? 1 : 0;
-    a6 = grid->cell_alive_at(x-1, y+1) ? 1 : 0;
-    a7 = grid->cell_alive_at(x, y+1) ? 1 : 0;
-    a8 = grid->cell_alive_at(x+1, y+1) ? 1 : 0;
+    a1 = cell_alive_at(x-1, y-1) ? 1 : 0;
+    a2 = cell_alive_at(x, y-1) ? 1 : 0;
+    a3 = cell_alive_at(x+1, y-1) ? 1 : 0;
+    a4 = cell_alive_at(x-1, y) ? 1 : 0;
+    a5 = cell_alive_at(x+1, y) ? 1 : 0;
+    a6 = cell_alive_at(x-1, y+1) ? 1 : 0;
+    a7 = cell_alive_at(x, y+1) ? 1 : 0;
+    a8 = cell_alive_at(x+1, y+1) ? 1 : 0;
 
     return a1 + a2 + a3 + a4 + a5 + a6 + a7 + a8;
 }
-
 void ConwayGrid::step() {
     bool* temp_grid_ptr;
     int x, y;
@@ -133,7 +132,7 @@ void ConwayGrid::step() {
                 bool new_value;
                 int live_neighbours;
                 
-                live_neighbours = num_living_neighbours(this, x, y);
+                live_neighbours = num_living_neighbours(x, y);
                 if (cell_alive_at(x, y)) {
                     new_value = live_neighbours == 2 || live_neighbours == 3;
                 } else {
