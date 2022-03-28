@@ -1,7 +1,7 @@
 #ifndef CONWAY_GRID_H
 #define CONWAY_GRID_H
 
-#include "types.h"
+#include "types.hpp"
 
 #define GRID_WIDTH 60
 #define GRID_HEIGHT 30

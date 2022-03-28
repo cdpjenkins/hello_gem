@@ -4,11 +4,11 @@ CXX=m68k-atari-mint-g++
 
 all: conway_gui conway_test
 
-conway_gui: dots.cpp conway_gui.cpp conway_grid.cpp
-	${CXX} ${CFLAGS} dots.cpp conway_gui.cpp conway_grid.cpp -o conway.prg  -lgem -lgcc
+conway_gui: Dots.cpp ConwayGui.cpp ConwayGrid.cpp
+	${CXX} ${CFLAGS} Dots.cpp ConwayGui.cpp ConwayGrid.cpp -o conway.prg  -lgem -lgcc
 
-conway_test: conway_grid.cpp conway_test.cpp
-	${CXX} ${CFLAGS} conway_grid.cpp conway_test.cpp -o test.prg  -lgem -lgcc
+conway_test: ConwayGrid.cpp ConwayTest.cpp
+	${CXX} ${CFLAGS} ConwayGrid.cpp ConwayTest.cpp -o test.prg  -lgem -lgcc
 
 clean:
 	rm -f *.prg

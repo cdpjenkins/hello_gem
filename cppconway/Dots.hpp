@@ -2,7 +2,7 @@
 #ifndef DOTS_H
 #define DOTS_H
 
-#include "types.h"
+#include "types.hpp"
 
 typedef struct
 {

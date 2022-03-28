@@ -1,4 +1,4 @@
-#include "conway_grid.h"
+#include "ConwayGrid.hpp"
 
 int main(int argc, char** argv) {
     ConwayGrid grid;

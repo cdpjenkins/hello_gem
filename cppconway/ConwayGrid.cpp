@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "types.h"
-#include "conway_grid.h"
+#include "types.hpp"
+#include "ConwayGrid.hpp"
 
 #define MAX_LINE_LENGTH 1000
 

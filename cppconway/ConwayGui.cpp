@@ -5,9 +5,9 @@
 
 #include <gem.h>
 
-#include "types.h"
-#include "dots.h"
-#include "conway_grid.h"
+#include "types.hpp"
+#include "dots.hpp"
+#include "ConwayGrid.hpp"
 #include "conway.rsh"
 
 #define true  1

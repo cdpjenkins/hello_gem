@@ -1,4 +1,4 @@
-#include "dots.h"
+#include "dots.hpp"
 
 void dot_move(Dot* dot) {
     dot->x += dot->vx;
