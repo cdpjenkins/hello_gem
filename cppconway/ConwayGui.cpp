@@ -308,7 +308,7 @@ void draw_conway_grid(uint16 app_handle, Rectangle* working_area, ConwayGrid* gr
          x < grid->width;
          x++, sx += grid->cell_width) {
       sx = working_area->x + x * grid->cell_width;
-      if (grid_cell_alive_at(grid, x, y)) {
+      if (grid->cell_alive_at(x, y)) {
         draw_rectangle(sx,
                        sy,
                        grid->cell_width - 1,
@@ -323,7 +323,6 @@ void draw_conway_grid(uint16 app_handle, Rectangle* working_area, ConwayGrid* gr
                   working_area->width,
                   working_area->y + working_area->height - sy,
                   WHITE);
-
   }
 }
 

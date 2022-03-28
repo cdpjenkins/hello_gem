@@ -28,13 +28,15 @@ public:
     int cell_width;
     int cell_height;
     bool running;
+
+// private:
+    bool cell_alive_at(int x, int y);
 };
 
 static inline int grid_index(ConwayGrid* grid, int column, int row) {
     return row * grid->width + column;
 }
 
-bool grid_cell_alive_at(ConwayGrid* grid, int x, int y);
 void grid_run(ConwayGrid* grid);
 void grid_pause(ConwayGrid* grid);
 void grid_screen_coords_to_grid_coords(int x, int y, int* grid_x, int* grid_y);
