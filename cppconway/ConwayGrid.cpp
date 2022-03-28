@@ -8,7 +8,7 @@
 #define MAX_LINE_LENGTH 1000
 
 ConwayGrid::ConwayGrid() {
-    grid_init_to_blank(this);
+    init_to_blank();
 }
 
 void grid_init(ConwayGrid* grid) {
@@ -21,12 +21,12 @@ void grid_init(ConwayGrid* grid) {
     grid->running = FALSE;
 }
 
-void grid_init_to_blank(ConwayGrid* grid) {
-    grid_init(grid);
+void ConwayGrid::init_to_blank() {
+    grid_init(this);
 
     // I'm not even sure if you can do this!
-    memset(grid->grid1, 0, sizeof(bool) * grid->width * grid->height);
-    memset(grid->grid2, 0, sizeof(bool) * grid->width * grid->height);
+    memset(this->grid1, 0, sizeof(bool) * this->width * this->height);
+    memset(this->grid2, 0, sizeof(bool) * this->width * this->height);
 }
 
 static inline int grid_index(ConwayGrid* grid, int column, int row) {
@@ -38,7 +38,7 @@ void grid_load_from_file(const char* filename, ConwayGrid* grid) {
     char row_string[MAX_LINE_LENGTH];
     int x, y;
 
-    grid_init_to_blank(grid);
+    grid->init_to_blank();
 
     fp = fopen(filename, "r");
     if (!fp) {
