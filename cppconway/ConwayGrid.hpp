@@ -18,6 +18,8 @@ public:
     void save_to_file(const char* filename);
     void print();
     void step();
+    void run();
+    void pause();
 
     bool grid1[GRID_WIDTH * GRID_HEIGHT];
     bool grid2[GRID_WIDTH * GRID_HEIGHT];
@@ -37,8 +39,6 @@ static inline int grid_index(ConwayGrid* grid, int column, int row) {
     return row * grid->width + column;
 }
 
-void grid_run(ConwayGrid* grid);
-void grid_pause(ConwayGrid* grid);
 void grid_screen_coords_to_grid_coords(int x, int y, int* grid_x, int* grid_y);
 void grid_invert_cell(ConwayGrid* grid, int grid_x, int grid_y);
 

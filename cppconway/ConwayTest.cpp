@@ -7,7 +7,7 @@ int main(int argc, char** argv) {
     grid.load_from_file("glider.cwy");
 
     grid.print();
-    grid_run(&grid);
+    grid.run();
 
     for (i = 0; i < 30; i++) {
         grid.step();

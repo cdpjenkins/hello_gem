@@ -393,31 +393,31 @@ void do_sized(uint16 handle, int16 x, int16 y, int16 w, int16 h) {
 
 void do_menu(struct win_data* wd, int menu_item, bool* quit) {
 	switch (menu_item) {
-		case CONWAY_MENUBAR_RUN:
-      if (grid.running) {
-        pause();
-      } else {
-        run();
-      }
-			break;
-    case CONWAY_MENUBAR_QUIT:
-      *quit = TRUE;
-      break;
-    case CONWAY_MENUBAR_SAVE:
-      const char *out_file = "out.cwy";
-      grid.save_to_file(out_file);
-
+	    case CONWAY_MENUBAR_RUN:
+            if (grid.running) {
+                pause();
+            } else {
+                run();
+            }
+		    break;
+        case CONWAY_MENUBAR_QUIT:
+            *quit = TRUE;
+            break;
+        case CONWAY_MENUBAR_SAVE:
+            const char *out_file = "out.cwy";
+            grid.save_to_file(out_file);
+            break;
 	}
 }
 
 void pause() {
-  grid_pause(&grid);
-  wind_set_str(wd.handle, WF_INFO, "Paused");
-  menu_icheck(menu_addr, CONWAY_MENUBAR_RUN, FALSE);
+    grid.pause();
+    wind_set_str(wd.handle, WF_INFO, "Paused");
+    menu_icheck(menu_addr, CONWAY_MENUBAR_RUN, FALSE);
 }
 
 void run() {
-  grid_run(&grid);
-  wind_set_str(wd.handle, WF_INFO, "Running");
-  menu_icheck(menu_addr, CONWAY_MENUBAR_RUN, TRUE);
+    grid.run();
+    wind_set_str(wd.handle, WF_INFO, "Running");
+    menu_icheck(menu_addr, CONWAY_MENUBAR_RUN, TRUE);
 }

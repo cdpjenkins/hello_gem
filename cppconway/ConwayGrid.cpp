@@ -150,12 +150,12 @@ void ConwayGrid::step() {
     }
 }
 
-void grid_run(ConwayGrid* grid) {
-    grid->running = TRUE;
+void ConwayGrid::run() {
+    running = TRUE;
 }
 
-void grid_pause(ConwayGrid* grid) {
-    grid->running = FALSE;
+void ConwayGrid::pause() {
+    running = FALSE;
 }
 
 void grid_screen_coords_to_grid_coords(int x, int y, int* grid_x, int* grid_y) {
