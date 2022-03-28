@@ -7,6 +7,10 @@
 
 #define MAX_LINE_LENGTH 1000
 
+ConwayGrid::ConwayGrid() {
+    grid_init_to_blank(this);
+}
+
 void grid_init(ConwayGrid* grid) {
     grid->current_grid = grid->grid1;
     grid->next_grid = grid->grid2;
