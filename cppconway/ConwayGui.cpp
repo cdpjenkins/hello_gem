@@ -217,7 +217,7 @@ void event_loop (struct win_data* wd) {
       GRECT r;
 
       if (grid.running) {
-        grid_step(&grid);
+        grid.step();
         wind_get(wd->handle, WF_WORKXYWH, &r.g_x, &r.g_y, &r.g_w, &r.g_h);
         do_redraw(wd, &r);
       }

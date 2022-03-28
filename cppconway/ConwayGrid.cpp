@@ -123,30 +123,30 @@ static int num_living_neighbours(ConwayGrid* grid, int x, int y) {
     return a1 + a2 + a3 + a4 + a5 + a6 + a7 + a8;
 }
 
-void grid_step(ConwayGrid* grid) {
+void ConwayGrid::step() {
     bool* temp_grid_ptr;
     int x, y;
 
-    if (grid->running) {
-        for (x = 0; x < grid->width; x++) {
-            for (y = 0; y < grid->height; y++) {
+    if (running) {
+        for (x = 0; x < width; x++) {
+            for (y = 0; y < height; y++) {
                 bool new_value;
                 int live_neighbours;
                 
-                live_neighbours = num_living_neighbours(grid, x, y);
-                if (grid_cell_alive_at(grid, x, y)) {
+                live_neighbours = num_living_neighbours(this, x, y);
+                if (grid_cell_alive_at(this, x, y)) {
                     new_value = live_neighbours == 2 || live_neighbours == 3;
                 } else {
                     new_value = live_neighbours == 3;
                 }
 
-                grid->next_grid[grid_index(grid, x, y)] = new_value;
+                next_grid[grid_index(this, x, y)] = new_value;
             }
         }
 
-        temp_grid_ptr = grid->next_grid;
-        grid->next_grid = grid->current_grid;
-        grid->current_grid = temp_grid_ptr;
+        temp_grid_ptr = next_grid;
+        next_grid = current_grid;
+        current_grid = temp_grid_ptr;
     }
 }
 

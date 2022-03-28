@@ -10,7 +10,7 @@ int main(int argc, char** argv) {
     grid_run(&grid);
 
     for (i = 0; i < 30; i++) {
-        grid_step(&grid);
+        grid.step();
         grid.print();
     }
 }
