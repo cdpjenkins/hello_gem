@@ -24,10 +24,6 @@ void ConwayGrid::init_to_blank() {
     memset(this->grid2, 0, sizeof(grid2));
 }
 
-static inline int grid_index(ConwayGrid* grid, int column, int row) {
-    return row * grid->width + column;
-}
-
 void ConwayGrid::load_from_file(const char* filename) {
     FILE *fp;
     char row_string[MAX_LINE_LENGTH];
@@ -58,7 +54,7 @@ void ConwayGrid::load_from_file(const char* filename) {
     fclose(fp);
 }
 
-void grid_save_to_file(ConwayGrid* grid, const char* filename) {
+void ConwayGrid::save_to_file(const char* filename) {
     FILE *fp;
     uint16 x, y;
 
@@ -69,9 +65,9 @@ void grid_save_to_file(ConwayGrid* grid, const char* filename) {
         exit(1);
     }
 
-    for (y = 0; y < grid->height; y++) {
-        for (x = 0; x < grid->width; x++) {
-            if (grid_cell_alive_at(grid, x, y)) {
+    for (y = 0; y < height; y++) {
+        for (x = 0; x < width; x++) {
+            if (grid_cell_alive_at(this, x, y)) {
                 fprintf(fp, "x");
             } else {
                 fprintf(fp, ".");

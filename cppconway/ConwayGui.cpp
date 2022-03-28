@@ -406,7 +406,7 @@ void do_menu(struct win_data* wd, int menu_item, bool* quit) {
       break;
     case CONWAY_MENUBAR_SAVE:
       const char *out_file = "out.cwy";
-      grid_save_to_file(&grid, out_file);
+      grid.save_to_file(out_file);
 
 	}
 }
