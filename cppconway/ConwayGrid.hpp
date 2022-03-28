@@ -15,6 +15,8 @@ public:
 
     ConwayGrid();
     void init_to_blank();
+    void load_from_file(const char* filename);
+
 
     bool grid1[GRID_WIDTH * GRID_HEIGHT];
     bool grid2[GRID_WIDTH * GRID_HEIGHT];
@@ -27,7 +29,6 @@ public:
     bool running;
 };
 
-void grid_load_from_file(const char* filename, ConwayGrid* grid);
 void grid_save_to_file(ConwayGrid* grid, const char* filename);
 void grid_print(ConwayGrid* grid);
 void grid_step(ConwayGrid* grid);

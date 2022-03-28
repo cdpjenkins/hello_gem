@@ -99,7 +99,7 @@ int main(int argc, char** argv) {
 
   open_vwork();
   
-  grid_load_from_file(input_file, &grid);
+  grid.load_from_file(input_file);
 
   start_program();
   rsrc_free();

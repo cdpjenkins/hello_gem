@@ -4,7 +4,7 @@ int main(int argc, char** argv) {
     ConwayGrid grid;
     int i;
 
-    grid_load_from_file("glider.cwy", &grid);
+    grid.load_from_file("glider.cwy");
 
     grid_print(&grid);
     grid_run(&grid);

@@ -11,34 +11,29 @@ ConwayGrid::ConwayGrid() {
     init_to_blank();
 }
 
-void grid_init(ConwayGrid* grid) {
-    grid->current_grid = grid->grid1;
-    grid->next_grid = grid->grid2;
-    grid->width = GRID_WIDTH;
-    grid->height = GRID_HEIGHT;
-    grid->cell_width = CELL_WIDTH;
-    grid->cell_height = CELL_HEIGHT;
-    grid->running = FALSE;
-}
-
 void ConwayGrid::init_to_blank() {
-    grid_init(this);
+    current_grid = grid1;
+    next_grid = grid2;
+    width = GRID_WIDTH;
+    height = GRID_HEIGHT;
+    cell_width = CELL_WIDTH;
+    cell_height = CELL_HEIGHT;
+    running = FALSE;
 
-    // I'm not even sure if you can do this!
-    memset(this->grid1, 0, sizeof(bool) * this->width * this->height);
-    memset(this->grid2, 0, sizeof(bool) * this->width * this->height);
+    memset(this->grid1, 0, sizeof(grid1));
+    memset(this->grid2, 0, sizeof(grid2));
 }
 
 static inline int grid_index(ConwayGrid* grid, int column, int row) {
     return row * grid->width + column;
 }
 
-void grid_load_from_file(const char* filename, ConwayGrid* grid) {
+void ConwayGrid::load_from_file(const char* filename) {
     FILE *fp;
     char row_string[MAX_LINE_LENGTH];
     int x, y;
 
-    grid->init_to_blank();
+    init_to_blank();
 
     fp = fopen(filename, "r");
     if (!fp) {
@@ -46,16 +41,16 @@ void grid_load_from_file(const char* filename, ConwayGrid* grid) {
         exit(1);
     }
 
-    for (y = 0; fgets(row_string, MAX_LINE_LENGTH, fp) != NULL && y < grid->height; y++) {
+    for (y = 0; fgets(row_string, MAX_LINE_LENGTH, fp) != NULL && y < height; y++) {
         char* ptr;
         char c;
 
-        for (ptr = row_string, x = 0; ptr != NULL && x < grid->width; ptr++, x++) {
-            int i = grid_index(grid, x, y);
+        for (ptr = row_string, x = 0; ptr != NULL && x < width; ptr++, x++) {
+            int i = grid_index(this, x, y);
             if (*ptr == 'x') {
-                grid->current_grid[i] = TRUE;
+                current_grid[i] = TRUE;
             } else {
-                grid->current_grid[i] = FALSE;
+                current_grid[i] = FALSE;
             }
         }
     }
