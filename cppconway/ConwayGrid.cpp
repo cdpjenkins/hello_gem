@@ -42,7 +42,7 @@ void ConwayGrid::load_from_file(const char* filename) {
         char c;
 
         for (ptr = row_string, x = 0; ptr != NULL && x < width; ptr++, x++) {
-            int i = grid_index(this, x, y);
+            int i = grid_index(x, y);
             if (*ptr == 'x') {
                 current_grid[i] = TRUE;
             } else {
@@ -84,7 +84,7 @@ void ConwayGrid::print() {
 
     for (y = 0; y < height; y++) {
         for (x = 0; x < width; x++) {
-            if (current_grid[grid_index(this, x, y)]) {
+            if (current_grid[grid_index(x, y)]) {
                 printf("x");
             } else {
                 printf(".");
@@ -100,7 +100,7 @@ bool ConwayGrid::cell_alive_at(int x, int y) {
      || y < 0 || y >= height) {
         return FALSE;
     } else {
-        if (current_grid[grid_index(this, x, y)]) {
+        if (current_grid[grid_index(x, y)]) {
             return TRUE;
         } else {
             return FALSE;
@@ -139,7 +139,7 @@ void ConwayGrid::step() {
                     new_value = live_neighbours == 3;
                 }
 
-                next_grid[grid_index(this, x, y)] = new_value;
+                next_grid[grid_index(x, y)] = new_value;
             }
         }
 
@@ -164,7 +164,7 @@ void ConwayGrid::screen_coords_to_grid_coords(int x, int y, int* grid_x, int* gr
 
 void ConwayGrid::invert_cell(int grid_x, int grid_y) {
     if (!running) {
-        bool cell_value = current_grid[grid_index(this, grid_x, grid_y)];
-        current_grid[grid_index(this, grid_x, grid_y)] = !cell_value;
+        bool cell_value = current_grid[grid_index(grid_x, grid_y)];
+        current_grid[grid_index(grid_x, grid_y)] = !cell_value;
     }
 }
