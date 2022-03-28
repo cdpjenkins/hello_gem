@@ -16,6 +16,8 @@ public:
     void init_to_blank();
     void load_from_file(const char* filename);
     void save_to_file(const char* filename);
+    void print();
+
 
     bool grid1[GRID_WIDTH * GRID_HEIGHT];
     bool grid2[GRID_WIDTH * GRID_HEIGHT];
@@ -32,7 +34,6 @@ static inline int grid_index(ConwayGrid* grid, int column, int row) {
     return row * grid->width + column;
 }
 
-void grid_print(ConwayGrid* grid);
 void grid_step(ConwayGrid* grid);
 bool grid_cell_alive_at(ConwayGrid* grid, int x, int y);
 void grid_run(ConwayGrid* grid);

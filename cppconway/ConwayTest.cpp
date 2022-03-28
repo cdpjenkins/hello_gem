@@ -6,11 +6,11 @@ int main(int argc, char** argv) {
 
     grid.load_from_file("glider.cwy");
 
-    grid_print(&grid);
+    grid.print();
     grid_run(&grid);
 
     for (i = 0; i < 30; i++) {
         grid_step(&grid);
-        grid_print(&grid);
+        grid.print();
     }
 }

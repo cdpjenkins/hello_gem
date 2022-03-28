@@ -79,12 +79,12 @@ void ConwayGrid::save_to_file(const char* filename) {
     fclose(fp);
 }
 
-void grid_print(ConwayGrid* grid) {
+void ConwayGrid::print() {
     int x, y;
 
-    for (y = 0; y < grid->height; y++) {
-        for (x = 0; x < grid->width; x++) {
-            if (grid->current_grid[grid_index(grid, x, y)]) {
+    for (y = 0; y < height; y++) {
+        for (x = 0; x < width; x++) {
+            if (current_grid[grid_index(this, x, y)]) {
                 printf("x");
             } else {
                 printf(".");
