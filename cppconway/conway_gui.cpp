@@ -24,6 +24,11 @@
 
 #define MS_BETWEEN_FRAMES 100
 
+// We really shouldn't be using scancodes here. TODO figure out how to just use ASCII codes
+#define SCANCODE_P 25
+#define SCANCODE_Q 16
+#define SCANCODE_R 19
+
 struct win_data {
   int16 handle;
   char title[255];
@@ -223,14 +228,13 @@ void event_loop (struct win_data* wd) {
       keycode = ev_mkreturn >> 8;
       ascii = ev_mkreturn && 0x00FF;
 
-
-      if (keycode == 0X13) {
+      if (keycode == SCANCODE_R) {
         run();
       }
-      if (keycode == 0x19) {
+      if (keycode == SCANCODE_P) {
         pause();
       }
-      if (keycode == 0x10) {
+      if (keycode == SCANCODE_Q) {
         quit = TRUE;
       }
     }
