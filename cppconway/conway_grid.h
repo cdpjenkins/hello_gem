@@ -10,7 +10,8 @@
 
 #define MAX_LINE_LENGTH 1000
 
-typedef struct {
+class ConwayGrid {
+public:
     bool grid1[GRID_WIDTH * GRID_HEIGHT];
     bool grid2[GRID_WIDTH * GRID_HEIGHT];
     bool* current_grid;
@@ -20,7 +21,7 @@ typedef struct {
     int cell_width;
     int cell_height;
     bool running;
-} ConwayGrid;
+};
 
 void grid_init_to_blank();
 void grid_load_from_file(const char* filename, ConwayGrid* grid);
