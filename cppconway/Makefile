@@ -10,8 +10,8 @@ conway.prg: Dots.cpp ConwayGui.cpp ConwayGrid.cpp
 test.prg: ConwayGrid.cpp ConwayTest.cpp
 	${CXX} ${CFLAGS} ConwayGrid.cpp ConwayTest.cpp -o test.prg  -lgem -lgcc
 
-fullconw.tos: ConwayGrid.cpp FullScreenMain.cpp
-	${CXX} ${CFLAGS} ConwayGrid.cpp FullScreenMain.cpp -o fullconw.tos -lgcc
+fullconw.tos: ConwayGrid.[ch]pp FullScreenMain.[ch]pp STScreen.[ch]pp
+	${CXX} ${CFLAGS} ConwayGrid.cpp STScreen.cpp FullScreenMain.cpp -o fullconw.tos -lgcc
 
 clean:
 	rm -f *.prg
