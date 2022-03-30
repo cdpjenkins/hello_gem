@@ -53,6 +53,11 @@ int main(int argc, char *argv[]) {
     printf("Saved screen size: %X\n", VgetSize(saved_rez));
     printf("New screen size: %X\n", VgetSize(PLANES_16 | WIDTH_640 | VGA | NTSC));
 
+    Cconin();
+    unsigned int colours[2] = {0x00000000, 0x00FFFFFF}; 
+    VsetRGB(0, 2, colours);
+
+    Cconin();
 
     Vsync();
     for (int y = 0; y < HEIGHT_IN_BLOCKS; y += 1) {
@@ -62,8 +67,8 @@ int main(int argc, char *argv[]) {
                     physical_screen[index] = 0b0111111111111110;
                 }
             }
-            Vsync();
         }
+        Vsync();
     }
 
     Cconin();
@@ -78,4 +83,3 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
-
