@@ -18,68 +18,78 @@ const int16 HEIGHT = 480;
 const int16 WIDTH_IN_BLOCKS = WIDTH / 16;
 const int16 HEIGHT_IN_BLOCKS = HEIGHT / 16;
 
-uint16 logical_screen[WIDTH * HEIGHT / 16];
-uint16 physical_screen[WIDTH * HEIGHT / 16];
+uint16 screen1[WIDTH * HEIGHT / 16];
+uint16 screen2[WIDTH * HEIGHT / 16];
+
+uint16 *logical_screen = screen1;
+uint16 *physical_screen = screen2;
 
 int16 block_index(int16 x, int16 y) {
     return y * WIDTH_IN_BLOCKS * 16 + x;
 }
 
 int main(int argc, char *argv[]) {
-    printf("Yo!\n");
+    ConwayGrid grid;
+    grid.load_from_file("gosper.cwy");
 
     Cursconf(0, 0);
 
     int16 saved_rez = VsetMode(-1);
 
-    printf("Rez: %X\n", saved_rez);
-
     void *saved_logbase = Logbase();
     void *saved_physbase = Physbase();
 
-    printf("logical screen: %X\n",  saved_logbase);
-    printf("physical screen: %X\n", saved_physbase);
-
-    printf("About to change rez\n");
-    Cconin();
-
     VsetScreen(logical_screen, physical_screen, REZ_FROM_MODE, PLANES_1 | WIDTH_640 | VGA | NTSC);
 
-    printf("Rez: %X\n", VsetMode(-1));
+    // // Not sure why we need to do this one, but the call to Cconis returns something if we don't
+    // // swallow a keypress here
+    // Cconin();
 
-    printf("logical screen: %X\n",  Logbase());
-    printf("physical screen: %X\n", Physbase());
+    grid.run();
+    bool quit = false;
+    while (!quit) {
+        grid.step();
 
-    printf("Saved screen size: %X\n", VgetSize(saved_rez));
-    printf("New screen size: %X\n", VgetSize(PLANES_16 | WIDTH_640 | VGA | NTSC));
-
-    Cconin();
-    unsigned int colours[2] = {0x00000000, 0x00FFFFFF}; 
-    VsetRGB(0, 2, colours);
-
-    Cconin();
-
-    Vsync();
-    for (int y = 0; y < HEIGHT_IN_BLOCKS; y += 1) {
-        for (int x = 0; x < WIDTH_IN_BLOCKS; x += 1) {
-            for (int16 i = 0, index = block_index(x, y); i < 16; i++, index += WIDTH_IN_BLOCKS) {
-                if (i != 0 && i != 15) {
-                    physical_screen[index] = 0b0111111111111110;
+        for (int y = 0; y < HEIGHT_IN_BLOCKS; y += 1) {
+            for (int x = 0; x < WIDTH_IN_BLOCKS; x += 1) {
+                if (grid.cell_alive_at(x, y)) {
+                    for (int16 i = 0, index = block_index(x, y); i < 16; i++, index += WIDTH_IN_BLOCKS) {
+                        if (i != 0 && i != 15) {
+                            logical_screen[index] = 0b0111111111111110;
+                        }
+                    }
+                } else {
+                    for (int16 i = 0, index = block_index(x, y); i < 16; i++, index += WIDTH_IN_BLOCKS) {
+                        if (i != 0 && i != 15) {
+                            logical_screen[index] = 0b00000000000000000;
+                        }
+                    }
                 }
             }
         }
-        Vsync();
-    }
 
-    Cconin();
+        Vsync();
+
+        uint16 *temp;
+        temp = logical_screen;
+        logical_screen = physical_screen;
+        physical_screen = temp;
+        VsetScreen(logical_screen, physical_screen, -1, -1);
+
+        if (Cconis()) {
+            int32 key = Crawio(0x00FF);
+
+            uint8 scan_code = key & 0x00FF0000 >> 16;
+            uint8 ascii = key & 0x000000FF;
+
+            if (ascii == 'q' || ascii == 'Q') {
+                quit = true;
+            }
+        }
+    }
 
     VsetScreen(saved_logbase, saved_physbase, REZ_FROM_MODE, saved_rez);
 
-    printf("logical screen: %X\n",  Logbase());
-    printf("physical screen: %X\n", Physbase());
-
-
-    Cconin();
-
     return 0;
 }
+

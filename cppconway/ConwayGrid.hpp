@@ -3,7 +3,7 @@
 
 #include "types.hpp"
 
-#define GRID_WIDTH 60
+#define GRID_WIDTH 40
 #define GRID_HEIGHT 30
 #define CELL_WIDTH 16
 #define CELL_HEIGHT 16
