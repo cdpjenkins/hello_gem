@@ -28,6 +28,15 @@ int16 block_index(int16 x, int16 y) {
     return y * WIDTH_IN_BLOCKS * 16 + x;
 }
 
+char read_key() {
+    uint32 key = Crawio(0x00FF);
+
+    uint8 scan_code = key & 0x00FF0000 >> 16;
+    uint8 ascii = key & 0x000000FF;
+
+    return ascii;
+}
+
 int main(int argc, char *argv[]) {
     ConwayGrid grid;
     grid.load_from_file("gosper.cwy");
@@ -76,14 +85,22 @@ int main(int argc, char *argv[]) {
         physical_screen = temp;
         VsetScreen(logical_screen, physical_screen, -1, -1);
 
-        if (Cconis()) {
-            int32 key = Crawio(0x00FF);
+        while (Cconis()) {
+            char ascii = read_key();
 
-            uint8 scan_code = key & 0x00FF0000 >> 16;
-            uint8 ascii = key & 0x000000FF;
-
-            if (ascii == 'q' || ascii == 'Q') {
-                quit = true;
+            switch (ascii) {
+                case 'q':
+                case 'Q':
+                    quit = true;
+                    break;
+                case 'r':
+                case 'R':
+                    grid.run();
+                    break;
+                case 'p':
+                case 'P':
+                    grid.pause();
+                    break;
             }
         }
     }
