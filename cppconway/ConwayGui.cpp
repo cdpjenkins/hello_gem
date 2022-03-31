@@ -58,7 +58,6 @@ void do_menu(struct win_data* wd, int menu_item, bool* quit);
 void pause();
 void run();
 
-
 uint16 high_word(void* ptr);
 uint16 low_word(void* ptr);
 
@@ -146,7 +145,7 @@ void start_program() {
   wind_set_str(wd.handle, WF_INFO, "");
   wind_open(wd.handle, fullx, fully, INITIAL_WIDTH, INITIAL_HEIGHT);
 
-  run();
+  // run();
 
   event_loop(&wd);
 

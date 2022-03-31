@@ -105,7 +105,7 @@ int main(int argc, char *argv[]) {
 
     VsetScreen(logical_screen, physical_screen, REZ_FROM_MODE, PLANES_1 | WIDTH_640 | VGA | NTSC);
 
-    grid.run();
+    // grid.run();
     bool quit = false;
 
 
@@ -137,6 +137,12 @@ int main(int argc, char *argv[]) {
                     break;
                 case 'p':
                 case 'P':
+                    grid.pause();
+                    break;
+                case 's':
+                case 'S':
+                    grid.run();
+                    grid.step();
                     grid.pause();
                     break;
             }

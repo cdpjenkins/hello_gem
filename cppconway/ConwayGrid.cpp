@@ -42,12 +42,7 @@ void ConwayGrid::load_from_file(const char* filename) {
         char c;
 
         for (ptr = row_string, x = 0; ptr != NULL && x < width; ptr++, x++) {
-            int i = grid_index(x, y);
-            if (*ptr == 'x') {
-                current_grid[i] = TRUE;
-            } else {
-                current_grid[i] = FALSE;
-            }
+            set_cell(current_grid, x, y, *ptr == 'x');
         }
     }
 
@@ -111,12 +106,9 @@ int ConwayGrid::num_living_neighbours(int x, int y) {
 }
 
 void ConwayGrid::step() {
-    bool* temp_grid_ptr;
-    int x, y;
-
     if (running) {
-        for (x = 0; x < width; x++) {
-            for (y = 0; y < height; y++) {
+        for (int16 x = 0; x < width; x++) {
+            for (int16 y = 0; y < height; y++) {
                 bool new_value;
                 int live_neighbours;
                 
@@ -127,22 +119,22 @@ void ConwayGrid::step() {
                     new_value = live_neighbours == 3;
                 }
 
-                next_grid[grid_index(x, y)] = new_value;
+                set_cell(next_grid, x, y, new_value);
             }
         }
 
-        temp_grid_ptr = next_grid;
+        uint32 *temp_grid_ptr = next_grid;
         next_grid = current_grid;
         current_grid = temp_grid_ptr;
     }
 }
 
 void ConwayGrid::run() {
-    running = TRUE;
+    running = true;
 }
 
 void ConwayGrid::pause() {
-    running = FALSE;
+    running = false;
 }
 
 void ConwayGrid::screen_coords_to_grid_coords(int x, int y, int* grid_x, int* grid_y) {
@@ -151,8 +143,9 @@ void ConwayGrid::screen_coords_to_grid_coords(int x, int y, int* grid_x, int* gr
 }
 
 void ConwayGrid::invert_cell(int grid_x, int grid_y) {
-    if (!running) {
-        bool cell_value = current_grid[grid_index(grid_x, grid_y)];
-        current_grid[grid_index(grid_x, grid_y)] = !cell_value;
-    }
+    // TODO make me work again
+    // if (!running) {
+    //     bool cell_value = current_grid[grid_index(grid_x, grid_y)];
+    //     current_grid[grid_index(grid_x, grid_y)] = !cell_value;
+    // }
 }

@@ -12,6 +12,12 @@
 
 class ConwayGrid {
 public:
+    int width;
+    int height;
+    int cell_width;
+    int cell_height;
+    bool running;
+
     ConwayGrid();
     void init_to_blank();
     void load_from_file(const char* filename);
@@ -23,35 +29,43 @@ public:
     void screen_coords_to_grid_coords(int x, int y, int* grid_x, int* grid_y);
     void invert_cell(int grid_x, int grid_y);
 
-    inline bool cell_alive_at(int x, int y) {
+    inline bool cell_alive_at(int16 x, int16 y) {
         if (x < 0 || x >= width
         || y < 0 || y >= height) {
             return FALSE;
         } else {
-            if (current_grid[grid_index(x, y)]) {
-                return TRUE;
-            } else {
-                return FALSE;
+            int i = 0;
+            while (x >= 20) {
+                x -= 20;
+                i++;
             }
+
+            uint32 block = current_grid[i + y*2];
+            return (block >> x) & 1;
+        }
+    }
+
+    inline void set_cell(uint32 *grid, int16 x, int16 y, bool value) {
+        int i = 0;
+        while (x >= 20) {
+            x -= 20;
+            i++;
+        }
+
+        if (value) {
+            grid[i + y*2] |= 1 << x;
+        } else {
+            grid[i + y*2] &= ~(1 << x);
         }
     }
 
 private:
-    bool grid1[GRID_WIDTH * GRID_HEIGHT];
-    bool grid2[GRID_WIDTH * GRID_HEIGHT];
-    bool* current_grid;
-    bool* next_grid;
-    int width;
-    int height;
-    int cell_width;
-    int cell_height;
-    bool running;
+    uint32 grid1[GRID_WIDTH * GRID_HEIGHT / 20];
+    uint32 grid2[GRID_WIDTH * GRID_HEIGHT / 20];
+    uint32 *current_grid;
+    uint32 *next_grid;
 
     int num_living_neighbours(int x, int y);
-
-    inline int grid_index(int column, int row) {
-        return row * width + column;
-    }
 };
 
 #endif // CONWAY_GRID_H
