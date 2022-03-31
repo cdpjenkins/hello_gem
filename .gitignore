@@ -1,5 +1,6 @@
 *.prg
+*.tos
+**/*.o
 TAGS
 .vscode
 out.cwy
-cppconway/fullconw.tos

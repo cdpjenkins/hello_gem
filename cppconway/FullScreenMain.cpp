@@ -7,6 +7,7 @@
 
 #include "ConwayGrid.hpp"
 #include "STScreen.hpp"
+#include "asm/fast_draw.h"
 
 const int16 PLANES_1 = 0x00;
 const int16 PLANES_2 = 0x01;
@@ -111,6 +112,7 @@ int main(int argc, char *argv[]) {
     while (!quit) {
         grid.step();
 
+        fast_draw_strip();
         draw_in_strips(&grid);
 
         Vsync();

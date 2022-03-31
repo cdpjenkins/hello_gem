@@ -1,17 +1,24 @@
-CFLAGS=-O3
+CXXFLAGS=-O3
 CC=m68k-atari-mint-gcc
 CXX=m68k-atari-mint-g++
+AS=m68k-atari-mint-as
 
 all: conway.prg test.prg fullconw.tos
 
 conway.prg: Dots.cpp ConwayGui.cpp ConwayGrid.cpp
-	${CXX} ${CFLAGS} Dots.cpp ConwayGui.cpp ConwayGrid.cpp -o conway.prg  -lgem -lgcc
+	${CXX} ${CXXFLAGS} Dots.cpp ConwayGui.cpp ConwayGrid.cpp -o conway.prg  -lgem -lgcc
 
 test.prg: ConwayGrid.cpp ConwayTest.cpp
-	${CXX} ${CFLAGS} ConwayGrid.cpp ConwayTest.cpp -o test.prg  -lgem -lgcc
+	${CXX} ${CXXFLAGS} ConwayGrid.cpp ConwayTest.cpp -o test.prg  -lgem -lgcc
 
-fullconw.tos: ConwayGrid.[ch]pp FullScreenMain.[ch]pp STScreen.[ch]pp
-	${CXX} ${CFLAGS} ConwayGrid.cpp STScreen.cpp FullScreenMain.cpp -o fullconw.tos -lgcc
+%.o : %.cpp *.hpp
+	${CXX} -c $(CXXFLAGS) $< -o $@
+
+asm/%.o: asm/%.s
+	$(AS) $< -o $@
+
+fullconw.tos: ConwayGrid.o FullScreenMain.o STScreen.o asm/fast_draw.o
+	${CXX} ${CXXFLAGS} ConwayGrid.o STScreen.o FullScreenMain.o asm/fast_draw.o -o fullconw.tos -lgcc
 
 clean:
 	rm -f *.prg
