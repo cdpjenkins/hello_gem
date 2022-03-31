@@ -50,6 +50,10 @@ private:
 
     int num_living_neighbours(int x, int y);
 
+    inline void set_cell(bool* grid, int16 x, int16 y, bool value) {
+        current_grid[grid_index(x, y)] = value;
+    }
+
     inline int grid_index(int column, int row) {
         return row * width + column;
     }

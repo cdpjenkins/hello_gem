@@ -108,7 +108,6 @@ int main(int argc, char *argv[]) {
     grid.run();
     bool quit = false;
 
-
     while (!quit) {
         grid.step();
 

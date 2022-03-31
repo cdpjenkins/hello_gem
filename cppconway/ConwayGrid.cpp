@@ -42,12 +42,7 @@ void ConwayGrid::load_from_file(const char* filename) {
         char c;
 
         for (ptr = row_string, x = 0; ptr != NULL && x < width; ptr++, x++) {
-            int i = grid_index(x, y);
-            if (*ptr == 'x') {
-                current_grid[i] = TRUE;
-            } else {
-                current_grid[i] = FALSE;
-            }
+            set_cell(current_grid, x, y, *ptr == 'x');
         }
     }
 
