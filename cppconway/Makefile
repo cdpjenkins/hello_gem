@@ -12,7 +12,7 @@ test.tos: ConwayGrid.cpp ConwayTest.cpp
 	${CXX} ${CXXFLAGS} ConwayGrid.cpp ConwayTest.cpp -o test.tos  -lgem -lgcc
 
 %.o : %.cpp *.hpp
-	# ${CXX} -c $(CXXFLAGS) $< -o $@
+	${CXX} -c $(CXXFLAGS) $< -o $@
 
 fastFullScreenMain.o: FullScreenMain.cpp *.hpp
 	${CXX} -c $(CXXFLAGS) -DFAST_DRAW FullScreenMain.cpp -o fastFullScreenMain.o

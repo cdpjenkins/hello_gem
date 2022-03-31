@@ -103,8 +103,6 @@ int main(int argc, char *argv[]) {
 
     grid.load_from_file("gosper.cwy");
 
-    linea0();
-
     Cursconf(0, 0);
 
     int16 saved_rez = VsetMode(-1);
@@ -117,10 +115,20 @@ int main(int argc, char *argv[]) {
     grid.run();
     bool quit = false;
 
+    Super(0);
+
+    volatile uint32 *timer = (uint32 *)0x0004ba;
+    uint32 start_time;
+    uint32 end_time;
+
     while (!quit) {
         grid.step();
 
+        start_time = *timer;
+
         draw_in_strips(&grid);
+
+        end_time = *timer;
 
         Vsync();
 
@@ -152,6 +160,9 @@ int main(int argc, char *argv[]) {
     }
 
     VsetScreen(saved_logbase, saved_physbase, REZ_FROM_MODE, saved_rez);
+
+    printf("%d\n", end_time - start_time);
+    Cconin();
 
     return 0;
 }
