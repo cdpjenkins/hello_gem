@@ -75,10 +75,8 @@ void ConwayGrid::save_to_file(const char* filename) {
 }
 
 void ConwayGrid::print() {
-    int x, y;
-
-    for (y = 0; y < height; y++) {
-        for (x = 0; x < width; x++) {
+    for (int16 y = 0; y < height; y++) {
+        for (int16 x = 0; x < width; x++) {
             if (cell_alive_at(x, y)) {
                 printf("x");
             } else {
@@ -91,27 +89,22 @@ void ConwayGrid::print() {
 }
 
 int ConwayGrid::num_living_neighbours(int x, int y) {
-    int a1, a2, a3, a4, a5, a6, a7, a8;
-
-    a1 = cell_alive_at(x-1, y-1) ? 1 : 0;
-    a2 = cell_alive_at(x, y-1) ? 1 : 0;
-    a3 = cell_alive_at(x+1, y-1) ? 1 : 0;
-    a4 = cell_alive_at(x-1, y) ? 1 : 0;
-    a5 = cell_alive_at(x+1, y) ? 1 : 0;
-    a6 = cell_alive_at(x-1, y+1) ? 1 : 0;
-    a7 = cell_alive_at(x, y+1) ? 1 : 0;
-    a8 = cell_alive_at(x+1, y+1) ? 1 : 0;
+    int16 a1 = cell_alive_at(x-1, y-1) ? 1 : 0;
+    int16 a2 = cell_alive_at(x, y-1) ? 1 : 0;
+    int16 a3 = cell_alive_at(x+1, y-1) ? 1 : 0;
+    int16 a4 = cell_alive_at(x-1, y) ? 1 : 0;
+    int16 a5 = cell_alive_at(x+1, y) ? 1 : 0;
+    int16 a6 = cell_alive_at(x-1, y+1) ? 1 : 0;
+    int16 a7 = cell_alive_at(x, y+1) ? 1 : 0;
+    int16 a8 = cell_alive_at(x+1, y+1) ? 1 : 0;
 
     return a1 + a2 + a3 + a4 + a5 + a6 + a7 + a8;
 }
 
 void ConwayGrid::step() {
-    bool* temp_grid_ptr;
-    int x, y;
-
     if (running) {
-        for (x = 0; x < width; x++) {
-            for (y = 0; y < height; y++) {
+        for (int16 x = 0; x < width; x++) {
+            for (int16 y = 0; y < height; y++) {
                 bool new_value;
                 int live_neighbours;
                 
@@ -126,7 +119,7 @@ void ConwayGrid::step() {
             }
         }
 
-        temp_grid_ptr = next_grid;
+        bool *temp_grid_ptr = next_grid;
         next_grid = current_grid;
         current_grid = temp_grid_ptr;
     }
