@@ -12,10 +12,10 @@
 
 class ConwayGrid {
 public:
-    int width;
-    int height;
-    int cell_width;
-    int cell_height;
+    int16 width;
+    int16 height;
+    int16 cell_width;
+    int16 cell_height;
     bool running;
 
     ConwayGrid();
@@ -26,10 +26,10 @@ public:
     void step();
     void run();
     void pause();
-    void screen_coords_to_grid_coords(int x, int y, int* grid_x, int* grid_y);
-    void invert_cell(int grid_x, int grid_y);
+    void screen_coords_to_grid_coords(int16 x, int16 y, int16 *grid_x, int16 *grid_y);
+    void invert_cell(int16 grid_x, int16 grid_y);
 
-    inline bool cell_alive_at(int x, int y) {
+    inline bool cell_alive_at(int16 x, int16 y) {
         if (x < 0 || x >= width
         || y < 0 || y >= height) {
             return FALSE;
@@ -48,13 +48,13 @@ private:
     bool* current_grid;
     bool* next_grid;
 
-    int num_living_neighbours(int x, int y);
+    int16 num_living_neighbours(int16 x, int16 y);
 
     inline void set_cell(bool* grid, int16 x, int16 y, bool value) {
         current_grid[grid_index(x, y)] = value;
     }
 
-    inline int grid_index(int column, int row) {
+    inline int16 grid_index(int16 column, int16 row) {
         return row * width + column;
     }
 };

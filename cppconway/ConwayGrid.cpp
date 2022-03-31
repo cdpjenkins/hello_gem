@@ -27,7 +27,6 @@ void ConwayGrid::init_to_blank() {
 void ConwayGrid::load_from_file(const char* filename) {
     FILE *fp;
     char row_string[MAX_LINE_LENGTH];
-    int x, y;
 
     init_to_blank();
 
@@ -37,9 +36,9 @@ void ConwayGrid::load_from_file(const char* filename) {
         exit(1);
     }
 
-    for (y = 0; fgets(row_string, MAX_LINE_LENGTH, fp) != NULL && y < height; y++) {
+    for (int16 y = 0; fgets(row_string, MAX_LINE_LENGTH, fp) != NULL && y < height; y++) {
+        int16 x;
         char* ptr;
-        char c;
 
         for (ptr = row_string, x = 0; ptr != NULL && x < width; ptr++, x++) {
             set_cell(current_grid, x, y, *ptr == 'x');
@@ -88,7 +87,7 @@ void ConwayGrid::print() {
     printf("\n");
 }
 
-int ConwayGrid::num_living_neighbours(int x, int y) {
+int16 ConwayGrid::num_living_neighbours(int16 x, int16 y) {
     int16 a1 = cell_alive_at(x-1, y-1) ? 1 : 0;
     int16 a2 = cell_alive_at(x, y-1) ? 1 : 0;
     int16 a3 = cell_alive_at(x+1, y-1) ? 1 : 0;
@@ -106,7 +105,7 @@ void ConwayGrid::step() {
         for (int16 x = 0; x < width; x++) {
             for (int16 y = 0; y < height; y++) {
                 bool new_value;
-                int live_neighbours;
+                int16 live_neighbours;
                 
                 live_neighbours = num_living_neighbours(x, y);
                 if (cell_alive_at(x, y)) {
@@ -133,12 +132,12 @@ void ConwayGrid::pause() {
     running = FALSE;
 }
 
-void ConwayGrid::screen_coords_to_grid_coords(int x, int y, int* grid_x, int* grid_y) {
+void ConwayGrid::screen_coords_to_grid_coords(int16 x, int16 y, int16 *grid_x, int16 *grid_y) {
     *grid_x = x / cell_width;
     *grid_y = y / cell_height;
 }
 
-void ConwayGrid::invert_cell(int grid_x, int grid_y) {
+void ConwayGrid::invert_cell(int16 grid_x, int16 grid_y) {
     if (!running) {
         bool cell_value = current_grid[grid_index(grid_x, grid_y)];
         current_grid[grid_index(grid_x, grid_y)] = !cell_value;
