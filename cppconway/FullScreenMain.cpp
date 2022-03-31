@@ -67,7 +67,7 @@ void draw_grid_block_at_a_time(ConwayGrid *grid) {
     }
 }
 
-void draw_strip_c(uint16 *strip_src, uint16 *dest) {
+static inline void draw_strip_c(uint16 *strip_src, uint16 *dest) {
     for (int16 i = 0; i < 14; i++) {
         std::memcpy(dest, strip_src, WIDTH_IN_BLOCKS * 2);
         dest += WIDTH_IN_BLOCKS;
@@ -128,6 +128,7 @@ int main(int argc, char *argv[]) {
         temp = logical_screen;
         logical_screen = physical_screen;
         physical_screen = temp;
+
         VsetScreen(logical_screen, physical_screen, -1, -1);
 
         while (Cconis()) {
