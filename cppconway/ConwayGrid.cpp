@@ -84,7 +84,7 @@ void ConwayGrid::print() {
 
     for (y = 0; y < height; y++) {
         for (x = 0; x < width; x++) {
-            if (current_grid[grid_index(x, y)]) {
+            if (cell_alive_at(x, y)) {
                 printf("x");
             } else {
                 printf(".");
@@ -93,19 +93,6 @@ void ConwayGrid::print() {
         printf("\n");
     }
     printf("\n");
-}
-
-bool ConwayGrid::cell_alive_at(int x, int y) {
-    if (x < 0 || x >= width
-     || y < 0 || y >= height) {
-        return FALSE;
-    } else {
-        if (current_grid[grid_index(x, y)]) {
-            return TRUE;
-        } else {
-            return FALSE;
-        }
-    }
 }
 
 int ConwayGrid::num_living_neighbours(int x, int y) {
@@ -122,6 +109,7 @@ int ConwayGrid::num_living_neighbours(int x, int y) {
 
     return a1 + a2 + a3 + a4 + a5 + a6 + a7 + a8;
 }
+
 void ConwayGrid::step() {
     bool* temp_grid_ptr;
     int x, y;
