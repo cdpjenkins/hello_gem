@@ -67,6 +67,13 @@ void draw_grid_block_at_a_time(ConwayGrid *grid) {
     }
 }
 
+void draw_strip_c(uint16 *strip_src, uint16 *dest) {
+    for (int16 i = 0; i < 14; i++) {
+        std::memcpy(dest, strip_src, WIDTH_IN_BLOCKS * 2);
+        dest += WIDTH_IN_BLOCKS;
+    }
+}
+
 void draw_in_strips(ConwayGrid *grid) {
     uint16 *ptr = logical_screen;
 
@@ -80,12 +87,13 @@ void draw_in_strips(ConwayGrid *grid) {
             }
         }
 
-        for (int16 i = 0; i < 14; i++) {
-            std::memcpy(ptr, strip, WIDTH_IN_BLOCKS * 2);
-            ptr += WIDTH_IN_BLOCKS;
-        }
+#ifdef FAST_DRAW
+        fast_draw_strip(strip, ptr);
+#else
+        draw_strip_c(strip, ptr);
+#endif
 
-        ptr += WIDTH_IN_BLOCKS * 2;
+        ptr += WIDTH_IN_BLOCKS * 16;
     }
 }
 
@@ -112,7 +120,6 @@ int main(int argc, char *argv[]) {
     while (!quit) {
         grid.step();
 
-        fast_draw_strip();
         draw_in_strips(&grid);
 
         Vsync();
