@@ -30,16 +30,7 @@ public:
     void invert_cell(int16 grid_x, int16 grid_y);
 
     inline bool cell_alive_at(int16 x, int16 y) {
-        if (x < 0 || x >= width
-        || y < 0 || y >= height) {
-            return false;
-        } else {
-            if (current_grid[grid_index(x, y)]) {
-                return true;
-            } else {
-                return false;
-            }
-        }
+        return current_grid[grid_index(x, y)];
     }
 
 private:

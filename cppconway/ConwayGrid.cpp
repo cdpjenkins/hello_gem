@@ -102,8 +102,8 @@ int16 ConwayGrid::num_living_neighbours(int16 x, int16 y) {
 
 void ConwayGrid::step() {
     if (running) {
-        for (int16 x = 0; x < width; x++) {
-            for (int16 y = 0; y < height; y++) {
+        for (int16 x = 1; x < width - 1; x++) {
+            for (int16 y = 1; y < height - 1; y++) {
                 bool new_value;
                 int16 live_neighbours;
                 
