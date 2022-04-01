@@ -32,12 +32,12 @@ public:
     inline bool cell_alive_at(int16 x, int16 y) {
         if (x < 0 || x >= width
         || y < 0 || y >= height) {
-            return FALSE;
+            return false;
         } else {
             if (current_grid[grid_index(x, y)]) {
-                return TRUE;
+                return true;
             } else {
-                return FALSE;
+                return false;
             }
         }
     }

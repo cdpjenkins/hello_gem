@@ -165,7 +165,7 @@ void event_loop (struct win_data* wd) {
   uint16 handle;
   uint16 rc;
   int16 ev_mmgpbuff[8];
-  bool quit = FALSE;
+  bool quit = false;
 
   do {
     uint16 events;
@@ -210,7 +210,7 @@ void event_loop (struct win_data* wd) {
         	menu_tnormal(menu_addr, ev_mmgpbuff[3], true);
 		break;
         case WM_CLOSED:
-          quit = TRUE;
+          quit = true;
       }
     }
     if (events & MU_TIMER) {
@@ -235,7 +235,7 @@ void event_loop (struct win_data* wd) {
         pause();
       }
       if (keycode == SCANCODE_Q) {
-        quit = TRUE;
+        quit = true;
       }
     }
     if (events & MU_BUTTON) {
@@ -401,7 +401,7 @@ void do_menu(struct win_data* wd, int menu_item, bool* quit) {
             }
 		    break;
         case CONWAY_MENUBAR_QUIT:
-            *quit = TRUE;
+            *quit = true;
             break;
         case CONWAY_MENUBAR_SAVE:
             const char *out_file = "out.cwy";
@@ -413,11 +413,11 @@ void do_menu(struct win_data* wd, int menu_item, bool* quit) {
 void pause() {
     grid.pause();
     wind_set_str(wd.handle, WF_INFO, "Paused");
-    menu_icheck(menu_addr, CONWAY_MENUBAR_RUN, FALSE);
+    menu_icheck(menu_addr, CONWAY_MENUBAR_RUN, false);
 }
 
 void run() {
     grid.run();
     wind_set_str(wd.handle, WF_INFO, "Running");
-    menu_icheck(menu_addr, CONWAY_MENUBAR_RUN, TRUE);
+    menu_icheck(menu_addr, CONWAY_MENUBAR_RUN, true);
 }

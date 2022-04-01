@@ -18,7 +18,7 @@ void ConwayGrid::init_to_blank() {
     height = GRID_HEIGHT;
     cell_width = CELL_WIDTH;
     cell_height = CELL_HEIGHT;
-    running = FALSE;
+    running = false;
 
     memset(this->grid1, 0, sizeof(grid1));
     memset(this->grid2, 0, sizeof(grid2));
@@ -125,11 +125,11 @@ void ConwayGrid::step() {
 }
 
 void ConwayGrid::run() {
-    running = TRUE;
+    running = true;
 }
 
 void ConwayGrid::pause() {
-    running = FALSE;
+    running = false;
 }
 
 void ConwayGrid::screen_coords_to_grid_coords(int16 x, int16 y, int16 *grid_x, int16 *grid_y) {
