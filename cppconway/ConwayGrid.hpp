@@ -3,10 +3,10 @@
 
 #include "types.hpp"
 
-#define GRID_WIDTH 80
-#define GRID_HEIGHT 60
-#define CELL_WIDTH 8
-#define CELL_HEIGHT 8
+#define GRID_WIDTH 160
+#define GRID_HEIGHT 120
+#define CELL_WIDTH 4
+#define CELL_HEIGHT 4
 
 #define MAX_LINE_LENGTH 1000
 

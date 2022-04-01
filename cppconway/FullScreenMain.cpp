@@ -46,7 +46,7 @@ char read_key() {
 }
 
 static inline void draw_strip_c(void *strip_src, uint16 *dest) {
-    for (int16 i = 0; i < 7; i++) {
+    for (int16 i = 0; i < 3; i++) {
         std::memcpy(dest, strip_src, WIDTH_IN_BLOCKS * 2);
         dest += WIDTH_IN_BLOCKS;
     }
@@ -65,17 +65,16 @@ void draw_in_strips(ConwayGrid *grid) {
 
     for (int16 y = 0; y < HEIGHT_IN_CELLS; y += 1) {
         uint8 strip[WIDTH_IN_CELLS];
-        for (int16 i = 0; i < WIDTH_IN_CELLS; i++) {
-            if (grid->cell_alive_at(i, y)) {
-                strip[i] = 0b11111110;
-            } else {
-                strip[i] = 0b00000000;
-            }
+        for (int16 i = 0; i < WIDTH_IN_CELLS; i += 2) {
+            uint8 two_cells = grid->cell_alive_at(i, y) ? 0b1110 : 0b0000;
+            two_cells <<= 4;
+            two_cells |= grid->cell_alive_at(i+1, y) ? 0b1110 : 0b0000;
+            strip[i/2] = two_cells;
         }
 
         draw_strip(strip, ptr);
 
-        ptr += WIDTH_IN_BLOCKS * 8;
+        ptr += WIDTH_IN_BLOCKS * CELL_HEIGHT;
     }
 }
 
