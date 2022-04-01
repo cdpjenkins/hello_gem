@@ -23,7 +23,8 @@ const int16 REZ_FROM_MODE = 3;
 const int16 WIDTH = 640;
 const int16 HEIGHT = 480;
 const int16 WIDTH_IN_BLOCKS = WIDTH / 16;
-const int16 HEIGHT_IN_BLOCKS = HEIGHT / 16;
+const int16 WIDTH_IN_CELLS = WIDTH / CELL_WIDTH;
+const int16 HEIGHT_IN_CELLS = HEIGHT / CELL_HEIGHT;
 
 uint16 screen1[WIDTH * HEIGHT / 16];
 uint16 screen2[WIDTH * HEIGHT / 16];
@@ -44,37 +45,14 @@ char read_key() {
     return ascii;
 }
 
-void draw_grid_block_at_a_time(ConwayGrid *grid) {
-    uint16 strip_20[20];
-
-    for (int16 y = 0; y < HEIGHT_IN_BLOCKS; y += 1) {
-        for (int16 x = 0; x < WIDTH_IN_BLOCKS; x += 1) {
-
-            if (grid->cell_alive_at(x, y)) {
-                for (int16 i = 0, index = block_index(x, y); i < 16; i++, index += WIDTH_IN_BLOCKS) {
-                    if (i != 0 && i != 15) {
-                        logical_screen[index] = 0b0111111111111110;
-                    }
-                }
-            } else {
-                for (int16 i = 0, index = block_index(x, y); i < 16; i++, index += WIDTH_IN_BLOCKS) {
-                    if (i != 0 && i != 15) {
-                        logical_screen[index] = 0b00000000000000000;
-                    }
-                }
-            }
-        }
-    }
-}
-
-static inline void draw_strip_c(uint16 *strip_src, uint16 *dest) {
-    for (int16 i = 0; i < 14; i++) {
+static inline void draw_strip_c(void *strip_src, uint16 *dest) {
+    for (int16 i = 0; i < 7; i++) {
         std::memcpy(dest, strip_src, WIDTH_IN_BLOCKS * 2);
         dest += WIDTH_IN_BLOCKS;
     }
 }
 
-void draw_strip(uint16 *strip, uint16 *ptr) {
+static inline void draw_strip(uint8 *strip, uint16 *ptr) {
 #ifdef FAST_DRAW
     fast_draw_strip(strip, ptr);
 #else
@@ -85,19 +63,19 @@ void draw_strip(uint16 *strip, uint16 *ptr) {
 void draw_in_strips(ConwayGrid *grid) {
     uint16 *ptr = logical_screen;
 
-    for (int16 y = 0; y < HEIGHT_IN_BLOCKS; y += 1) {
-        uint16 strip[WIDTH_IN_BLOCKS];
-        for (int16 i = 0; i < WIDTH_IN_BLOCKS; i++) {
+    for (int16 y = 0; y < HEIGHT_IN_CELLS; y += 1) {
+        uint8 strip[WIDTH_IN_CELLS];
+        for (int16 i = 0; i < WIDTH_IN_CELLS; i++) {
             if (grid->cell_alive_at(i, y)) {
-                strip[i] = 0b0111111111111110;
+                strip[i] = 0b11111110;
             } else {
-                strip[i] = 0b00000000000000000;
+                strip[i] = 0b00000000;
             }
         }
 
         draw_strip(strip, ptr);
 
-        ptr += WIDTH_IN_BLOCKS * 16;
+        ptr += WIDTH_IN_BLOCKS * 8;
     }
 }
 
