@@ -3,13 +3,18 @@ CC=m68k-atari-mint-gcc
 CXX=m68k-atari-mint-g++
 AS=m68k-atari-mint-as
 
-all: conway.prg test.tos fullconw.tos fastconw.tos
+all: make_dist dist/conway.prg dist/test.tos dist/fullconw.tos dist/fastconw.tos
 
-conway.prg: Dots.cpp ConwayGui.cpp ConwayGrid.cpp
-	${CXX} ${CXXFLAGS} Dots.cpp ConwayGui.cpp ConwayGrid.cpp -o conway.prg  -lgem -lgcc
+make_dist:
+	mkdir -p dist
+	cp grids/*.cwy dist/
+	cp conway.rsc dist/
 
-test.tos: ConwayGrid.cpp ConwayTest.cpp
-	${CXX} ${CXXFLAGS} ConwayGrid.cpp ConwayTest.cpp -o test.tos  -lgem -lgcc
+dist/conway.prg: Dots.cpp ConwayGui.cpp ConwayGrid.cpp
+	${CXX} ${CXXFLAGS} Dots.cpp ConwayGui.cpp ConwayGrid.cpp -o dist/conway.prg  -lgem -lgcc
+
+dist/test.tos: ConwayGrid.cpp ConwayTest.cpp
+	${CXX} ${CXXFLAGS} ConwayGrid.cpp ConwayTest.cpp -o dist/test.tos  -lgem -lgcc
 
 %.o : %.cpp *.hpp
 	${CXX} -c $(CXXFLAGS) $< -o $@
@@ -20,13 +25,12 @@ fastFullScreenMain.o: FullScreenMain.cpp *.hpp
 asm/%.o: asm/%.s
 	$(AS) $< -o $@
 
-fullconw.tos: ConwayGrid.o FullScreenMain.o STScreen.o asm/fast_draw.o
-	${CXX} ${CXXFLAGS} ConwayGrid.o STScreen.o FullScreenMain.o asm/fast_draw.o -o fullconw.tos -lgcc
+dist/fullconw.tos: ConwayGrid.o FullScreenMain.o STScreen.o asm/fast_draw.o
+	${CXX} ${CXXFLAGS} ConwayGrid.o STScreen.o FullScreenMain.o asm/fast_draw.o -o dist/fullconw.tos -lgcc
 
-
-fastconw.tos: ConwayGrid.o FullScreenMain.o STScreen.o asm/fast_draw.o fastFullScreenMain.o
-	${CXX} ${CXXFLAGS} ConwayGrid.o STScreen.o fastFullScreenMain.o asm/fast_draw.o -o fastconw.tos -lgcc
-
+dist/fastconw.tos: ConwayGrid.o FullScreenMain.o STScreen.o asm/fast_draw.o fastFullScreenMain.o
+	${CXX} ${CXXFLAGS} ConwayGrid.o STScreen.o fastFullScreenMain.o asm/fast_draw.o -o dist/fastconw.tos -lgcc
 
 clean:
-	rm -f *.prg *.tos
+	rm *.o asm/*.o
+	rm -rf dist
