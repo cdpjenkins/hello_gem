@@ -105,7 +105,11 @@ int main(int argc, char *argv[]) {
     ConwayGrid grid;
     STScreen screen;
 
-    grid.load_from_file("gosper.cwy");
+    if (argc > 1) {
+        grid.load_from_file(argv[1]);
+    } else {
+        grid.load_from_file("gosper.cwy");
+    }
 
     Cursconf(0, 0);
 
