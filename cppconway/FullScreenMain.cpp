@@ -74,6 +74,14 @@ static inline void draw_strip_c(uint16 *strip_src, uint16 *dest) {
     }
 }
 
+void draw_strip(uint16 *strip, uint16 *ptr) {
+#ifdef FAST_DRAW
+    fast_draw_strip(strip, ptr);
+#else
+    draw_strip_c(strip, ptr);
+#endif
+}
+
 void draw_in_strips(ConwayGrid *grid) {
     uint16 *ptr = logical_screen;
 
@@ -87,11 +95,7 @@ void draw_in_strips(ConwayGrid *grid) {
             }
         }
 
-#ifdef FAST_DRAW
-        fast_draw_strip(strip, ptr);
-#else
-        draw_strip_c(strip, ptr);
-#endif
+        draw_strip(strip, ptr);
 
         ptr += WIDTH_IN_BLOCKS * 16;
     }
@@ -118,17 +122,20 @@ int main(int argc, char *argv[]) {
     Super(0);
 
     volatile uint32 *timer = (uint32 *)0x0004ba;
-    uint32 start_time;
-    uint32 end_time;
+    uint32 time_before_step;
+    uint32 time_after_step_before_draw;
+    uint32 time_after_draw;
 
     while (!quit) {
+        time_before_step = *timer;
+
         grid.step();
 
-        start_time = *timer;
+        time_after_step_before_draw = *timer;
 
         draw_in_strips(&grid);
 
-        end_time = *timer;
+        time_after_draw = *timer;
 
         Vsync();
 
@@ -161,9 +168,11 @@ int main(int argc, char *argv[]) {
 
     VsetScreen(saved_logbase, saved_physbase, REZ_FROM_MODE, saved_rez);
 
-    printf("%d\n", end_time - start_time);
+    printf("Timings:\n");
+    printf("step: %dms\n", (time_after_step_before_draw - time_before_step) * 5);
+    printf("draw: %dms\n", (time_after_draw - time_after_step_before_draw) * 5);
+
     Cconin();
 
     return 0;
 }
-

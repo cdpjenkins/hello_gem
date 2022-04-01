@@ -12,8 +12,8 @@
 
 class ConwayGrid {
 public:
-    int16 width;
-    int16 height;
+    int16 width = GRID_WIDTH;
+    int16 height = GRID_HEIGHT;
     int16 cell_width;
     int16 cell_height;
     bool running;
