@@ -9,11 +9,13 @@
 #define S_OSXNAME     0x0001
 #define S_OSVERSION   0x0002
 #define S_OSBUILDDATE 0x0004
+#define S_GETCOOKIE   0x0008
 
 #define SSYSTEM_IS_SUPPORTED 0
 
 int main(int argc, char** argv) {
     uint32_t result;
+    uint16_t i;
 
     result = Ssystem(S_INQUIRE, 0, 0);
     printf("%08X\n", result);
@@ -41,5 +43,16 @@ int main(int argc, char** argv) {
 
         result = Ssystem(S_OSBUILDDATE, 0, 0);
         printf("S_OSBUILDDATE: %d-%d-%d\n", result & 0xFFFF, (result >> 16) & 0xFF, (result >> 24) & 0xFF);
+    }
+
+    result = 0;
+    for (i = 0; i < 100 && result != -1; i++) {
+        uint32_t cookie_id = Ssystem(S_GETCOOKIE, i, 0);
+        if (cookie_id != 0) {
+            uint32_t value = Ssystem(S_GETCOOKIE, cookie_id, 0);
+            printf("%8d %.4s %08X\n", i, &cookie_id, value);
+        } else {
+            result = -1;
+        }
     }
 }
