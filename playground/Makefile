@@ -1,10 +1,11 @@
 CFLAGS=-O3
 CC=m68k-atari-mint-gcc-4.6.4
 
-all: testing
+all: cookies.tos
 
-testing: testing.c
-	${CC} ${CFLAGS} testing.c -o testing.prg  -lgem -lgcc
+cookies.tos: cookies.c
+	${CC} ${CFLAGS} cookies.c -o cookies.tos -lgem -lgcc
 
 clean:
-	rm -f *.prg
+	rm -f *.tos
+

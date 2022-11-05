@@ -13,12 +13,18 @@
 
 #define SSYSTEM_IS_SUPPORTED 0
 
+typedef struct
+{
+    uint32_t id;
+    uint32_t value;
+} Cookie;
+
 int main(int argc, char** argv) {
     uint32_t result;
     uint16_t i;
 
     result = Ssystem(S_INQUIRE, 0, 0);
-    printf("%08X\n", result);
+    printf("S_INQUIRE: %08X\n", result);
 
     if (result == SSYSTEM_IS_SUPPORTED) {
         result = Ssystem(S_OSNAME, 0, 0);
@@ -43,16 +49,34 @@ int main(int argc, char** argv) {
 
         result = Ssystem(S_OSBUILDDATE, 0, 0);
         printf("S_OSBUILDDATE: %d-%d-%d\n", result & 0xFFFF, (result >> 16) & 0xFF, (result >> 24) & 0xFF);
-    }
+    
+        for (i = 0; i < 100; i++) {
+            uint32_t cookie_id = Ssystem(S_GETCOOKIE, i, 0);
+            printf("cookie_id: %08X\n", cookie_id);
+            if (cookie_id != 0) {
+                uint32_t value = Ssystem(S_GETCOOKIE, cookie_id, 0);
+                printf("%8d %.4s %08X\n", i, &cookie_id, value);
+            } else {
+                // TODO bit of an evil HACK
+                break;
+            }
+        }
+    } else {
+        Cookie *cookiejar;
 
-    result = 0;
-    for (i = 0; i < 100 && result != -1; i++) {
-        uint32_t cookie_id = Ssystem(S_GETCOOKIE, i, 0);
-        if (cookie_id != 0) {
-            uint32_t value = Ssystem(S_GETCOOKIE, cookie_id, 0);
-            printf("%8d %.4s %08X\n", i, &cookie_id, value);
+        cookiejar = (Cookie *)(Setexc(0x05A0/4, (const void (*)(void))-1));
+
+        if (cookiejar) {
+            for(i=0 ; cookiejar[i].id ; i++) {
+                if (cookiejar[i].id) {
+                    printf("%8d %.4s %08X\n", i, &cookiejar[i].id, cookiejar[i].value);
+                }
+            }
         } else {
-            result = -1;
+            printf("We totally can't get any cookies\n");
         }
     }
+
+    printf("Done. Press any key to exit.\n");
+    Cconin();
 }
