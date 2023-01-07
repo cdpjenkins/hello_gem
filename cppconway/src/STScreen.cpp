@@ -11,7 +11,8 @@ void STScreen::draw_line(int16 colour, int16 x1, int16 y1, int16 x2, int16 y2) {
     X1 = x1;
     Y1 = y1;
     X2 = x2;
-    Y2 = y2;    linea3();
+    Y2 = y2;
+    linea3();
 }
 
 void STScreen::fill_rect(int16 colour, int16 x1, int16 y1, int16 x2, int16 y2) {
