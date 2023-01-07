@@ -3,4 +3,6 @@
 **/*.o
 TAGS
 .vscode
+.idea
 out.cwy
+
