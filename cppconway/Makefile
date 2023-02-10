@@ -12,8 +12,8 @@ make_dist:
 resources: src/conway.*
 	cp src/conway.rsc dist
 
-dist/conway.prg: src/Dots.cpp src/ConwayGui.cpp src/ConwayGrid.cpp
-	${CXX} ${CXXFLAGS} src/Dots.cpp src/ConwayGui.cpp src/ConwayGrid.cpp -o dist/conway.prg  -lgem -lgcc
+dist/conway.prg: src/ConwayGui.cpp src/ConwayGrid.cpp
+	${CXX} ${CXXFLAGS} src/ConwayGui.cpp src/ConwayGrid.cpp -o dist/conway.prg  -lgem -lgcc
 
 dist/test.tos: src/ConwayGrid.cpp src/ConwayTest.cpp
 	${CXX} ${CXXFLAGS} src/ConwayGrid.cpp src/ConwayTest.cpp -o dist/test.tos  -lgem -lgcc

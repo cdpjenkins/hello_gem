@@ -7,7 +7,7 @@
 
 #define MAX_LINE_LENGTH 1000
 
-ConwayGrid::ConwayGrid() {
+ConwayGrid::ConwayGrid(int16 width, int16 height) : width(width), height(height) {
     init_to_blank();
 }
 

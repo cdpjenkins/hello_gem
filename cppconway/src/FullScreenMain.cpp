@@ -80,7 +80,7 @@ void draw_in_strips(ConwayGrid *grid) {
 }
 
 int main(int argc, char *argv[]) {
-    ConwayGrid grid;
+    ConwayGrid grid(GRID_WIDTH, GRID_HEIGHT);
     STScreen screen;
 
     if (argc > 1) {

@@ -6,7 +6,6 @@
 #include <gem.h>
 
 #include "types.hpp"
-#include "dots.hpp"
 #include "ConwayGrid.hpp"
 #include "conway.rsh"
 
@@ -62,14 +61,7 @@ void run();
 uint16 high_word(void* ptr);
 uint16 low_word(void* ptr);
 
-Dot dot = {
-  .x = 250,
-  .y = 250,
-  .vx = 1,
-  .vy = 2
-};
-
-ConwayGrid grid;
+ConwayGrid grid(GRID_WIDTH, GRID_HEIGHT);
 
 /* GEM arrays */
 int16 work_in[11],
@@ -283,13 +275,6 @@ void draw_within_clip(struct win_data * wd, GRECT clip) {
 
   set_clip (false, clip);
   graf_mouse(M_ON, 0L);
-}
-
-void draw_example (uint16 app_handle, Rectangle* working_area, char* text){
-  vsf_color(app_handle, BLACK);
-  v_gtext (app_handle, working_area->x + 10, working_area->y + 60, text);
-
-  v_circle(app_handle, dot.x, dot.y, 5);
 }
 
 void draw_conway_grid(uint16 app_handle, Rectangle* working_area, ConwayGrid* grid) {

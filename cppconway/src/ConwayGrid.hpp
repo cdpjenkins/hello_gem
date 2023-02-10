@@ -12,13 +12,13 @@
 
 class ConwayGrid {
 public:
-    int16 width = GRID_WIDTH;
-    int16 height = GRID_HEIGHT;
+    int16 width;
+    int16 height;
     int16 cell_width;
     int16 cell_height;
     bool running;
 
-    ConwayGrid();
+    ConwayGrid(int16 width, int16 height);
     void init_to_blank();
     void load_from_file(const char* filename);
     void save_to_file(const char* filename);
