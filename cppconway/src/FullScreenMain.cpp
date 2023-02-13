@@ -9,6 +9,10 @@
 #include "STScreen.hpp"
 #include "asm/fast_draw.h"
 
+#ifndef VsetScreen
+#define VsetScreen Vsetscreen
+#endif
+
 const int16 PLANES_1 = 0x00;
 const int16 PLANES_2 = 0x01;
 const int16 PLANES_4 = 0x02;

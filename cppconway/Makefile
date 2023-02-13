@@ -1,7 +1,15 @@
+THE_OS := $(shell uname)
+
+ifeq ($(THE_OS),FreeMiNT)
+	PREFIX=
+else
+	PREFIX=m68k-atari-mint-
+endif
+
 CXXFLAGS=-O3 -m68000
-CC=m68k-atari-mint-gcc
-CXX=m68k-atari-mint-g++
-AS=m68k-atari-mint-as
+CC=$(PREFIX)gcc
+CXX=$(PREFIX)g++
+AS=$(PREFIX)as
 
 all: make_dist dist/conway.prg dist/test.tos dist/fullconw.tos dist/fastconw.tos resources
 
