@@ -7,6 +7,8 @@ else
 endif
 
 CXXFLAGS=-O3 -m68000
+ASFLAGS=--register-prefix-optional
+
 CC=$(PREFIX)gcc
 CXX=$(PREFIX)g++
 AS=$(PREFIX)as
@@ -33,7 +35,7 @@ src/fastFullScreenMain.o: src/FullScreenMain.cpp src/*.hpp
 	${CXX} -c $(CXXFLAGS) -DFAST_DRAW src/FullScreenMain.cpp -o src/fastFullScreenMain.o
 
 src/asm/%.o: src/asm/%.s
-	$(AS) $< -o $@
+	$(AS) $(ASFLAGS) $< -o $@
 
 dist/fullconw.tos: src/ConwayGrid.o src/FullScreenMain.o src/STScreen.o src/asm/fast_draw.o
 	${CXX} ${CXXFLAGS} src/ConwayGrid.o src/STScreen.o src/FullScreenMain.o src/asm/fast_draw.o -o dist/fullconw.tos -lgcc
