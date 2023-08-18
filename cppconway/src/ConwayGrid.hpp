@@ -1,6 +1,9 @@
 #ifndef CONWAY_GRID_H
 #define CONWAY_GRID_H
 
+#include <array>
+using namespace std;
+
 #include "types.hpp"
 
 #define GRID_WIDTH 80
@@ -30,19 +33,21 @@ public:
     void invert_cell(int16 grid_x, int16 grid_y);
 
     inline bool cell_alive_at(int16 x, int16 y) {
-        return current_grid[grid_index(x, y)];
+        return (*current_grid)[grid_index(x, y)];
     }
 
 private:
-    bool grid1[GRID_WIDTH * GRID_HEIGHT];
-    bool grid2[GRID_WIDTH * GRID_HEIGHT];
-    bool* current_grid;
-    bool* next_grid;
+    typedef array<bool, GRID_WIDTH * GRID_HEIGHT> GridArray;
+
+    GridArray grid1;
+    GridArray grid2;
+    GridArray* current_grid;
+    GridArray* next_grid;
 
     int16 num_living_neighbours(int16 x, int16 y);
 
-    inline void set_cell(bool* grid, int16 x, int16 y, bool value) {
-        current_grid[grid_index(x, y)] = value;
+    inline void set_cell(GridArray* grid, int16 x, int16 y, bool value) {
+        (*current_grid)[grid_index(x, y)] = value;
     }
 
     inline int16 grid_index(int16 column, int16 row) {

@@ -12,16 +12,16 @@ ConwayGrid::ConwayGrid(int16 width, int16 height) : width(width), height(height)
 }
 
 void ConwayGrid::init_to_blank() {
-    current_grid = grid1;
-    next_grid = grid2;
+    current_grid = &grid1;
+    next_grid = &grid2;
     width = GRID_WIDTH;
     height = GRID_HEIGHT;
     cell_width = CELL_WIDTH;
     cell_height = CELL_HEIGHT;
     running = false;
 
-    memset(this->grid1, 0, sizeof(grid1));
-    memset(this->grid2, 0, sizeof(grid2));
+    memset(&this->grid1, 0, sizeof(grid1));
+    memset(&this->grid2, 0, sizeof(grid2));
 }
 
 void ConwayGrid::load_from_file(const char* filename) {
@@ -114,11 +114,11 @@ void ConwayGrid::step() {
                     new_value = live_neighbours == 3;
                 }
 
-                next_grid[grid_index(x, y)] = new_value;
+                (*next_grid)[grid_index(x, y)] = new_value;
             }
         }
 
-        bool *temp_grid_ptr = next_grid;
+        GridArray *temp_grid_ptr = next_grid;
         next_grid = current_grid;
         current_grid = temp_grid_ptr;
     }
@@ -139,7 +139,7 @@ void ConwayGrid::screen_coords_to_grid_coords(int16 x, int16 y, int16 *grid_x, i
 
 void ConwayGrid::invert_cell(int16 grid_x, int16 grid_y) {
     if (!running) {
-        bool cell_value = current_grid[grid_index(grid_x, grid_y)];
-        current_grid[grid_index(grid_x, grid_y)] = !cell_value;
+        bool cell_value = (*current_grid)[grid_index(grid_x, grid_y)];
+        (*current_grid)[grid_index(grid_x, grid_y)] = !cell_value;
     }
 }
