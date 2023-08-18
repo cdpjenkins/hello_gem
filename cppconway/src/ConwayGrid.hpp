@@ -33,7 +33,7 @@ public:
     void invert_cell(int16 grid_x, int16 grid_y);
 
     inline bool cell_alive_at(int16 x, int16 y) {
-        return (*current_grid)[grid_index(x, y)];
+        return grid1[grid_index(x, y)];
     }
 
 private:
@@ -41,13 +41,11 @@ private:
 
     GridArray grid1;
     GridArray grid2;
-    GridArray* current_grid;
-    GridArray* next_grid;
 
     int16 num_living_neighbours(int16 x, int16 y);
 
-    inline void set_cell(GridArray* grid, int16 x, int16 y, bool value) {
-        (*current_grid)[grid_index(x, y)] = value;
+    inline void set_cell(GridArray &grid, int16 x, int16 y, bool value) {
+        grid1[grid_index(x, y)] = value;
     }
 
     inline int16 grid_index(int16 column, int16 row) {
