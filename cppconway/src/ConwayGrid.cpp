@@ -20,8 +20,8 @@ void ConwayGrid::init_to_blank() {
     cell_height = CELL_HEIGHT;
     running = false;
 
-    memset(&this->grid1, 0, sizeof(grid1));
-    memset(&this->grid2, 0, sizeof(grid2));
+    grid1.fill(false);
+    grid2.fill(false);
 }
 
 void ConwayGrid::load_from_file(const char* filename) {
