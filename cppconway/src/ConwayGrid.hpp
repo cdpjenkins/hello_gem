@@ -32,12 +32,16 @@ public:
     void screen_coords_to_grid_coords(int16 x, int16 y, int16 *grid_x, int16 *grid_y);
     void invert_cell(int16 grid_x, int16 grid_y);
 
+    inline bool cell_alive_at(int16 index) {
+        return grid2[index] & 0x10;
+    }
+
     inline bool cell_alive_at(int16 x, int16 y) {
-        return grid1[grid_index(x, y)];
+        return grid2[grid_index(x, y)] & 0x10;
     }
 
 private:
-    typedef array<bool, GRID_WIDTH * GRID_HEIGHT> GridArray;
+    typedef array<uint8, GRID_WIDTH * GRID_HEIGHT> GridArray;
 
     GridArray grid1;
     GridArray grid2;
@@ -45,7 +49,7 @@ private:
     int16 num_living_neighbours(int16 x, int16 y);
 
     inline void set_cell(GridArray &grid, int16 x, int16 y, bool value) {
-        grid1[grid_index(x, y)] = value;
+        grid1[grid_index(x, y)] = value ? 0x10 : 0x00;
     }
 
     inline int16 grid_index(int16 column, int16 row) {

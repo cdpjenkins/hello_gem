@@ -86,37 +86,48 @@ void ConwayGrid::print() {
 }
 
 int16 ConwayGrid::num_living_neighbours(int16 x, int16 y) {
-    int16 a1 = cell_alive_at(x-1, y-1) ? 1 : 0;
-    int16 a2 = cell_alive_at(x, y-1) ? 1 : 0;
-    int16 a3 = cell_alive_at(x+1, y-1) ? 1 : 0;
-    int16 a4 = cell_alive_at(x-1, y) ? 1 : 0;
-    int16 a5 = cell_alive_at(x+1, y) ? 1 : 0;
-    int16 a6 = cell_alive_at(x-1, y+1) ? 1 : 0;
-    int16 a7 = cell_alive_at(x, y+1) ? 1 : 0;
-    int16 a8 = cell_alive_at(x+1, y+1) ? 1 : 0;
+    int16 index = grid_index(x, y);
+
+
+    int16 a1 = cell_alive_at(index - GRID_WIDTH - 1) ? 1 : 0;
+    int16 a2 = cell_alive_at(index - GRID_WIDTH) ? 1 : 0;
+    int16 a3 = cell_alive_at(index - GRID_WIDTH + 1) ? 1 : 0;
+    int16 a4 = cell_alive_at(index - 1) ? 1 : 0;
+    int16 a5 = cell_alive_at(index + 1) ? 1 : 0;
+    int16 a6 = cell_alive_at(index + GRID_WIDTH - 1) ? 1 : 0;
+    int16 a7 = cell_alive_at(index + GRID_WIDTH) ? 1 : 0;
+    int16 a8 = cell_alive_at(index + GRID_WIDTH + 1) ? 1 : 0;
 
     return a1 + a2 + a3 + a4 + a5 + a6 + a7 + a8;
 }
 
 void ConwayGrid::step() {
     if (running) {
+        memcpy(&grid2, &grid1, sizeof(grid1));
+
         for (int16 x = 1; x < width - 1; x++) {
             for (int16 y = 1; y < height - 1; y++) {
                 bool new_value;
-                int16 live_neighbours;
-                
-                live_neighbours = num_living_neighbours(x, y);
-                if (cell_alive_at(x, y)) {
+
+                int16 index = grid_index(x, y);
+
+                int16 live_neighbours = num_living_neighbours(x, y);
+
+                if (grid2[grid_index(x, y)] & 0x10) {
                     new_value = live_neighbours == 2 || live_neighbours == 3;
+
+                    if (!new_value) {
+                        grid1[index] = grid2[index] & (~0x10);
+                    }
                 } else {
                     new_value = live_neighbours == 3;
-                }
 
-                grid2[grid_index(x, y)] = new_value;
+                    if (new_value) {
+                        grid1[index] = grid2[index] | 0x10;
+                    }
+                }
             }
         }
-
-        memcpy(&grid1, &grid2, sizeof(grid1));
     }
 }
 
