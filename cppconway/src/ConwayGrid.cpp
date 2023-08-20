@@ -91,15 +91,19 @@ void ConwayGrid::step() {
     if (running) {
         memcpy(&grid2, &grid1, sizeof(grid1));
 
-        for (int16 x = 1; x < width - 1; x++) {
-            for (int16 y = 1; y < height - 1; y++) {
-                int16 index = grid_index(x, y);
+        int16 index = 0;
+        for (int16 y = 0; y < height; y++) {
+            for (int16 x = 0; x < width; x++, index++) {
+                if (x && y && x != (width - 1) && (y != height - 1) ) {
 
-                unsigned char& current_value = grid2[index];
-                if (current_value == 0x03) {
-                    transition_cell_from_dead_to_alive(grid1, index);
-                } else if ((current_value & 0x10) && (current_value != 0x12) && (current_value != 0x13)) {
-                    transition_cell_from_alive_to_dead(grid1, index);
+                    uint8 &current_value = grid2[index];
+                    if (current_value != 0) {
+                        if (current_value == 0x03) {
+                            transition_cell_from_dead_to_alive(grid1, index);
+                        } else if ((current_value & 0x10) && (current_value != 0x12) && (current_value != 0x13)) {
+                            transition_cell_from_alive_to_dead(grid1, index);
+                        }
+                    }
                 }
             }
         }
