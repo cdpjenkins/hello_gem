@@ -1,25 +1,27 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
-#include "types.hpp"
 #include "ConwayGrid.hpp"
 
 #define MAX_LINE_LENGTH 1000
 
-ConwayGrid::ConwayGrid(int16 width, int16 height) : width(width), height(height) {
-    init_to_blank();
+ConwayGrid::ConwayGrid(int16 width, int16 height) :
+        width(width),
+        height(height),
+        cell_width(CELL_WIDTH),
+        cell_height(CELL_HEIGHT),
+        running(false),
+        grid1{},
+        grid2{} {
+
 }
 
 void ConwayGrid::init_to_blank() {
-    width = GRID_WIDTH;
-    height = GRID_HEIGHT;
-    cell_width = CELL_WIDTH;
-    cell_height = CELL_HEIGHT;
     running = false;
 
-    grid1.fill(false);
-    grid2.fill(false);
+    grid1.fill(0x00);
+    grid2.fill(0x00);
 }
 
 void ConwayGrid::load_from_file(const char* filename) {
@@ -34,11 +36,11 @@ void ConwayGrid::load_from_file(const char* filename) {
         exit(1);
     }
 
-    for (int16 y = 0; fgets(row_string, MAX_LINE_LENGTH, fp) != NULL && y < height; y++) {
+    for (int16 y = 0; fgets(row_string, MAX_LINE_LENGTH, fp) != nullptr && y < height; y++) {
         int16 x;
         char* ptr;
 
-        for (ptr = row_string, x = 0; ptr != NULL && x < width; ptr++, x++) {
+        for (ptr = row_string, x = 0; ptr != nullptr && x < width; ptr++, x++) {
             if (*ptr == 'x') {
                 transition_cell_from_dead_to_alive(grid1, x, y);
             }
@@ -50,7 +52,7 @@ void ConwayGrid::load_from_file(const char* filename) {
 
 void ConwayGrid::save_to_file(const char* filename) {
     FILE *fp;
-    uint16 x, y;
+    int16 x, y;
 
     fp = fopen(filename, "w");
     if (!fp) {
@@ -118,7 +120,7 @@ void ConwayGrid::pause() {
     running = false;
 }
 
-void ConwayGrid::screen_coords_to_grid_coords(int16 x, int16 y, int16 *grid_x, int16 *grid_y) {
+void ConwayGrid::screen_coords_to_grid_coords(int16 x, int16 y, int16 *grid_x, int16 *grid_y) const {
     *grid_x = x / cell_width;
     *grid_y = y / cell_height;
 }

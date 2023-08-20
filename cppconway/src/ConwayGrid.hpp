@@ -30,12 +30,8 @@ public:
     void step();
     void run();
     void pause();
-    void screen_coords_to_grid_coords(int16 x, int16 y, int16 *grid_x, int16 *grid_y);
+    void screen_coords_to_grid_coords(int16 x, int16 y, int16 *grid_x, int16 *grid_y) const;
     void invert_cell(int16 grid_x, int16 grid_y);
-
-    inline bool cell_alive_at(int16 index) {
-        return grid2[index] & 0x10;
-    }
 
     inline bool cell_alive_at(int16 x, int16 y) {
         return grid2[grid_index(x, y)] & 0x10;
@@ -47,7 +43,7 @@ private:
     GridArray grid1;
     GridArray grid2;
 
-    inline void transition_cell_from_dead_to_alive(GridArray &grid, int16 index) {
+    static inline void transition_cell_from_dead_to_alive(GridArray &grid, int16 index) {
         grid[index] |= 0x10;
 
         grid[index - GRID_WIDTH - 1]++;
@@ -64,8 +60,8 @@ private:
         transition_cell_from_dead_to_alive(grid, grid_index(x, y));
     }
 
-    inline void transition_cell_from_alive_to_dead(GridArray &grid, int16 index) {
-        grid1[index] = grid[index] & (~0x10);
+    static inline void transition_cell_from_alive_to_dead(GridArray &grid, int16 index) {
+        grid[index] = grid[index] & (~0x10);
 
         grid[index - GRID_WIDTH - 1]--;
         grid[index - GRID_WIDTH]--;
@@ -78,11 +74,7 @@ private:
 
     }
 
-    inline void transition_cell_from_alive_to_dead(GridArray &grid, int16 x, int16 y) {
-        transition_cell_from_alive_to_dead(grid, grid_index(x, y));
-    }
-
-    inline int16 grid_index(int16 column, int16 row) {
+    inline int16 grid_index(int16 column, int16 row) const {
         return row * width + column;
     }
 };
