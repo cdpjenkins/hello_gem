@@ -47,9 +47,7 @@ private:
     GridArray grid1;
     GridArray grid2;
 
-    inline void transition_cell_from_dead_to_alive(GridArray &grid, int16 x, int16 y) {
-        int16 index = grid_index(x, y);
-
+    inline void transition_cell_from_dead_to_alive(GridArray &grid, int16 index) {
         grid[index] |= 0x10;
 
         grid[index - GRID_WIDTH - 1]++;
@@ -62,9 +60,11 @@ private:
         grid[index + GRID_WIDTH + 1]++;
     }
 
-    inline void transition_cell_from_alive_to_dead(GridArray &grid, int16 x, int16 y) {
-        int16 index = grid_index(x, y);
+    inline void transition_cell_from_dead_to_alive(GridArray &grid, int16 x, int16 y) {
+        transition_cell_from_dead_to_alive(grid, grid_index(x, y));
+    }
 
+    inline void transition_cell_from_alive_to_dead(GridArray &grid, int16 index) {
         grid1[index] = grid[index] & (~0x10);
 
         grid[index - GRID_WIDTH - 1]--;
@@ -75,6 +75,11 @@ private:
         grid[index + GRID_WIDTH - 1]--;
         grid[index + GRID_WIDTH]--;
         grid[index + GRID_WIDTH + 1]--;
+
+    }
+
+    inline void transition_cell_from_alive_to_dead(GridArray &grid, int16 x, int16 y) {
+        transition_cell_from_alive_to_dead(grid, grid_index(x, y));
     }
 
     inline int16 grid_index(int16 column, int16 row) {

@@ -93,24 +93,13 @@ void ConwayGrid::step() {
 
         for (int16 x = 1; x < width - 1; x++) {
             for (int16 y = 1; y < height - 1; y++) {
-                bool new_value;
-
                 int16 index = grid_index(x, y);
 
-                int16 live_neighbours = grid2[index] & 0x0F;
-
-                if (grid2[grid_index(x, y)] & 0x10) {
-                    new_value = live_neighbours == 2 || live_neighbours == 3;
-
-                    if (!new_value) {
-                        transition_cell_from_alive_to_dead(grid1, x, y);
-                    }
-                } else {
-                    new_value = live_neighbours == 3;
-
-                    if (new_value) {
-                        transition_cell_from_dead_to_alive(grid1, x, y);
-                    }
+                unsigned char& current_value = grid2[index];
+                if (current_value == 0x03) {
+                    transition_cell_from_dead_to_alive(grid1, index);
+                } else if ((current_value & 0x10) && (current_value != 0x12) && (current_value != 0x13)) {
+                    transition_cell_from_alive_to_dead(grid1, index);
                 }
             }
         }
