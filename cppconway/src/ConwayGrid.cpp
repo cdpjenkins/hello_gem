@@ -39,7 +39,9 @@ void ConwayGrid::load_from_file(const char* filename) {
         char* ptr;
 
         for (ptr = row_string, x = 0; ptr != NULL && x < width; ptr++, x++) {
-            set_cell(grid1, x, y, *ptr == 'x');
+            if (*ptr == 'x') {
+                set_cell_from_false_to_true(grid1, x, y, true);
+            }
         }
     }
 
@@ -85,22 +87,6 @@ void ConwayGrid::print() {
     printf("\n");
 }
 
-int16 ConwayGrid::num_living_neighbours(int16 x, int16 y) {
-    int16 index = grid_index(x, y);
-
-
-    int16 a1 = cell_alive_at(index - GRID_WIDTH - 1) ? 1 : 0;
-    int16 a2 = cell_alive_at(index - GRID_WIDTH) ? 1 : 0;
-    int16 a3 = cell_alive_at(index - GRID_WIDTH + 1) ? 1 : 0;
-    int16 a4 = cell_alive_at(index - 1) ? 1 : 0;
-    int16 a5 = cell_alive_at(index + 1) ? 1 : 0;
-    int16 a6 = cell_alive_at(index + GRID_WIDTH - 1) ? 1 : 0;
-    int16 a7 = cell_alive_at(index + GRID_WIDTH) ? 1 : 0;
-    int16 a8 = cell_alive_at(index + GRID_WIDTH + 1) ? 1 : 0;
-
-    return a1 + a2 + a3 + a4 + a5 + a6 + a7 + a8;
-}
-
 void ConwayGrid::step() {
     if (running) {
         memcpy(&grid2, &grid1, sizeof(grid1));
@@ -111,19 +97,19 @@ void ConwayGrid::step() {
 
                 int16 index = grid_index(x, y);
 
-                int16 live_neighbours = num_living_neighbours(x, y);
+                int16 live_neighbours = grid2[index] & 0x0F;
 
                 if (grid2[grid_index(x, y)] & 0x10) {
                     new_value = live_neighbours == 2 || live_neighbours == 3;
 
                     if (!new_value) {
-                        grid1[index] = grid2[index] & (~0x10);
+                        set_cell_from_true_to_false(grid1, x, y, false);
                     }
                 } else {
                     new_value = live_neighbours == 3;
 
                     if (new_value) {
-                        grid1[index] = grid2[index] | 0x10;
+                        set_cell_from_false_to_true(grid1, x, y, false);
                     }
                 }
             }

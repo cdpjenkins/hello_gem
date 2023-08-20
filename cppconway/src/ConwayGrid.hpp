@@ -2,6 +2,7 @@
 #define CONWAY_GRID_H
 
 #include <array>
+#include <string>
 using namespace std;
 
 #include "types.hpp"
@@ -46,10 +47,34 @@ private:
     GridArray grid1;
     GridArray grid2;
 
-    int16 num_living_neighbours(int16 x, int16 y);
+    inline void set_cell_from_false_to_true(GridArray &grid, int16 x, int16 y, bool value) {
+        int16 index = grid_index(x, y);
 
-    inline void set_cell(GridArray &grid, int16 x, int16 y, bool value) {
-        grid1[grid_index(x, y)] = value ? 0x10 : 0x00;
+        grid[index] |= 0x10;
+
+        grid[index - GRID_WIDTH - 1]++;
+        grid[index - GRID_WIDTH]++;
+        grid[index - GRID_WIDTH + 1]++;
+        grid[index - 1]++;
+        grid[index + 1]++;
+        grid[index + GRID_WIDTH - 1]++;
+        grid[index + GRID_WIDTH]++;
+        grid[index + GRID_WIDTH + 1]++;
+    }
+
+    inline void set_cell_from_true_to_false(GridArray &grid, int16 x, int16 y, bool value) {
+        int16 index = grid_index(x, y);
+
+        grid1[index] = grid[index] & (~0x10);
+
+        grid[index - GRID_WIDTH - 1]--;
+        grid[index - GRID_WIDTH]--;
+        grid[index - GRID_WIDTH + 1]--;
+        grid[index - 1]--;
+        grid[index + 1]--;
+        grid[index + GRID_WIDTH - 1]--;
+        grid[index + GRID_WIDTH]--;
+        grid[index + GRID_WIDTH + 1]--;
     }
 
     inline int16 grid_index(int16 column, int16 row) {
