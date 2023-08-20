@@ -40,7 +40,7 @@ void ConwayGrid::load_from_file(const char* filename) {
 
         for (ptr = row_string, x = 0; ptr != NULL && x < width; ptr++, x++) {
             if (*ptr == 'x') {
-                set_cell_from_false_to_true(grid1, x, y, true);
+                transition_cell_from_dead_to_alive(grid1, x, y);
             }
         }
     }
@@ -103,13 +103,13 @@ void ConwayGrid::step() {
                     new_value = live_neighbours == 2 || live_neighbours == 3;
 
                     if (!new_value) {
-                        set_cell_from_true_to_false(grid1, x, y, false);
+                        transition_cell_from_alive_to_dead(grid1, x, y);
                     }
                 } else {
                     new_value = live_neighbours == 3;
 
                     if (new_value) {
-                        set_cell_from_false_to_true(grid1, x, y, false);
+                        transition_cell_from_dead_to_alive(grid1, x, y);
                     }
                 }
             }
