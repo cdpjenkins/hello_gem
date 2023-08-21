@@ -14,7 +14,6 @@ ConwayGrid::ConwayGrid(int16 width, int16 height) :
         running(false),
         grid1{},
         grid2{} {
-
 }
 
 void ConwayGrid::init_to_blank() {
@@ -22,6 +21,16 @@ void ConwayGrid::init_to_blank() {
 
     grid1.fill(0x00);
     grid2.fill(0x00);
+
+    for (int16 x = 0; x < width; x++) {
+        grid1[grid_index(x, 0)] = 0x20;
+        grid1[grid_index(x, height - 1)] = 0x20;
+    }
+
+    for (int16 y = 0; y < height; y++) {
+        grid1[grid_index(0, y)] = 0x20;
+        grid1[grid_index(width - 1 , y)] = 0x20;
+    }
 }
 
 void ConwayGrid::load_from_file(const char* filename) {
@@ -96,15 +105,12 @@ void ConwayGrid::step() {
         int16 index = 0;
         for (int16 y = 0; y < height; y++) {
             for (int16 x = 0; x < width; x++, index++) {
-                if (x && y && x != (width - 1) && (y != height - 1) ) {
-
-                    uint8 &current_value = grid2[index];
-                    if (current_value != 0) {
-                        if (current_value == 0x03) {
-                            transition_cell_from_dead_to_alive(grid1, index);
-                        } else if ((current_value & 0x10) && (current_value != 0x12) && (current_value != 0x13)) {
-                            transition_cell_from_alive_to_dead(grid1, index);
-                        }
+                uint8 &current_value = grid2[index];
+                if (current_value != 0) {
+                    if (current_value == 0x03) {
+                        transition_cell_from_dead_to_alive(grid1, index);
+                    } else if ((current_value & 0x10) && (current_value != 0x12) && (current_value != 0x13)) {
+                        transition_cell_from_alive_to_dead(grid1, index);
                     }
                 }
             }
