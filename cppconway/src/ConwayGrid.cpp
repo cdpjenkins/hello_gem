@@ -133,7 +133,10 @@ void ConwayGrid::screen_coords_to_grid_coords(int16 x, int16 y, int16 *grid_x, i
 
 void ConwayGrid::invert_cell(int16 grid_x, int16 grid_y) {
     if (!running) {
-        bool cell_value = grid1[grid_index(grid_x, grid_y)];
-        grid1[grid_index(grid_x, grid_y)] = !cell_value;
+        if (cell_alive_at(grid_x, grid_y)) {
+            transition_cell_from_alive_to_dead(grid1, grid_x, grid_y);
+        } else {
+            transition_cell_from_dead_to_alive(grid1, grid_x, grid_y);
+        }
     }
 }

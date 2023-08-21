@@ -34,7 +34,11 @@ public:
     void invert_cell(int16 grid_x, int16 grid_y);
 
     inline bool cell_alive_at(int16 x, int16 y) {
-        return grid2[grid_index(x, y)] & 0x10;
+        return grid1[grid_index(x, y)] & 0x10;
+    }
+
+    inline bool cell_is_buffer(int x, int y) {
+        return grid1[grid_index(x, y)] & 0x20;
     }
 
 private:
@@ -71,8 +75,12 @@ private:
         grid[index + GRID_WIDTH - 1]--;
         grid[index + GRID_WIDTH]--;
         grid[index + GRID_WIDTH + 1]--;
-
     }
+
+    inline void transition_cell_from_alive_to_dead(GridArray &grid, int16 x, int16 y) {
+        transition_cell_from_alive_to_dead(grid, grid_index(x, y));
+    }
+
 
     inline int16 grid_index(int16 column, int16 row) const {
         return row * width + column;

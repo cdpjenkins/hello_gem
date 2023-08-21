@@ -14,6 +14,7 @@
 
 #define WHITE 0
 #define BLACK 1
+#define RED   2
 
 #define MIN_WIDTH 50
 #define MIN_HEIGHT 50
