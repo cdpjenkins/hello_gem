@@ -43,6 +43,8 @@ typedef struct {
     int16 height;
 } Rectangle;
 
+using ConwayGrid_80_60 = ConwayGrid<80, 60>;
+
 void getinfo(uint16 ap_gtype);
 void event_loop(struct win_data *wd);
 void draw_example(uint16 app_handle, Rectangle *working_area, char *text);
@@ -54,7 +56,7 @@ void start_program();
 bool is_full_window(uint16 handle);
 void do_fulled(uint16 handle);
 void do_sized(uint16 handle, int16 x, int16 y, int16 w, int16 h);
-void draw_conway_grid(uint16 app_handle, Rectangle *working_area, ConwayGrid *grid);
+void draw_conway_grid(uint16 app_handle, Rectangle *working_area, ConwayGrid_80_60 *grid);
 static void draw_rectangle(int16 x, int16 y, int16 width, int16 height, int16 colour);
 void do_menu(struct win_data *wd, int menu_item, bool *quit);
 void pause();
@@ -64,7 +66,7 @@ void run();
 uint16 high_word(void *ptr);
 uint16 low_word(void *ptr);
 
-ConwayGrid grid(GRID_WIDTH, GRID_HEIGHT);
+ConwayGrid_80_60 grid;
 
 /* GEM arrays */
 int16 work_in[11],
@@ -280,7 +282,7 @@ void draw_within_clip(struct win_data *wd, GRECT clip) {
     graf_mouse(M_ON, 0L);
 }
 
-void draw_conway_grid(uint16 app_handle, Rectangle *working_area, ConwayGrid *grid) {
+void draw_conway_grid(uint16 app_handle, Rectangle *working_area, ConwayGrid_80_60 *grid) {
     int x, y;
     int16 x1, y1, x2, y2;
     int16 pxyarray[4];

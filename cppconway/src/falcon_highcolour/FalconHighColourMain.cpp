@@ -33,6 +33,8 @@ constexpr int16 WIDTH_IN_BLOCKS = WIDTH / 16;
 constexpr int16 WIDTH_IN_CELLS = WIDTH / CELL_SIZE;
 constexpr int16 HEIGHT_IN_CELLS = HEIGHT / CELL_SIZE;
 
+using Grid = ConwayGrid<160, 120>;
+
 std::array<uint16, WIDTH * HEIGHT> screen1;
 std::array<uint16, WIDTH * HEIGHT> screen2;
 
@@ -63,12 +65,12 @@ static inline void draw_strip(uint16 *strip, uint16 *ptr) {
     draw_strip_c(strip, ptr);
 }
 
-void draw_in_strips(ConwayGrid *grid) {
+void draw_in_strips(Grid *grid) {
     uint16 *row_ptr = logical_screen;
 
-    for (int16 y = 0; y < GRID_HEIGHT; y += 1, row_ptr += (640 * CELL_SIZE)) {
+    for (int16 y = 0; y < Grid::height; y += 1, row_ptr += (640 * CELL_SIZE)) {
         uint16* pixel_ptr = row_ptr;
-        for (int16 x = 0; x < GRID_WIDTH; x++) {
+        for (int16 x = 0; x < Grid::width; x++) {
             if (grid->cell_alive_at(x, y)) {
                 for (int i = 0; i < CELL_SIZE; i++) {
                     for (int j = 0; j < CELL_SIZE; j++) {
@@ -89,7 +91,7 @@ void draw_in_strips(ConwayGrid *grid) {
 }
 
 int main(int argc, char *argv[]) {
-    ConwayGrid grid(GRID_WIDTH, GRID_HEIGHT);
+    Grid grid;
 
     STScreen screen;
 

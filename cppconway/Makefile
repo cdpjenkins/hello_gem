@@ -29,11 +29,11 @@ make_dist:
 resources: src/conway.*
 	cp src/conway.rsc dist
 
-dist/conway.prg: src/ConwayGui.cpp src/ConwayGrid.cpp
-	${CXX} ${CXXFLAGS} src/ConwayGui.cpp src/ConwayGrid.cpp -o dist/conway.prg  -lgem -lgcc
+dist/conway.prg: src/ConwayGui.cpp src/*.hpp
+	${CXX} ${CXXFLAGS} src/ConwayGui.cpp -o dist/conway.prg  -lgem -lgcc
 
-dist/test.tos: src/ConwayGrid.cpp src/ConwayTest.cpp
-	${CXX} ${CXXFLAGS} src/ConwayGrid.cpp src/ConwayTest.cpp -o dist/test.tos  -lgem -lgcc
+dist/test.tos: src/ConwayTest.cpp
+	${CXX} ${CXXFLAGS} src/ConwayTest.cpp -o dist/test.tos  -lgem -lgcc
 
 %.o : %.cpp src/*.hpp
 	${CXX} -c $(CXXFLAGS) $< -o $@
@@ -44,14 +44,14 @@ src/fastFullScreenMain.o: src/FullScreenMain.cpp src/*.hpp
 src/asm/%.o: src/asm/%.s
 	$(AS) $(ASFLAGS) $< -o $@
 
-dist/fullconw.tos: src/ConwayGrid.o src/FullScreenMain.o src/STScreen.o src/asm/fast_draw.o
-	${CXX} ${CXXFLAGS} src/ConwayGrid.o src/STScreen.o src/FullScreenMain.o src/asm/fast_draw.o -o dist/fullconw.tos -lgcc
+dist/fullconw.tos: src/FullScreenMain.o src/STScreen.o src/asm/fast_draw.o
+	${CXX} ${CXXFLAGS} src/STScreen.o src/FullScreenMain.o src/asm/fast_draw.o -o dist/fullconw.tos -lgcc
 
-dist/fastconw.tos: src/ConwayGrid.o src/FullScreenMain.o src/STScreen.o src/asm/fast_draw.o src/fastFullScreenMain.o
-	${CXX} ${CXXFLAGS} src/ConwayGrid.o src/STScreen.o src/fastFullScreenMain.o src/asm/fast_draw.o -o dist/fastconw.tos -lgcc
+dist/fastconw.tos: src/FullScreenMain.o src/STScreen.o src/asm/fast_draw.o src/fastFullScreenMain.o
+	${CXX} ${CXXFLAGS} src/STScreen.o src/fastFullScreenMain.o src/asm/fast_draw.o -o dist/fastconw.tos -lgcc
 
-dist/highcol.tos: src/falcon_highcolour/FalconHighColourMain.o src/ConwayGrid.o src/STScreen.o src/asm/fast_draw.o src/*.hpp
-	${CXX} ${CXXFLAGS} src/falcon_highcolour/FalconHighColourMain.o src/ConwayGrid.o src/STScreen.o src/asm/fast_draw.o \
+dist/highcol.tos: src/falcon_highcolour/FalconHighColourMain.o src/STScreen.o src/asm/fast_draw.o src/*.hpp
+	${CXX} ${CXXFLAGS} src/falcon_highcolour/FalconHighColourMain.o src/STScreen.o src/asm/fast_draw.o \
 						-o dist/highcol.tos -lgcc
 
 dist/falctest.tos: src/falcon_highcolour/test.o

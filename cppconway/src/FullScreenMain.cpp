@@ -41,6 +41,8 @@ int16 block_index(int16 x, int16 y) {
     return y * WIDTH_IN_BLOCKS * 16 + x;
 }
 
+using Grid = ConwayGrid<80, 60>;
+
 char read_key() {
     uint32 key = Crawio(0x00FF);
 
@@ -65,7 +67,7 @@ static inline void draw_strip(uint8 *strip, uint16 *ptr) {
 #endif
 }
 
-void draw_in_strips(ConwayGrid *grid) {
+void draw_in_strips(Grid *grid) {
     uint16 *ptr = logical_screen;
 
     for (int16 y = 0; y < HEIGHT_IN_CELLS; y += 1) {
@@ -85,7 +87,7 @@ void draw_in_strips(ConwayGrid *grid) {
 }
 
 int main(int argc, char *argv[]) {
-    ConwayGrid grid(GRID_WIDTH, GRID_HEIGHT);
+    Grid grid;
     STScreen screen;
 
     if (argc > 1) {

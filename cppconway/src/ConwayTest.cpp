@@ -1,7 +1,7 @@
 #include "ConwayGrid.hpp"
 
 int main(int argc, char** argv) {
-    ConwayGrid grid(GRID_WIDTH, GRID_HEIGHT);
+    ConwayGrid<40, 30> grid;
     int i;
 
     grid.load_from_file("glider.cwy");
