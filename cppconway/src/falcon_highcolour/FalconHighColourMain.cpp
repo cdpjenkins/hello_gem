@@ -5,6 +5,7 @@
 
 #include <cstring>
 #include <array>
+#include <memory>
 
 #include "../ConwayGrid.hpp"
 #include "../STScreen.hpp"
@@ -35,11 +36,13 @@ constexpr int16 HEIGHT_IN_CELLS = HEIGHT / CELL_SIZE;
 
 using Grid = ConwayGrid<160, 120>;
 
-std::array<uint16, WIDTH * HEIGHT> screen1;
-std::array<uint16, WIDTH * HEIGHT> screen2;
+using ScreenArray = std::array<uint16, WIDTH * HEIGHT>;
 
-uint16 *logical_screen = screen1.data();
-uint16 *physical_screen = screen2.data();
+std::unique_ptr<ScreenArray> screen1 = make_unique<ScreenArray>();
+std::unique_ptr<ScreenArray> screen2 = make_unique<ScreenArray>();
+
+uint16 *logical_screen = screen1->data();
+uint16 *physical_screen = screen2->data();
 
 int16 block_index(int16 x, int16 y) {
     return y * WIDTH_IN_BLOCKS * 16 + x;
@@ -65,13 +68,13 @@ static inline void draw_strip(uint16 *strip, uint16 *ptr) {
     draw_strip_c(strip, ptr);
 }
 
-void draw_in_strips(Grid *grid) {
+void draw_in_strips(Grid& grid) {
     uint16 *row_ptr = logical_screen;
 
     for (int16 y = 0; y < Grid::height; y += 1, row_ptr += (640 * CELL_SIZE)) {
         uint16* pixel_ptr = row_ptr;
         for (int16 x = 0; x < Grid::width; x++) {
-            if (grid->cell_alive_at(x, y)) {
+            if (grid.cell_alive_at(x, y)) {
                 for (int i = 0; i < CELL_SIZE; i++) {
                     for (int j = 0; j < CELL_SIZE; j++) {
                         pixel_ptr[640 * j] = 0x0000;
@@ -91,21 +94,20 @@ void draw_in_strips(Grid *grid) {
 }
 
 int main(int argc, char *argv[]) {
-    Grid grid;
+    std::unique_ptr<Grid> grid = make_unique<Grid>();
 
     STScreen screen;
 
     if (argc > 1) {
-        grid.load_from_file(argv[1]);
+        grid->load_from_file(argv[1]);
     } else {
-        grid.load_from_file("gosper.cwy");
+        grid->load_from_file("gosper.cwy");
     }
 
     // screen1.fill(0xFFFF);
     // screen2.fill(0xFFFF);
-    // memset(screen1.data(), 0xFF, sizeof(screen1) / 2);
-
-    memset(screen2.data(), 0xFF, sizeof(screen2));
+    memset(screen1->data(), 0xFF, sizeof(screen1) / 2);
+    memset(screen2->data(), 0xFF, sizeof(screen2));
 
     Cursconf(0, 0);
 
@@ -116,7 +118,7 @@ int main(int argc, char *argv[]) {
 
     VsetScreen(logical_screen, physical_screen, REZ_FROM_MODE, PLANES_16 | WIDTH_640 | VGA | NTSC);
 
-    grid.run();
+    grid->run();
     bool quit = false;
 
     Super(0);
@@ -131,13 +133,13 @@ int main(int argc, char *argv[]) {
 
         // printf("about to step for first time\n");
 
-        grid.step();
+        grid->step();
 
         // printf("done step\n");
 
         time_after_step_before_draw = *timer;
 
-        draw_in_strips(&grid);
+        draw_in_strips(*grid);
 
         time_after_draw = *timer;
 
@@ -160,11 +162,11 @@ int main(int argc, char *argv[]) {
                     break;
                 case 'r':
                 case 'R':
-                    grid.run();
+                    grid->run();
                     break;
                 case 'p':
                 case 'P':
-                    grid.pause();
+                    grid->pause();
                     break;
             }
         }

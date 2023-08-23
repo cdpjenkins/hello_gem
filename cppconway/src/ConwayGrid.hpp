@@ -22,6 +22,8 @@ public:
             running(false),
             grid1(),
             grid2() {
+
+        init_to_blank();
     }
 
     void init_to_blank() {
