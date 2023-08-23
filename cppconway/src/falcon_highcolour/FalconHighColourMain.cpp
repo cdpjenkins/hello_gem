@@ -87,12 +87,7 @@ void draw_in_strips(ConwayGrid *grid) {
 }
 
 int main(int argc, char *argv[]) {
-    // printf("main\n");
-
     ConwayGrid grid(GRID_WIDTH, GRID_HEIGHT);
-
-    printf("grid at: %08X\n", &grid);
-    getchar();
 
     STScreen screen;
 
@@ -102,25 +97,11 @@ int main(int argc, char *argv[]) {
         grid.load_from_file("gosper.cwy");
     }
 
-    printf("about to not memset %d %d\n", sizeof(screen1), sizeof(screen2));
-
-    printf("%08X %08X %08X\n", &screen1, screen1.data(), sizeof(screen1));
-    printf("%08X %08X\n", screen2.data(), sizeof(screen2));
-
-    getchar();    
-
     // screen1.fill(0xFFFF);
     // screen2.fill(0xFFFF);
     // memset(screen1.data(), 0xFF, sizeof(screen1) / 2);
 
-    printf("middle\n");
-
     memset(screen2.data(), 0xFF, sizeof(screen2));
-
-    getchar();    
-
-
-    printf("done memset\n");
 
     Cursconf(0, 0);
 
