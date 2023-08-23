@@ -12,8 +12,8 @@ ConwayGrid::ConwayGrid(int16 width, int16 height) :
         cell_width(CELL_WIDTH),
         cell_height(CELL_HEIGHT),
         running(false),
-        grid1{},
-        grid2{} {
+        grid1(),
+        grid2() {
 }
 
 void ConwayGrid::init_to_blank() {
