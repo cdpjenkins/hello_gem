@@ -74,20 +74,21 @@ void draw_in_strips(Grid& grid) {
     for (int16 y = 0; y < Grid::height; y += 1, row_ptr += (640 * CELL_SIZE)) {
         uint16* pixel_ptr = row_ptr;
         for (int16 x = 0; x < Grid::width; x++) {
+
+            uint16 colour;
             if (grid.cell_alive_at(x, y)) {
-                for (int i = 0; i < CELL_SIZE; i++) {
-                    for (int j = 0; j < CELL_SIZE; j++) {
-                        pixel_ptr[640 * j] = 0x0000;
-                    }
-                    pixel_ptr++;
-                }
+                colour = 0x000;
+//            } else if (grid.cell_is_buffer(x, y)) {
+//                colour = 0b1100000000011000;
             } else {
-                for (int i = 0; i < CELL_SIZE; i++) {
-                    for (int j = 0; j < CELL_SIZE; j++) {
-                        pixel_ptr[640 * j] = 0b1110011100011100;
-                    }
-                    pixel_ptr++;
+                colour = 0b1110011100011100;
+            }
+
+            for (int i = 0; i < CELL_SIZE; i++) {
+                for (int j = 0; j < CELL_SIZE; j++) {
+                    pixel_ptr[640 * j] = colour;
                 }
+                pixel_ptr++;
             }
         }
     }
@@ -104,10 +105,10 @@ int main(int argc, char *argv[]) {
         grid->load_from_file("gosper.cwy");
     }
 
-    // screen1.fill(0xFFFF);
-    // screen2.fill(0xFFFF);
-    memset(screen1->data(), 0xFF, sizeof(screen1) / 2);
-    memset(screen2->data(), 0xFF, sizeof(screen2));
+     screen1->fill(0xFFFF);
+     screen2->fill(0xFFFF);
+//    memset(screen1->data(), 0xFF, sizeof(screen1));
+//    memset(screen2->data(), 0xFF, sizeof(screen2));
 
     Cursconf(0, 0);
 
