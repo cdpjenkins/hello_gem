@@ -27,12 +27,11 @@ constexpr int16 REZ_FROM_MODE = 3;
 
 constexpr int16 WIDTH = 640;
 constexpr int16 HEIGHT = 480;
-constexpr int16 CELL_WIDTH = 4;
-constexpr int16 CELL_HEIGHT = 4;
+constexpr int16 CELL_SIZE = 4;
 
 constexpr int16 WIDTH_IN_BLOCKS = WIDTH / 16;
-constexpr int16 WIDTH_IN_CELLS = WIDTH / CELL_WIDTH;
-constexpr int16 HEIGHT_IN_CELLS = HEIGHT / CELL_HEIGHT;
+constexpr int16 WIDTH_IN_CELLS = WIDTH / CELL_SIZE;
+constexpr int16 HEIGHT_IN_CELLS = HEIGHT / CELL_SIZE;
 
 std::array<uint16, WIDTH * HEIGHT> screen1;
 std::array<uint16, WIDTH * HEIGHT> screen2;
@@ -67,22 +66,22 @@ static inline void draw_strip(uint16 *strip, uint16 *ptr) {
 void draw_in_strips(ConwayGrid *grid) {
     uint16 *row_ptr = logical_screen;
 
-    for (int16 y = 0; y < GRID_HEIGHT; y += 1, row_ptr += (640 * CELL_HEIGHT)) {
+    for (int16 y = 0; y < GRID_HEIGHT; y += 1, row_ptr += (640 * CELL_SIZE)) {
         uint16* pixel_ptr = row_ptr;
         for (int16 x = 0; x < GRID_WIDTH; x++) {
             if (grid->cell_alive_at(x, y)) {
-                for (int i = 0; i < CELL_HEIGHT; i++) {
-                    pixel_ptr[640] = 0x0000;
-                    pixel_ptr[640 * 2] = 0x0000;
-                    pixel_ptr[640 * 3] = 0x0000;
-                    *pixel_ptr++ = 0x0000;
+                for (int i = 0; i < CELL_SIZE; i++) {
+                    for (int j = 0; j < CELL_SIZE; j++) {
+                        pixel_ptr[640 * j] = 0x0000;
+                    }
+                    pixel_ptr++;
                 }
             } else {
-                for (int i = 0; i < CELL_HEIGHT; i++) {
-                    for (int j = 1; j < CELL_WIDTH; j++) {
+                for (int i = 0; i < CELL_SIZE; i++) {
+                    for (int j = 0; j < CELL_SIZE; j++) {
                         pixel_ptr[640 * j] = 0b1110011100011100;
                     }
-                    *pixel_ptr++ = 0b1110011100011100;
+                    pixel_ptr++;
                 }
             }
         }

@@ -25,8 +25,7 @@ public:
     void step();
     void run();
     void pause();
-    void screen_coords_to_grid_coords(int16 x, int16 y, int16 *grid_x, int16 *grid_y, int16 cell_width,
-                                      int16 cell_height) const;
+    void screen_coords_to_grid_coords(int16 x, int16 y, int16 *grid_x, int16 *grid_y, int16 cell_size) const;
     void invert_cell(int16 grid_x, int16 grid_y);
 
     inline bool cell_alive_at(int16 x, int16 y) {

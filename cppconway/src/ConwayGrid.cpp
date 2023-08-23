@@ -124,10 +124,9 @@ void ConwayGrid::pause() {
     running = false;
 }
 
-void ConwayGrid::screen_coords_to_grid_coords(int16 x, int16 y, int16 *grid_x, int16 *grid_y, int16 cell_width,
-                                              int16 cell_height) const {
-    *grid_x = x / cell_width;
-    *grid_y = y / cell_height;
+void ConwayGrid::screen_coords_to_grid_coords(int16 x, int16 y, int16 *grid_x, int16 *grid_y, int16 cell_size) const {
+    *grid_x = x / cell_size;
+    *grid_y = y / cell_size;
 }
 
 void ConwayGrid::invert_cell(int16 grid_x, int16 grid_y) {

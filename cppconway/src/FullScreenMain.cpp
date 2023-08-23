@@ -26,11 +26,10 @@ constexpr int16 REZ_FROM_MODE = 3;
 
 constexpr int16 WIDTH = 640;
 constexpr int16 HEIGHT = 480;
-constexpr int16 CELL_WIDTH = 8;
-constexpr int16 CELL_HEIGHT = 8;
+constexpr int16 CELL_SIZE = 8;
 constexpr int16 WIDTH_IN_BLOCKS = WIDTH / 16;
-constexpr int16 WIDTH_IN_CELLS = WIDTH / CELL_WIDTH;
-constexpr int16 HEIGHT_IN_CELLS = HEIGHT / CELL_HEIGHT;
+constexpr int16 WIDTH_IN_CELLS = WIDTH / CELL_SIZE;
+constexpr int16 HEIGHT_IN_CELLS = HEIGHT / CELL_SIZE;
 
 uint16 screen1[WIDTH * HEIGHT / 16];
 uint16 screen2[WIDTH * HEIGHT / 16];
