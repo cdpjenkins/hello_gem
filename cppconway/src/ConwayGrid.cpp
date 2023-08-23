@@ -9,8 +9,6 @@
 ConwayGrid::ConwayGrid(int16 width, int16 height) :
         width(width),
         height(height),
-        cell_width(CELL_WIDTH),
-        cell_height(CELL_HEIGHT),
         running(false),
         grid1(),
         grid2() {
@@ -126,7 +124,8 @@ void ConwayGrid::pause() {
     running = false;
 }
 
-void ConwayGrid::screen_coords_to_grid_coords(int16 x, int16 y, int16 *grid_x, int16 *grid_y) const {
+void ConwayGrid::screen_coords_to_grid_coords(int16 x, int16 y, int16 *grid_x, int16 *grid_y, int16 cell_width,
+                                              int16 cell_height) const {
     *grid_x = x / cell_width;
     *grid_y = y / cell_height;
 }

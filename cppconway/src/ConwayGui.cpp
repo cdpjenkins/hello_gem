@@ -29,6 +29,9 @@
 #define SCANCODE_Q 16
 #define SCANCODE_R 19
 
+#define CELL_WIDTH 8
+#define CELL_HEIGHT 8
+
 struct win_data {
   int16 handle;
   char title[255];
@@ -237,7 +240,7 @@ void event_loop (struct win_data* wd) {
 
       wind_get (wd->handle, WF_FIRSTXYWH,
           &rec2.g_x, &rec2.g_y, &rec2.g_w, &rec2.g_h);
-      grid.screen_coords_to_grid_coords(ev_mmox - rec2.g_x, ev_mmoy - rec2.g_y, &grid_x, &grid_y);
+        grid.screen_coords_to_grid_coords(ev_mmox - rec2.g_x, ev_mmoy - rec2.g_y, &grid_x, &grid_y, 0, 0);
       grid.invert_cell(grid_x, grid_y);
       do_redraw(wd, &rec2);
     }
@@ -288,17 +291,17 @@ void draw_conway_grid(uint16 app_handle, Rectangle* working_area, ConwayGrid* gr
   vsf_color(app_handle, BLACK);
   for (y = 0, sy = working_area->y;
        y < grid->height;
-       y++, sy+=grid->cell_height) {
-    draw_rectangle(working_area->x, sy, working_area->width, grid->cell_height, WHITE);
+       y++, sy += CELL_HEIGHT) {
+    draw_rectangle(working_area->x, sy, working_area->width, CELL_HEIGHT, WHITE);
     for (x = 0, sx = working_area->x;
          x < grid->width;
-         x++, sx += grid->cell_width) {
-      sx = working_area->x + x * grid->cell_width;
+         x++, sx += CELL_HEIGHT) {
+      sx = working_area->x + x * CELL_HEIGHT;
       if (grid->cell_alive_at(x, y)) {
         draw_rectangle(sx,
                        sy,
-                       grid->cell_width - 1,
-                       grid->cell_height - 1,
+                       CELL_HEIGHT - 1,
+                       CELL_HEIGHT - 1,
                        BLACK);
       }
     }

@@ -14,22 +14,25 @@
 #define VsetScreen Vsetscreen
 #endif
 
-const int16 PLANES_1 = 0x00;
-const int16 PLANES_2 = 0x01;
-const int16 PLANES_4 = 0x02;
-const int16 PLANES_8 = 0x03;
-const int16 PLANES_16 = 0x04;
-const int16 WIDTH_640 = 0x08;
-const int16 VGA = 0x10;
-const int16 NTSC = 0x00;
+constexpr int16 PLANES_1 = 0x00;
+constexpr int16 PLANES_2 = 0x01;
+constexpr int16 PLANES_4 = 0x02;
+constexpr int16 PLANES_8 = 0x03;
+constexpr int16 PLANES_16 = 0x04;
+constexpr int16 WIDTH_640 = 0x08;
+constexpr int16 VGA = 0x10;
+constexpr int16 NTSC = 0x00;
 
-const int16 REZ_FROM_MODE = 3;
+constexpr int16 REZ_FROM_MODE = 3;
 
-const int16 WIDTH = 640;
-const int16 HEIGHT = 480;
-const int16 WIDTH_IN_BLOCKS = WIDTH / 16;
-const int16 WIDTH_IN_CELLS = WIDTH / CELL_WIDTH;
-const int16 HEIGHT_IN_CELLS = HEIGHT / CELL_HEIGHT;
+constexpr int16 WIDTH = 640;
+constexpr int16 HEIGHT = 480;
+constexpr int16 CELL_WIDTH = 4;
+constexpr int16 CELL_HEIGHT = 4;
+
+constexpr int16 WIDTH_IN_BLOCKS = WIDTH / 16;
+constexpr int16 WIDTH_IN_CELLS = WIDTH / CELL_WIDTH;
+constexpr int16 HEIGHT_IN_CELLS = HEIGHT / CELL_HEIGHT;
 
 std::array<uint16, WIDTH * HEIGHT> screen1;
 std::array<uint16, WIDTH * HEIGHT> screen2;

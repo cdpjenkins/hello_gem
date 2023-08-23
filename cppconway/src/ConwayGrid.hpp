@@ -9,17 +9,12 @@ using namespace std;
 
 #define GRID_WIDTH 160
 #define GRID_HEIGHT 120
-#define CELL_WIDTH 4
-#define CELL_HEIGHT 4
-
 #define MAX_LINE_LENGTH 1000
 
 class ConwayGrid {
 public:
     int16 width;
     int16 height;
-    int16 cell_width;
-    int16 cell_height;
     bool running;
 
     ConwayGrid(int16 width, int16 height);
@@ -30,7 +25,8 @@ public:
     void step();
     void run();
     void pause();
-    void screen_coords_to_grid_coords(int16 x, int16 y, int16 *grid_x, int16 *grid_y) const;
+    void screen_coords_to_grid_coords(int16 x, int16 y, int16 *grid_x, int16 *grid_y, int16 cell_width,
+                                      int16 cell_height) const;
     void invert_cell(int16 grid_x, int16 grid_y);
 
     inline bool cell_alive_at(int16 x, int16 y) {
