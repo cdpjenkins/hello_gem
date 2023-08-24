@@ -24,15 +24,15 @@ constexpr int16 NTSC = 0x00;
 
 constexpr int16 REZ_FROM_MODE = 3;
 
-constexpr int16 WIDTH = 640;
+constexpr int16 SCREEN_WIDTH = 640;
 constexpr int16 HEIGHT = 480;
 constexpr int16 CELL_SIZE = 8;
-constexpr int16 WIDTH_IN_BLOCKS = WIDTH / 16;
-constexpr int16 WIDTH_IN_CELLS = WIDTH / CELL_SIZE;
+constexpr int16 WIDTH_IN_BLOCKS = SCREEN_WIDTH / 16;
+constexpr int16 WIDTH_IN_CELLS = SCREEN_WIDTH / CELL_SIZE;
 constexpr int16 HEIGHT_IN_CELLS = HEIGHT / CELL_SIZE;
 
-uint16 screen1[WIDTH * HEIGHT / 16];
-uint16 screen2[WIDTH * HEIGHT / 16];
+uint16 screen1[SCREEN_WIDTH * HEIGHT / 16];
+uint16 screen2[SCREEN_WIDTH * HEIGHT / 16];
 
 uint16 *logical_screen = screen1;
 uint16 *physical_screen = screen2;

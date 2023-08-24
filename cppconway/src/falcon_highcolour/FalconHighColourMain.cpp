@@ -26,23 +26,23 @@ constexpr int16 NTSC = 0x00;
 
 constexpr int16 REZ_FROM_MODE = 3;
 
-constexpr int16 WIDTH = 640;
-constexpr int16 HEIGHT = 480;
+constexpr int16 SCREEN_WIDTH = 640;
+constexpr int16 SCREEN_HEIGHT = 480;
+
 constexpr int16 CELL_SIZE = 1;
+constexpr int16 WIDTH_IN_BLOCKS = SCREEN_WIDTH / 16;
+constexpr int16 WIDTH_IN_CELLS = SCREEN_WIDTH / CELL_SIZE;
+constexpr int16 HEIGHT_IN_CELLS = SCREEN_HEIGHT / CELL_SIZE;
 
-constexpr int16 WIDTH_IN_BLOCKS = WIDTH / 16;
-constexpr int16 WIDTH_IN_CELLS = WIDTH / CELL_SIZE;
-constexpr int16 HEIGHT_IN_CELLS = HEIGHT / CELL_SIZE;
+using Grid = ConwayGrid<SCREEN_WIDTH / CELL_SIZE, SCREEN_HEIGHT / CELL_SIZE>;
 
-using Grid = ConwayGrid<640, 480>;
+using ScreenArray = std::array<uint16, SCREEN_WIDTH * SCREEN_HEIGHT>;
 
-using ScreenArray = std::array<uint16, WIDTH * HEIGHT>;
+ScreenArray screen1;
+ScreenArray screen2;
 
-std::unique_ptr<ScreenArray> screen1 = make_unique<ScreenArray>();
-std::unique_ptr<ScreenArray> screen2 = make_unique<ScreenArray>();
-
-uint16 *logical_screen = screen1->data();
-uint16 *physical_screen = screen2->data();
+uint16 *logical_screen = screen1.data();
+uint16 *physical_screen = screen2.data();
 
 int16 block_index(int16 x, int16 y) {
     return y * WIDTH_IN_BLOCKS * 16 + x;
@@ -105,12 +105,10 @@ int main(int argc, char *argv[]) {
         grid->load_from_file("gosper.cwy");
     }
 
-     screen1->fill(0xFFFF);
-     screen2->fill(0xFFFF);
-//    memset(screen1->data(), 0xFF, sizeof(screen1));
-//    memset(screen2->data(), 0xFF, sizeof(screen2));
-
     Cursconf(0, 0);
+
+    screen1.fill(0xFFFF);
+    screen2.fill(0xFFFF);
 
     int16 saved_rez = VsetMode(-1);
 
