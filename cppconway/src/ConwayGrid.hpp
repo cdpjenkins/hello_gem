@@ -14,8 +14,8 @@ using namespace std;
 template<int GRID_WIDTH, int GRID_HEIGHT>
 class ConwayGrid {
 public:
-    static constexpr int16 width = GRID_WIDTH;
-    static constexpr int16 height = GRID_HEIGHT;
+    static constexpr int width = GRID_WIDTH;
+    static constexpr int height = GRID_HEIGHT;
     bool running;
 
     ConwayGrid() :
@@ -32,12 +32,12 @@ public:
         grid1.fill(0x00);
         grid2.fill(0x00);
 
-        for (int16 x = 0; x < width; x++) {
+        for (int x = 0; x < width; x++) {
             grid1[grid_index(x, 0)] = 0x20;
             grid1[grid_index(x, height - 1)] = 0x20;
         }
 
-        for (int16 y = 0; y < height; y++) {
+        for (int y = 0; y < height; y++) {
             grid1[grid_index(0, y)] = 0x20;
             grid1[grid_index(width - 1 , y)] = 0x20;
         }
@@ -56,8 +56,8 @@ public:
             exit(1);
         }
 
-        for (int16 y = 0; fgets(row_string, MAX_LINE_LENGTH, fp) != nullptr && y < height; y++) {
-            int16 x;
+        for (int y = 0; fgets(row_string, MAX_LINE_LENGTH, fp) != nullptr && y < height; y++) {
+            int x;
             char* ptr;
 
             for (ptr = row_string, x = 0; ptr != nullptr && x < width; ptr++, x++) {
@@ -72,7 +72,7 @@ public:
 
     void save_to_file(const char* filename) {
         FILE *fp;
-        int16 x, y;
+        int x, y;
 
         fp = fopen(filename, "w");
         if (!fp) {
@@ -96,8 +96,8 @@ public:
     }
 
     void print() {
-        for (int16 y = 0; y < height; y++) {
-            for (int16 x = 0; x < width; x++) {
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
                 if (cell_alive_at(x, y)) {
                     printf("x");
                 } else {
@@ -113,9 +113,9 @@ public:
         if (running) {
             memcpy(&grid2, &grid1, sizeof(grid1));
 
-            int16 index = 0;
-            for (int16 y = 0; y < height; y++) {
-                for (int16 x = 0; x < width; x++, index++) {
+            int index = 0;
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++, index++) {
                     uint8 &current_value = grid2[index];
                     if (current_value != 0) {
                         if (current_value == 0x03) {
@@ -137,12 +137,13 @@ public:
         running = false;
     }
 
-    void screen_coords_to_grid_coords(int16 x, int16 y, int16 *grid_x, int16 *grid_y, int16 cell_size) const {
+    // TODO use C++ references for out parameters here
+    void screen_coords_to_grid_coords(int x, int y, int *grid_x, int *grid_y, int cell_size) const {
         *grid_x = x / cell_size;
         *grid_y = y / cell_size;
     }
 
-    void invert_cell(int16 grid_x, int16 grid_y) {
+    void invert_cell(int grid_x, int grid_y) {
         if (!running) {
             if (cell_alive_at(grid_x, grid_y)) {
                 transition_cell_from_alive_to_dead(grid1, grid_x, grid_y);
@@ -152,7 +153,7 @@ public:
         }
     }
 
-    inline bool cell_alive_at(int16 x, int16 y) {
+    inline bool cell_alive_at(int x, int y) {
         return grid1[grid_index(x, y)] & 0x10;
     }
 
@@ -166,7 +167,7 @@ private:
     GridArray grid1;
     GridArray grid2;
 
-    static inline void transition_cell_from_dead_to_alive(GridArray &grid, int16 index) {
+    static inline void transition_cell_from_dead_to_alive(GridArray &grid, int index) {
         grid[index] |= 0x10;
 
         grid[index - GRID_WIDTH - 1]++;
@@ -179,11 +180,11 @@ private:
         grid[index + GRID_WIDTH + 1]++;
     }
 
-    inline void transition_cell_from_dead_to_alive(GridArray &grid, int16 x, int16 y) {
+    inline void transition_cell_from_dead_to_alive(GridArray &grid, int x, int y) {
         transition_cell_from_dead_to_alive(grid, grid_index(x, y));
     }
 
-    static inline void transition_cell_from_alive_to_dead(GridArray &grid, int16 index) {
+    static inline void transition_cell_from_alive_to_dead(GridArray &grid, int index) {
         grid[index] = grid[index] & (~0x10);
 
         grid[index - GRID_WIDTH - 1]--;
@@ -196,12 +197,12 @@ private:
         grid[index + GRID_WIDTH + 1]--;
     }
 
-    inline void transition_cell_from_alive_to_dead(GridArray &grid, int16 x, int16 y) {
+    inline void transition_cell_from_alive_to_dead(GridArray &grid, int x, int y) {
         transition_cell_from_alive_to_dead(grid, grid_index(x, y));
     }
 
 
-    inline int16 grid_index(int16 column, int16 row) const {
+    inline int grid_index(int column, int row) const {
         return row * width + column;
     }
 };

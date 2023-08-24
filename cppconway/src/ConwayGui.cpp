@@ -236,7 +236,7 @@ void event_loop(struct win_data *wd) {
             }
         }
         if (events & MU_BUTTON) {
-            int16 grid_x, grid_y;
+            int grid_x, grid_y;
             GRECT rec2;
 
             wind_get (wd->handle, WF_FIRSTXYWH,

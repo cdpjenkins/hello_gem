@@ -28,13 +28,13 @@ constexpr int16 REZ_FROM_MODE = 3;
 
 constexpr int16 WIDTH = 640;
 constexpr int16 HEIGHT = 480;
-constexpr int16 CELL_SIZE = 4;
+constexpr int16 CELL_SIZE = 1;
 
 constexpr int16 WIDTH_IN_BLOCKS = WIDTH / 16;
 constexpr int16 WIDTH_IN_CELLS = WIDTH / CELL_SIZE;
 constexpr int16 HEIGHT_IN_CELLS = HEIGHT / CELL_SIZE;
 
-using Grid = ConwayGrid<160, 120>;
+using Grid = ConwayGrid<640, 480>;
 
 using ScreenArray = std::array<uint16, WIDTH * HEIGHT>;
 
