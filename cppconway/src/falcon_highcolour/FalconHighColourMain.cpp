@@ -86,13 +86,10 @@ void draw_in_strips(Grid& grid) {
 
             for (int i = 0; i < CELL_SIZE_MINUS_PADDING; i++) {
                 for (int j = 0; j < CELL_SIZE_MINUS_PADDING; j++) {
-                    pixel_ptr[640 * j] = colour;
+                    pixel_ptr[640 * i + j] = colour;
                 }
-                pixel_ptr++;
             }
-            if (CELL_SIZE_MINUS_PADDING > 1) {
-                pixel_ptr++;
-            }
+            pixel_ptr += CELL_SIZE;
         }
     }
 }
