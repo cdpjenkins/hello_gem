@@ -30,6 +30,7 @@ constexpr int16 SCREEN_WIDTH = 640;
 constexpr int16 SCREEN_HEIGHT = 480;
 
 constexpr int16 CELL_SIZE = 4;
+constexpr int16 CELL_SIZE_MINUS_PADDING = max(CELL_SIZE - 1, 1);
 constexpr int16 WIDTH_IN_BLOCKS = SCREEN_WIDTH / 16;
 constexpr int16 WIDTH_IN_CELLS = SCREEN_WIDTH / CELL_SIZE;
 constexpr int16 HEIGHT_IN_CELLS = SCREEN_HEIGHT / CELL_SIZE;
@@ -77,17 +78,19 @@ void draw_in_strips(Grid& grid) {
 
             uint16 colour;
             if (grid.cell_alive_at(x, y)) {
-                colour = 0x000;
-//            } else if (grid.cell_is_buffer(x, y)) {
-//                colour = 0b1100000000011000;
+                colour = 0x0000;
             } else {
-                colour = 0b1110011100011100;
+//                colour = 0b1110011100011100;
+                colour = 0xFFFF;
             }
 
-            for (int i = 0; i < CELL_SIZE; i++) {
-                for (int j = 0; j < CELL_SIZE; j++) {
+            for (int i = 0; i < CELL_SIZE_MINUS_PADDING; i++) {
+                for (int j = 0; j < CELL_SIZE_MINUS_PADDING; j++) {
                     pixel_ptr[640 * j] = colour;
                 }
+                pixel_ptr++;
+            }
+            if (CELL_SIZE_MINUS_PADDING > 1) {
                 pixel_ptr++;
             }
         }
