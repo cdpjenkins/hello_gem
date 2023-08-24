@@ -6,7 +6,7 @@ else
 	PREFIX=m68k-atari-mint-
 endif
 
-CXXFLAGS= -m68000 -std=c++17
+CXXFLAGS=-O3 -m68000 -std=c++17
 ASFLAGS=--register-prefix-optional
 
 CC=$(PREFIX)gcc
