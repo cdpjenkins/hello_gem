@@ -69,7 +69,7 @@ static inline void draw_strip(uint16 *strip, uint16 *ptr) {
     draw_strip_c(strip, ptr);
 }
 
-void draw_in_strips(Grid& grid) {
+void draw(Grid& grid) {
     uint16 *row_ptr = logical_screen;
 
     for (int16 y = 0; y < Grid::height; y += 1, row_ptr += (640 * CELL_SIZE)) {
@@ -138,7 +138,7 @@ int main(int argc, char *argv[]) {
 
         time_after_step_before_draw = *timer;
 
-        draw_in_strips(*grid);
+        draw(*grid);
 
         time_after_draw = *timer;
 
