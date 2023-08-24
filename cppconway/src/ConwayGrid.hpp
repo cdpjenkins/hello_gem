@@ -113,15 +113,17 @@ public:
         if (running) {
             memcpy(&grid2, &grid1, sizeof(grid1));
 
-            int index = 0;
-            for (int y = 0; y < height; y++) {
-                for (int x = 0; x < width; x++, index++) {
-                    uint8 &current_value = grid2[index];
-                    if (current_value != 0) {
-                        if (current_value == 0x03) {
-                            transition_cell_from_dead_to_alive(grid1, index);
-                        } else if ((current_value & 0x10) && (current_value != 0x12) && (current_value != 0x13)) {
-                            transition_cell_from_alive_to_dead(grid1, index);
+            for (int index = 0; index < width*height; index += 4) {
+                uint32* long_word_ptr = reinterpret_cast<uint32*>(&grid2[index]);
+                if (*long_word_ptr) {
+                    for (int i = 0; i < 4; i++) {
+                        uint8 &current_value = grid2[index + i];
+                        if (current_value != 0) {
+                            if (current_value == 0x03) {
+                                transition_cell_from_dead_to_alive(grid1, index + i);
+                            } else if ((current_value & 0x10) && (current_value != 0x12) && (current_value != 0x13)) {
+                                transition_cell_from_alive_to_dead(grid1, index + i);
+                            }
                         }
                     }
                 }

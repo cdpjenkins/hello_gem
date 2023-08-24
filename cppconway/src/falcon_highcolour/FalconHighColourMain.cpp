@@ -29,7 +29,7 @@ constexpr int16 REZ_FROM_MODE = 3;
 constexpr int16 SCREEN_WIDTH = 640;
 constexpr int16 SCREEN_HEIGHT = 480;
 
-constexpr int16 CELL_SIZE = 1;
+constexpr int16 CELL_SIZE = 4;
 constexpr int16 WIDTH_IN_BLOCKS = SCREEN_WIDTH / 16;
 constexpr int16 WIDTH_IN_CELLS = SCREEN_WIDTH / CELL_SIZE;
 constexpr int16 HEIGHT_IN_CELLS = SCREEN_HEIGHT / CELL_SIZE;
