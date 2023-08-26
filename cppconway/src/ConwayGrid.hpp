@@ -4,12 +4,9 @@
 #include <array>
 #include <string>
 using namespace std;
-
 #include <cstring>
 
 #include "types.hpp"
-
-#define MAX_LINE_LENGTH 1000
 
 template<int GRID_WIDTH, int GRID_HEIGHT>
 class ConwayGrid {
@@ -44,6 +41,8 @@ public:
     }
 
     void load_from_file(const char* filename) {
+        constexpr int MAX_LINE_LENGTH = 1000;
+
         FILE *fp;
         char row_string[MAX_LINE_LENGTH];
         memset(row_string, 0, sizeof(row_string));
