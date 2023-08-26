@@ -138,10 +138,9 @@ public:
         running = false;
     }
 
-    // TODO use C++ references for out parameters here
-    void screen_coords_to_grid_coords(int x, int y, int *grid_x, int *grid_y, int cell_size) const {
-        *grid_x = x / cell_size;
-        *grid_y = y / cell_size;
+    void screen_coords_to_grid_coords(int x, int y, int cell_size, int &out_grid_x, int &out_grid_y) const {
+        out_grid_x = x / cell_size;
+        out_grid_y = y / cell_size;
     }
 
     void invert_cell(int grid_x, int grid_y) {
