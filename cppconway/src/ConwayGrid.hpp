@@ -61,7 +61,7 @@ public:
 
             for (ptr = row_string, x = 0; ptr != nullptr && x < width; ptr++, x++) {
                 if (*ptr == 'x') {
-                    transition_cell_from_dead_to_alive(grid1, x, y);
+                    transition_cell_from_dead_to_alive(x, y);
                 }
             }
         }
@@ -119,9 +119,9 @@ public:
                         uint8 &current_value = grid2[index + i];
                         if (current_value != 0) {
                             if (current_value == 0x03) {
-                                transition_cell_from_dead_to_alive(grid1, index + i);
+                                transition_cell_from_dead_to_alive(index + i);
                             } else if ((current_value & 0x10) && (current_value != 0x12) && (current_value != 0x13)) {
-                                transition_cell_from_alive_to_dead(grid1, index + i);
+                                transition_cell_from_alive_to_dead(index + i);
                             }
                         }
                     }
@@ -146,9 +146,9 @@ public:
     void invert_cell(int grid_x, int grid_y) {
         if (!running) {
             if (cell_alive_at(grid_x, grid_y)) {
-                transition_cell_from_alive_to_dead(grid1, grid_x, grid_y);
+                transition_cell_from_alive_to_dead(grid_x, grid_y);
             } else {
-                transition_cell_from_dead_to_alive(grid1, grid_x, grid_y);
+                transition_cell_from_dead_to_alive(grid_x, grid_y);
             }
         }
     }
@@ -167,38 +167,38 @@ private:
     GridArray grid1;
     GridArray grid2;
 
-    static inline void transition_cell_from_dead_to_alive(GridArray &grid, int index) {
-        grid[index] |= 0x10;
+    inline void transition_cell_from_dead_to_alive(int index) {
+        grid1[index] |= 0x10;
 
-        grid[index - GRID_WIDTH - 1]++;
-        grid[index - GRID_WIDTH]++;
-        grid[index - GRID_WIDTH + 1]++;
-        grid[index - 1]++;
-        grid[index + 1]++;
-        grid[index + GRID_WIDTH - 1]++;
-        grid[index + GRID_WIDTH]++;
-        grid[index + GRID_WIDTH + 1]++;
+        grid1[index - GRID_WIDTH - 1]++;
+        grid1[index - GRID_WIDTH]++;
+        grid1[index - GRID_WIDTH + 1]++;
+        grid1[index - 1]++;
+        grid1[index + 1]++;
+        grid1[index + GRID_WIDTH - 1]++;
+        grid1[index + GRID_WIDTH]++;
+        grid1[index + GRID_WIDTH + 1]++;
     }
 
-    inline void transition_cell_from_dead_to_alive(GridArray &grid, int x, int y) {
-        transition_cell_from_dead_to_alive(grid, grid_index(x, y));
+    inline void transition_cell_from_dead_to_alive(int x, int y) {
+        transition_cell_from_dead_to_alive(grid_index(x, y));
     }
 
-    static inline void transition_cell_from_alive_to_dead(GridArray &grid, int index) {
-        grid[index] = grid[index] & (~0x10);
+    inline void transition_cell_from_alive_to_dead(int index) {
+        grid1[index] = grid1[index] & (~0x10);
 
-        grid[index - GRID_WIDTH - 1]--;
-        grid[index - GRID_WIDTH]--;
-        grid[index - GRID_WIDTH + 1]--;
-        grid[index - 1]--;
-        grid[index + 1]--;
-        grid[index + GRID_WIDTH - 1]--;
-        grid[index + GRID_WIDTH]--;
-        grid[index + GRID_WIDTH + 1]--;
+        grid1[index - GRID_WIDTH - 1]--;
+        grid1[index - GRID_WIDTH]--;
+        grid1[index - GRID_WIDTH + 1]--;
+        grid1[index - 1]--;
+        grid1[index + 1]--;
+        grid1[index + GRID_WIDTH - 1]--;
+        grid1[index + GRID_WIDTH]--;
+        grid1[index + GRID_WIDTH + 1]--;
     }
 
-    inline void transition_cell_from_alive_to_dead(GridArray &grid, int x, int y) {
-        transition_cell_from_alive_to_dead(grid, grid_index(x, y));
+    inline void transition_cell_from_alive_to_dead(int x, int y) {
+        transition_cell_from_alive_to_dead(grid_index(x, y));
     }
 
 
