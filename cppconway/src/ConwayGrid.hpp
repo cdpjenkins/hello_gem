@@ -201,8 +201,7 @@ private:
         transition_cell_from_alive_to_dead(grid_index(x, y));
     }
 
-
-    inline int grid_index(int column, int row) const {
+    static inline int grid_index(int column, int row) {
         return row * width + column;
     }
 };
