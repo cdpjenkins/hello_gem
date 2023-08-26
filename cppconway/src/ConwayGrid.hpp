@@ -17,8 +17,7 @@ public:
 
     ConwayGrid() :
             running(false),
-            grid1(),
-            grid2() {
+            cell_array(){
 
         init_to_blank();
     }
@@ -26,17 +25,16 @@ public:
     void init_to_blank() {
         running = false;
 
-        grid1.fill(0x00);
-        grid2.fill(0x00);
+        cell_array.fill(0x00);
 
         for (int x = 0; x < width; x++) {
-            grid1[grid_index(x, 0)] = 0x20;
-            grid1[grid_index(x, height - 1)] = 0x20;
+            cell_array[grid_index(x, 0)] = 0x20;
+            cell_array[grid_index(x, height - 1)] = 0x20;
         }
 
         for (int y = 0; y < height; y++) {
-            grid1[grid_index(0, y)] = 0x20;
-            grid1[grid_index(width - 1 , y)] = 0x20;
+            cell_array[grid_index(0, y)] = 0x20;
+            cell_array[grid_index(width - 1 , y)] = 0x20;
         }
     }
 
@@ -110,13 +108,15 @@ public:
 
     void step() {
         if (running) {
-            memcpy(&grid2, &grid1, sizeof(grid1));
+
+            CellArray cell_array_copy;
+            memcpy(&cell_array_copy, &cell_array, sizeof(cell_array));
 
             for (int index = 0; index < width*height; index += 4) {
-                uint32* long_word_ptr = reinterpret_cast<uint32*>(&grid2[index]);
+                uint32* long_word_ptr = reinterpret_cast<uint32*>(&cell_array_copy[index]);
                 if (*long_word_ptr) {
                     for (int i = 0; i < 4; i++) {
-                        uint8 &current_value = grid2[index + i];
+                        uint8 &current_value = cell_array_copy[index + i];
                         if (current_value != 0) {
                             if (current_value == 0x03) {
                                 transition_cell_from_dead_to_alive(index + i);
@@ -154,30 +154,29 @@ public:
     }
 
     inline bool cell_alive_at(int x, int y) {
-        return grid1[grid_index(x, y)] & 0x10;
+        return cell_array[grid_index(x, y)] & 0x10;
     }
 
     inline bool cell_is_buffer(int x, int y) {
-        return grid1[grid_index(x, y)] & 0x20;
+        return cell_array[grid_index(x, y)] & 0x20;
     }
 
 private:
-    typedef array<uint8, GRID_WIDTH * GRID_HEIGHT> GridArray;
+    typedef array<uint8, GRID_WIDTH * GRID_HEIGHT> CellArray;
 
-    GridArray grid1;
-    GridArray grid2;
+    CellArray cell_array;
 
     inline void transition_cell_from_dead_to_alive(int index) {
-        grid1[index] |= 0x10;
+        cell_array[index] |= 0x10;
 
-        grid1[index - GRID_WIDTH - 1]++;
-        grid1[index - GRID_WIDTH]++;
-        grid1[index - GRID_WIDTH + 1]++;
-        grid1[index - 1]++;
-        grid1[index + 1]++;
-        grid1[index + GRID_WIDTH - 1]++;
-        grid1[index + GRID_WIDTH]++;
-        grid1[index + GRID_WIDTH + 1]++;
+        cell_array[index - GRID_WIDTH - 1]++;
+        cell_array[index - GRID_WIDTH]++;
+        cell_array[index - GRID_WIDTH + 1]++;
+        cell_array[index - 1]++;
+        cell_array[index + 1]++;
+        cell_array[index + GRID_WIDTH - 1]++;
+        cell_array[index + GRID_WIDTH]++;
+        cell_array[index + GRID_WIDTH + 1]++;
     }
 
     inline void transition_cell_from_dead_to_alive(int x, int y) {
@@ -185,16 +184,16 @@ private:
     }
 
     inline void transition_cell_from_alive_to_dead(int index) {
-        grid1[index] = grid1[index] & (~0x10);
+        cell_array[index] = cell_array[index] & (~0x10);
 
-        grid1[index - GRID_WIDTH - 1]--;
-        grid1[index - GRID_WIDTH]--;
-        grid1[index - GRID_WIDTH + 1]--;
-        grid1[index - 1]--;
-        grid1[index + 1]--;
-        grid1[index + GRID_WIDTH - 1]--;
-        grid1[index + GRID_WIDTH]--;
-        grid1[index + GRID_WIDTH + 1]--;
+        cell_array[index - GRID_WIDTH - 1]--;
+        cell_array[index - GRID_WIDTH]--;
+        cell_array[index - GRID_WIDTH + 1]--;
+        cell_array[index - 1]--;
+        cell_array[index + 1]--;
+        cell_array[index + GRID_WIDTH - 1]--;
+        cell_array[index + GRID_WIDTH]--;
+        cell_array[index + GRID_WIDTH + 1]--;
     }
 
     inline void transition_cell_from_alive_to_dead(int x, int y) {
