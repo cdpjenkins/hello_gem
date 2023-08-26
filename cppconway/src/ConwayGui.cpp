@@ -241,7 +241,7 @@ void event_loop(struct win_data *wd) {
 
             wind_get (wd->handle, WF_FIRSTXYWH,
                       &rec2.g_x, &rec2.g_y, &rec2.g_w, &rec2.g_h);
-            grid.screen_coords_to_grid_coords(ev_mmox - rec2.g_x, ev_mmoy - rec2.g_y, &grid_x, &grid_y, 0);
+            grid.screen_coords_to_grid_coords(ev_mmox - rec2.g_x, ev_mmoy - rec2.g_y, &grid_x, &grid_y, CELL_SIZE);
             grid.invert_cell(grid_x, grid_y);
             do_redraw(wd, &rec2);
         }
