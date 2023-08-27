@@ -108,8 +108,6 @@ public:
 
     void step() {
         if (running) {
-
-            CellArray cell_array_copy;
             memcpy(&cell_array_copy, &cell_array, sizeof(cell_array));
 
             for (int index = 0; index < width*height; index += 4) {
@@ -165,6 +163,7 @@ private:
     typedef array<uint8, GRID_WIDTH * GRID_HEIGHT> CellArray;
 
     CellArray cell_array;
+    CellArray cell_array_copy;
 
     inline void transition_cell_from_dead_to_alive(int index) {
         cell_array[index] |= 0x10;
