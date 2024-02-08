@@ -34,46 +34,46 @@ Colour iterations_to_rgb(int iterations) {
     // saturation and value are always full
 
     if (iterations == -1) {
-        return Colour{0, 0, 0, 0xFF};
+        return Colour{0, 0, 0};
     }
 
     int segment_size = colour_cycle_period / 6;
     int segment = (iterations / segment_size) % 6;
     int pos_in_segment = iterations % segment_size;
-    uint8_t segment_progress = (pos_in_segment * 255) / segment_size;
-    uint8_t inverse_segment_progress = 255 - segment_progress;
+    uint8_t segment_progress = (pos_in_segment * 31) / segment_size;
+    uint8_t inverse_segment_progress = 31 - segment_progress;
 
     switch (segment) {
         case 0:
-            return Colour{255, segment_progress, 0, 255};
+            return Colour{31, segment_progress, 0};
         case 1:
-            return Colour{inverse_segment_progress, 255, 0, 255};
+            return Colour{inverse_segment_progress, 31, 0};
         case 2:
-            return Colour{0, 255, segment_progress, 255};
+            return Colour{0, 31, segment_progress};
         case 3:
-            return Colour{0, inverse_segment_progress, 255, 255};
+            return Colour{0, inverse_segment_progress, 31};
         case 4:
-            return Colour{segment_progress, 0, 255, 255};
+            return Colour{segment_progress, 0, 31};
         case 5:
-            return Colour{255, 0, inverse_segment_progress, 255};
+            return Colour{31, 0, inverse_segment_progress};
         default:
             // we can never get here, but if we do...
-            return Colour{255, 255, 255, 255};
+            return Colour{31, 31, 31};
     }
 }
 
 Colour iterations_to_rgb_using_trig(int iterations) {
     if (iterations == -1) {
-        return Colour{0, 0, 0, 0xFF};
+        return Colour{0, 0, 0};
     }
 
     double theta = 2 * M_PI * iterations / colour_cycle_period;
 
-    uint8_t r = uint8_t(sin(theta) * 127 + 127);
-    uint8_t g = uint8_t(sin(theta - M_PI_4) * 127 + 127);
-    uint8_t b = uint8_t(sin(theta - M_PI_2) * 127 + 127);
+    uint8_t r = uint8_t(sin(theta) * 15 + 15);
+    uint8_t g = uint8_t(sin(theta - M_PI_4) * 15 + 15);
+    uint8_t b = uint8_t(sin(theta - M_PI_2) * 15 + 15);
 
-    return Colour{r, g, b, 0xFF};
+    return Colour{r, g, b};
 }
 
 uint8_t ston(double stour) {
@@ -88,7 +88,7 @@ void MandelbrotRenderer::render_to_buffer(const Mandelbrot& mandelbrot) {
 
             int n = mandelbrot.compute(k);
 
-            rendered_mandelbrot.set_pixel(x, y, iterations_to_rgb_using_trig(n));
+            rendered_mandelbrot.set_pixel(x, y, iterations_to_rgb(n));
         }
     }
 }

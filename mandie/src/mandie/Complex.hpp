@@ -7,45 +7,55 @@
 using namespace std;
 
 // TODO - turns out there is a complex class in the std library that we could just use...
-class Complex {
+template <typename T>
+class ComplexTemplate {
 public:
-    double re, im;
+    T re, im;
 
-    Complex(const double re, const double im) {
+    ComplexTemplate(const T re, const T im) {
         this->re = re;
         this->im = im;
     }
 
     [[maybe_unused]] [[nodiscard]]
-    inline Complex squared() const {
-        double new_re = re*re - im*im;
-        double new_im = re * im * 2;
+    inline ComplexTemplate squared() const {
+        T new_re = re*re - im*im;
+        T new_im = re * im * 2;
 
-        return Complex{new_re, new_im};
+        return ComplexTemplate{new_re, new_im};
     }
 
-    inline void square_and_add(const Complex& k) {
-        double new_re = re*re - im*im + k.re;
-        double new_im = re * im * 2 + k.im;
+    inline void square_and_add(const ComplexTemplate& k) {
+        T new_re = re*re - im*im + k.re;
+        T new_im = re * im * 2 + k.im;
 
         re = new_re;
         im = new_im;
     }
 
-    inline Complex operator+(const Complex& that) const {
-        return Complex{this->re + that.re, this->im + that.im};
+    inline ComplexTemplate operator+(const ComplexTemplate& that) const {
+        return ComplexTemplate{this->re + that.re, this->im + that.im};
     }
 
     [[nodiscard]]
-    inline double norm() const {
+    inline T norm() const {
         return re*re + im*im;
     }
 
-    static inline Complex ZERO() {
-        return Complex{0, 0};
+    static inline ComplexTemplate ZERO() {
+        return ComplexTemplate{0, 0};
     }
 
-    static Complex parse(const char *arg);
+    static ComplexTemplate parse(const char *arg) {
+        istringstream coords_string_stream(arg);
+        string re_string;
+        string im_string;
+        getline(coords_string_stream, re_string, ',');
+        getline(coords_string_stream, im_string, ',');
+        return ComplexTemplate{stod(re_string), stod(im_string)};
+    }
 };
+
+typedef ComplexTemplate<float> Complex;
 
 #endif // MANDELBROT_COMPLEX_HPP

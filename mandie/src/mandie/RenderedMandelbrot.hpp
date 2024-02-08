@@ -22,7 +22,6 @@ public:
     int width;
     int height;
 
-private:
     std::unique_ptr<Colour[]> buffer;
 };
 

@@ -6,7 +6,7 @@ else
 	PREFIX=m68k-atari-mint-
 endif
 
-CXXFLAGS=-O3 -m68000 -std=c++17
+CXXFLAGS=-O3 -m68040 -std=c++17
 ASFLAGS=--register-prefix-optional
 
 CC=$(PREFIX)gcc
@@ -44,8 +44,10 @@ src/asm/%.o: src/asm/%.s
 dist/highcol.tos: src/falcon_highcolour/FalconHighColourMain.o src/STScreen.o src/asm/fast_draw.o src/*.hpp \
 					src/mandie/Complex.o src/mandie/Config.o src/mandie/Mandelbrot.o \
 					src/mandie/MandelbrotRenderer.o  src/mandie/RenderedMandelbrot.o \
-					
+
 	${CXX} ${CXXFLAGS} src/falcon_highcolour/FalconHighColourMain.o src/STScreen.o src/asm/fast_draw.o \
+						src/mandie/Complex.o src/mandie/Config.o src/mandie/Mandelbrot.o \
+						src/mandie/MandelbrotRenderer.o  src/mandie/RenderedMandelbrot.o \
 						-o dist/highcol.tos -lgcc
 
 dist/falctest.tos: src/falcon_highcolour/test.o
@@ -54,5 +56,5 @@ dist/falctest.tos: src/falcon_highcolour/test.o
 
 
 clean:
-	rm -f src/*.o src/asm/*.o
+	rm -f src/*.o src/asm/*.o src/mandie/*.o src/falcon_highcolour/*.o
 	rm -rf dist

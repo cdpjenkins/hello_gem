@@ -12,6 +12,8 @@
 #include "../asm/fast_draw.h"
 
 #include "../mandie/Colour.hpp"
+#include "../mandie/MandelbrotRenderer.hpp"
+#include "../mandie/Config.hpp"
 
 #ifndef VsetScreen
 #define VsetScreen Vsetscreen
@@ -71,35 +73,41 @@ static inline void draw_strip(uint16 *strip, uint16 *ptr) {
     draw_strip_c(strip, ptr);
 }
 
-void draw(Grid& grid) {
-    Colour *row_ptr = (Colour*)logical_screen;
+void draw(Grid& grid, MandelbrotRenderer& mandie) {
+    Colour* pixel_ptr = (Colour*)physical_screen;
 
-    for (int16 y = 0; y < Grid::height; y += 1, row_ptr += (640 * CELL_SIZE)) {
-        Colour* pixel_ptr = row_ptr;
-        for (int16 x = 0; x < Grid::width; x++) {
+    Mandelbrot mandelbrot{50};
 
-            Colour colour;
-            if (grid.cell_alive_at(x, y)) {
-                // colour = Colour(30000, 0, 0);
-                colour = Colour( (x * 40), (y * 80) % 30000, 0);
-            } else {
-               colour = Colour(0, 0, 30000);
-            }
+    mandie.render_to_buffer(mandelbrot);
 
-            for (int i = 0; i < CELL_SIZE_MINUS_PADDING; i++) {
-                for (int j = 0; j < CELL_SIZE_MINUS_PADDING; j++) {
-                    pixel_ptr[640 * i + j] = colour;
-                }
-            }
-            pixel_ptr += CELL_SIZE;
+    // memcpy(pixel_ptr, mandie.rendered_mandelbrot.buffer.get(), mandie.screen_width * mandie.screen_height * sizeof(Colour));
+
+    Colour* row_ptr = pixel_ptr;
+    Colour* src_ptr = mandie.rendered_mandelbrot.buffer.get();
+    for (int y = 0; y < mandie.screen_height; y++) {
+        for (int x = 0; x < mandie.screen_width; x++) {
+            Colour this_colour = *src_ptr++;
+
+            row_ptr[x] = this_colour;
         }
+        row_ptr += 640;
     }
 }
 
 int main(int argc, char *argv[]) {
     printf("guck you %d\n", sizeof(Colour));
 
+    printf("poofoo %04X\n", Colour(31, 0, 0));
+    Cconin();
+
+
     std::unique_ptr<Grid> grid = make_unique<Grid>();
+
+    Config config;
+
+    std::unique_ptr<MandelbrotRenderer> mandie = make_unique<MandelbrotRenderer>(
+        128, 96, config
+    );
 
     STScreen screen;
 
@@ -142,18 +150,18 @@ int main(int argc, char *argv[]) {
 
         time_after_step_before_draw = *timer;
 
-        draw(*grid);
+        draw(*grid, *mandie);
 
         time_after_draw = *timer;
 
         Vsync();
 
-        uint16 *temp;
-        temp = logical_screen;
-        logical_screen = physical_screen;
-        physical_screen = temp;
+        // uint16 *temp;
+        // temp = logical_screen;
+        // logical_screen = physical_screen;
+        // physical_screen = temp;
 
-        VsetScreen(logical_screen, physical_screen, -1, -1);
+        // VsetScreen(logical_screen, physical_screen, -1, -1);
 
         while (Cconis()) {
             char ascii = read_key();
