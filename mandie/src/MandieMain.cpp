@@ -7,11 +7,11 @@
 #include <memory>
 
 
-#include "../types.hpp"
+#include "types.hpp"
 
-#include "../mandie/Colour.hpp"
-#include "../mandie/MandelbrotRenderer.hpp"
-#include "../mandie/Config.hpp"
+#include "Colour.hpp"
+#include "MandelbrotRenderer.hpp"
+#include "Config.hpp"
 
 #ifndef VsetScreen
 #define VsetScreen Vsetscreen

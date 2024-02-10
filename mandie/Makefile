@@ -22,15 +22,15 @@ make_dist:
 %.o : %.cpp src/*.hpp
 	${CXX} -c $(CXXFLAGS) $< -o $@
 
-dist/mandie.tos: src/falcon_highcolour/MandieMain.o src/*.hpp \
-					src/mandie/Config.o src/mandie/Mandelbrot.o \
-					src/mandie/MandelbrotRenderer.o
-	${CXX} ${CXXFLAGS} src/falcon_highcolour/MandieMain.o \
-						src/mandie/Config.o src/mandie/Mandelbrot.o \
-						src/mandie/MandelbrotRenderer.o  \
+dist/mandie.tos: src/MandieMain.o src/*.hpp \
+					src/Config.o src/Mandelbrot.o \
+					src/MandelbrotRenderer.o
+	${CXX} ${CXXFLAGS} src/MandieMain.o \
+						src/Config.o src/Mandelbrot.o \
+						src/MandelbrotRenderer.o  \
 						-o dist/mandie.tos -lgcc
 
 
 clean:
-	rm -f src/*.o src/asm/*.o src/mandie/*.o src/falcon_highcolour/*.o
+	rm -f src/*.o
 	rm -rf dist
