@@ -16,8 +16,7 @@ AS=$(PREFIX)as
 all: make_dist \
 	dist/conway.prg \
 	dist/highcol.tos \
-	resources \
-	dist/falctest.tos
+	resources
 
 make_dist:
 	mkdir -p dist
@@ -42,17 +41,12 @@ src/asm/%.o: src/asm/%.s
 	$(AS) $(ASFLAGS) $< -o $@
 
 dist/highcol.tos: src/falcon_highcolour/FalconHighColourMain.o src/STScreen.o src/asm/fast_draw.o src/*.hpp \
-					src/mandie/Complex.o src/mandie/Config.o src/mandie/Mandelbrot.o \
-					src/mandie/MandelbrotRenderer.o 
-
+					src/mandie/Config.o src/mandie/Mandelbrot.o \
+					src/mandie/MandelbrotRenderer.o
 	${CXX} ${CXXFLAGS} src/falcon_highcolour/FalconHighColourMain.o src/STScreen.o src/asm/fast_draw.o \
-						src/mandie/Complex.o src/mandie/Config.o src/mandie/Mandelbrot.o \
+						src/mandie/Config.o src/mandie/Mandelbrot.o \
 						src/mandie/MandelbrotRenderer.o  \
 						-o dist/highcol.tos -lgcc
-
-dist/falctest.tos: src/falcon_highcolour/test.o
-	${CXX} ${CXXFLAGS} src/falcon_highcolour/test.o \
-						-o dist/falctest.tos -lgcc
 
 
 clean:

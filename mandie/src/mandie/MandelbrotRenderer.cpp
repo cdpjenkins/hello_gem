@@ -83,13 +83,14 @@ uint8_t ston(double stour) {
 }
 
 void MandelbrotRenderer::render_to_buffer() {
+    Colour* ptr = buffer;
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
             Complex k = screen_to_complex(x, y);
 
             int n = mandelbrot.compute(k);
 
-            buffer[y * width + x] = iterations_to_rgb(n);
+            *ptr++ = iterations_to_rgb(n);
         }
     }
 }
@@ -115,7 +116,6 @@ void MandelbrotRenderer::zoom_in() {
 
 void MandelbrotRenderer::zoom_in_to(const int x, const int y) {
     centre = screen_to_complex(x, y);
-
     zoom_in_to(centre);
 }
 
