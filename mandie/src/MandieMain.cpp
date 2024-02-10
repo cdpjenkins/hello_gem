@@ -6,9 +6,6 @@
 #include <array>
 #include <memory>
 
-
-#include "types.hpp"
-
 #include "Colour.hpp"
 #include "MandelbrotRenderer.hpp"
 #include "Config.hpp"
