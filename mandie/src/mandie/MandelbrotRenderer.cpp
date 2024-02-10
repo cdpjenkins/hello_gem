@@ -26,7 +26,8 @@ MandelbrotRenderer::MandelbrotRenderer(int width,
         buffer(buffer),
         config(config),
         centre(centre),
-        zoom_size(zoom_size)
+        zoom_size(zoom_size),
+        mandelbrot{config.iteration_depth}
 {}
 
 Colour iterations_to_rgb(int iterations) {
@@ -81,18 +82,14 @@ uint8_t ston(double stour) {
     return stour * 127 + 127;
 }
 
-void MandelbrotRenderer::render_to_buffer(const Mandelbrot& mandelbrot) {
+void MandelbrotRenderer::render_to_buffer() {
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
-            // this is probably very inefficient with all the divides and multiplies
             Complex k = screen_to_complex(x, y);
 
             int n = mandelbrot.compute(k);
 
-            // rendered_mandelbrot.set_pixel(x, y, iterations_to_rgb(n));
-
             buffer[y * width + x] = iterations_to_rgb(n);
-
         }
     }
 }

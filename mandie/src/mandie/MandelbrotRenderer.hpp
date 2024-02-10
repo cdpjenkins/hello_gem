@@ -19,7 +19,7 @@ public:
         float zoom_size = 4.0
     );
 
-    void render_to_buffer(const Mandelbrot& render_future);
+    void render_to_buffer();
 
     void zoom_in();
     void zoom_in_to(int x, int y);
@@ -32,6 +32,8 @@ public:
 
     void scroll(int dx, int dy);
 
+    Mandelbrot mandelbrot;
+
     int width;
     int height;
 
@@ -39,8 +41,6 @@ public:
     Complex centre = Complex(0, 0);
 
     Colour* buffer;
-
-    // RenderedMandelbrot rendered_mandelbrot;
 
 private:
     Config config;

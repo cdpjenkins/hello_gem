@@ -8,8 +8,8 @@ using namespace std;
 
 class Config {
 public:
-    int iteration_depth = 800;
-    int depth_increment = 500;
+    int iteration_depth = 100;
+    int depth_increment = 100;
     float zoom_factor = 0.7;
     float max_zoom = 0.000000000000000000001;
     string pngs_dir = "pngs"s;

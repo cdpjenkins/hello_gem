@@ -10,7 +10,6 @@
 #include <memory>
 
 #include "../ConwayGrid.hpp"
-#include "../STScreen.hpp"
 #include "../asm/fast_draw.h"
 
 #include "../mandie/Colour.hpp"
@@ -59,65 +58,18 @@ ScreenArray screen2;
 uint16 *logical_screen = screen1.data();
 uint16 *physical_screen = screen2.data();
 
-int16 block_index(int16 x, int16 y) {
-    return y * WIDTH_IN_BLOCKS * 16 + x;
-}
-
-char read_key() {
-    uint32 key = Crawio(0x00FF);
-
-    uint8 scan_code = key & 0x00FF0000 >> 16;
-    uint8 ascii = key & 0x000000FF;
-
-    return ascii;
-}
-
-static inline void draw_strip_c(void *strip_src, uint16 *dest) {
-    for (int16 i = 0; i < 4; i++) {
-        std::memcpy(dest, strip_src, 640);
-        dest += 640;
-    }
-}
-
-static inline void draw_strip(uint16 *strip, uint16 *ptr) {
-    draw_strip_c(strip, ptr);
-}
-
-void draw(Grid& grid, MandelbrotRenderer& mandie) {
-    Colour* pixel_ptr = (Colour*)physical_screen;
-
-    Mandelbrot mandelbrot{50};
-
-    mandie.render_to_buffer(mandelbrot);
+void draw(MandelbrotRenderer &mandie) {
+    mandie.render_to_buffer();
 }
 
 int main(int argc, char *argv[]) {
     nf_ops *nf_thingie = nf_init();
     nf_debugprintf("Natfeats is initialised: %08X\n", nf_thingie);
 
-    bool quit = false;
-
-    uint32_t key_now = Cconin();
-
-    printf("key: %08X\n", key_now);
-    nf_debugprintf("key: %08X\n", key_now);
-    Cconin();
-
-    std::unique_ptr<Grid> grid = make_unique<Grid>();
-
     Config config;
-
     std::unique_ptr<MandelbrotRenderer> mandie = make_unique<MandelbrotRenderer>(
         640, 480, config, (Colour*)physical_screen
     );
-
-    STScreen screen;
-
-    if (argc > 1) {
-        grid->load_from_file(argv[1]);
-    } else {
-        grid->load_from_file("gosper.cwy");
-    }
 
     Cursconf(0, 0);
 
@@ -131,22 +83,21 @@ int main(int argc, char *argv[]) {
 
     VsetScreen(logical_screen, physical_screen, REZ_FROM_MODE, PLANES_16 | WIDTH_640 | VGA | NTSC);
 
-    grid->run();
-
     Super(0);
 
     volatile uint32 *timer = (uint32 *)0x0004ba;
 
+    bool quit = false;
     while (!quit) {
         uint32 time_before = *timer;
-        draw(*grid, *mandie);
+        draw(*mandie);
         uint32 time_after_draw = *timer;
 
         nf_debugprintf("Timings:\n");
         nf_debugprintf("draw: %dms\n", (time_after_draw - time_before) * 5);
 
         uint32_t key = Cconin();
-        nf_debugprintf("key: %08X\n", key_now);
+        nf_debugprintf("key: %08X\n", key);
         uint16_t ascii = (key & 0x000000FF);
         uint16_t scancode = key >> 16;
 
