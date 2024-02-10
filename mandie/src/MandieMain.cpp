@@ -47,7 +47,7 @@ uint16_t *logical_screen = screen1.data();
 uint16_t *physical_screen = screen2.data();
 
 void draw(MandelbrotRenderer &mandie) {
-    mandie.render_to_buffer();
+    mandie.render_to_buffer((Colour*)physical_screen);
 }
 
 int main(int argc, char *argv[]) {
@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
 
     Config config;
     std::unique_ptr<MandelbrotRenderer> mandie = make_unique<MandelbrotRenderer>(
-        640, 480, config, (Colour*)physical_screen
+        640, 480, config
     );
 
     Cursconf(0, 0);

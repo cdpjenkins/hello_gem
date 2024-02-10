@@ -15,15 +15,10 @@ const int colour_cycle_period = 256;
 # define M_PI_4		0.785398163397448309116	/* pi/4 */
 
 
-MandelbrotRenderer::MandelbrotRenderer(int width,
-                                       int height,
-                                       const Config &config,
-                                       Colour* buffer,
-                                       const Complex& centre,
+MandelbrotRenderer::MandelbrotRenderer(int width, int height, const Config &config, const Complex &centre,
                                        float zoom_size) :
         width(width),
         height(height),
-        buffer(buffer),
         config(config),
         centre(centre),
         zoom_size(zoom_size),
@@ -82,7 +77,7 @@ uint8_t ston(double stour) {
     return stour * 127 + 127;
 }
 
-void MandelbrotRenderer::render_to_buffer() {
+void MandelbrotRenderer::render_to_buffer(Colour *buffer) {
     Colour* ptr = buffer;
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {

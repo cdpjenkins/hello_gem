@@ -14,12 +14,11 @@ public:
         int width,
         int height,
         const Config& config,
-        Colour* buffer,
         const Complex& centre = Complex(0, 0),
         float zoom_size = 4.0
     );
 
-    void render_to_buffer();
+    void render_to_buffer(Colour *buffer);
 
     void zoom_in();
     void zoom_in_to(int x, int y);
@@ -39,8 +38,6 @@ public:
 
     float zoom_size = 4;
     Complex centre = Complex(0, 0);
-
-    Colour* buffer;
 
 private:
     Config config;
