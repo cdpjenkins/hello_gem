@@ -6,7 +6,6 @@ using namespace std;
 
 #include "Colour.hpp"
 #include "Config.hpp"
-#include "Mandelbrot.hpp"
 
 class MandelbrotRenderer {
 public:
@@ -28,10 +27,7 @@ public:
     void zoom_out_to(int x, int y);
     void zoom_out_to(const Complex& coords);
 
-
     void scroll(int dx, int dy);
-
-    Mandelbrot mandelbrot;
 
     int width;
     int height;
@@ -46,6 +42,8 @@ private:
     Complex screen_to_complex(int x, int y) const;
 
     float aspect_ratio = (float)height / width;
+
+    int compute(const Complex& k) const;
 };
 
 Colour iterations_to_rgb(int iterations);

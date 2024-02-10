@@ -23,10 +23,10 @@ make_dist:
 	${CXX} -c $(CXXFLAGS) $< -o $@
 
 dist/mandie.tos: src/MandieMain.o src/*.hpp \
-					src/Config.o src/Mandelbrot.o \
+					src/Config.o \
 					src/MandelbrotRenderer.o
 	${CXX} ${CXXFLAGS} src/MandieMain.o \
-						src/Config.o src/Mandelbrot.o \
+						src/Config.o \
 						src/MandelbrotRenderer.o  \
 						-o dist/mandie.tos -lgcc
 

@@ -21,8 +21,7 @@ MandelbrotRenderer::MandelbrotRenderer(int width, int height, const Config &conf
         height(height),
         config(config),
         centre(centre),
-        zoom_size(zoom_size),
-        mandelbrot{config.iteration_depth}
+        zoom_size(zoom_size)
 {}
 
 Colour iterations_to_rgb(int iterations) {
@@ -83,7 +82,7 @@ void MandelbrotRenderer::render_to_buffer(Colour *buffer) {
         for (int x = 0; x < width; x++) {
             Complex k = screen_to_complex(x, y);
 
-            int n = mandelbrot.compute(k);
+            int n = compute(k);
 
             *ptr++ = iterations_to_rgb(n);
         }
@@ -135,4 +134,17 @@ void MandelbrotRenderer::zoom_out_to(const Complex& coords) {
 
 void MandelbrotRenderer::scroll(int dx, int dy) {
     centre = centre + Complex(dx * 8 * zoom_size / width, -dy * 8 * zoom_size / height);
+}
+
+int MandelbrotRenderer::compute(const Complex &k) const {
+    Complex z = Complex::ZERO();
+
+    for (int n = 0; n < config.iteration_depth; n++) {
+        z.square_and_add(k);
+        if (z.norm() >= 16) {
+            return n;
+        }
+    }
+
+    return -1;
 }
