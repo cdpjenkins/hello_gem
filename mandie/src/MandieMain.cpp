@@ -25,29 +25,29 @@ enum ScanCode {
     KEY_Q = 16
 };
 
-constexpr int16 PLANES_1 = 0x00;
-constexpr int16 PLANES_2 = 0x01;
-constexpr int16 PLANES_4 = 0x02;
-constexpr int16 PLANES_8 = 0x03;
-constexpr int16 PLANES_16 = 0x04;
-constexpr int16 WIDTH_640 = 0x08;
-constexpr int16 VGA = 0x10;
-constexpr int16 NTSC = 0x00;
+constexpr int16_t PLANES_1 = 0x00;
+constexpr int16_t PLANES_2 = 0x01;
+constexpr int16_t PLANES_4 = 0x02;
+constexpr int16_t PLANES_8 = 0x03;
+constexpr int16_t PLANES_16 = 0x04;
+constexpr int16_t WIDTH_640 = 0x08;
+constexpr int16_t VGA = 0x10;
+constexpr int16_t NTSC = 0x00;
 
-constexpr int16 REZ_FROM_MODE = 3;
+constexpr int16_t REZ_FROM_MODE = 3;
 
-constexpr int16 SCREEN_WIDTH = 640;
-constexpr int16 SCREEN_HEIGHT = 480;
+constexpr int16_t SCREEN_WIDTH = 640;
+constexpr int16_t SCREEN_HEIGHT = 480;
 
-constexpr int16 CELL_SIZE = 8;
+constexpr int16_t CELL_SIZE = 8;
 
-using ScreenArray = std::array<uint16, SCREEN_WIDTH * SCREEN_HEIGHT>;
+using ScreenArray = std::array<uint16_t, SCREEN_WIDTH * SCREEN_HEIGHT>;
 
 ScreenArray screen1;
 ScreenArray screen2;
 
-uint16 *logical_screen = screen1.data();
-uint16 *physical_screen = screen2.data();
+uint16_t *logical_screen = screen1.data();
+uint16_t *physical_screen = screen2.data();
 
 void draw(MandelbrotRenderer &mandie) {
     mandie.render_to_buffer();
@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
     screen1.fill(0xFFFF);
     screen2.fill(0xFFFF);
 
-    int16 saved_rez = VsetMode(-1);
+    int16_t saved_rez = VsetMode(-1);
 
     void *saved_logbase = Logbase();
     void *saved_physbase = Physbase();
@@ -76,13 +76,13 @@ int main(int argc, char *argv[]) {
 
     Super(0);
 
-    volatile uint32 *timer = (uint32 *)0x0004ba;
+    volatile uint32_t *timer = (uint32_t *)0x0004ba;
 
     bool quit = false;
     while (!quit) {
-        uint32 time_before = *timer;
+        uint32_t time_before = *timer;
         draw(*mandie);
-        uint32 time_after_draw = *timer;
+        uint32_t time_after_draw = *timer;
 
         nf_debugprintf("Timings:\n");
         nf_debugprintf("draw: %dms\n", (time_after_draw - time_before) * 5);
