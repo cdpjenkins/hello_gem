@@ -3,6 +3,8 @@
 #include <mint/sysbind.h>
 #include <mint/linea.h>
 
+#include <mint/arch/nf_ops.h>
+
 #include <cstring>
 #include <array>
 #include <memory>
@@ -82,6 +84,9 @@ void draw(Grid& grid, MandelbrotRenderer& mandie) {
 }
 
 int main(int argc, char *argv[]) {
+    nf_ops *nf_thingie = nf_init();
+    nf_debugprintf("Natfeats is initialised: %08X\n", nf_thingie);
+
     bool quit = false;
 
     uint32_t key_now = Cconin();
@@ -122,18 +127,14 @@ int main(int argc, char *argv[]) {
     Super(0);
 
     volatile uint32 *timer = (uint32 *)0x0004ba;
-    uint32 time_before_step;
-    uint32 time_after_step_before_draw;
-    uint32 time_after_draw;
 
     while (!quit) {
-        time_before_step = *timer;
-
-        time_after_step_before_draw = *timer;
-
+        uint32 time_before = *timer;
         draw(*grid, *mandie);
+        uint32 time_after_draw = *timer;
 
-        time_after_draw = *timer;
+        nf_debugprintf("Timings:\n");
+        nf_debugprintf("draw: %dms\n", (time_after_draw - time_before) * 5);
 
         uint32_t key = Cconin();
         uint16_t ascii = (key & 0x000000FF);
@@ -166,15 +167,10 @@ int main(int argc, char *argv[]) {
         if (scancode == 77) {
             // right arrow
             mandie->centre = mandie->centre + Complex(-1 / mandie->zoom_size, 0);
-        } 
-
+        }
     }
 
     VsetScreen(saved_logbase, saved_physbase, REZ_FROM_MODE, saved_rez);
-
-    printf("Timings:\n");
-    printf("step: %dms\n", (time_after_step_before_draw - time_before_step) * 5);
-    printf("draw: %dms\n", (time_after_draw - time_after_step_before_draw) * 5);
 
     Cconin();
 
