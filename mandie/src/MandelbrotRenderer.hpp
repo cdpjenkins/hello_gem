@@ -27,8 +27,6 @@ public:
     void zoom_out_to(int x, int y);
     void zoom_out_to(const Complex& coords);
 
-    void scroll(int dx, int dy);
-
     int width;
     int height;
 

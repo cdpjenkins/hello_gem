@@ -1,8 +1,6 @@
 #include <iostream>
-// #include <iomanip>
 #include <vector>
-#include <future>
-#include <math.h>
+#include <cmath>
 using namespace std;
 
 #include "MandelbrotRenderer.hpp"
@@ -90,8 +88,8 @@ void MandelbrotRenderer::render_to_buffer(Colour *buffer) {
 }
 
 Complex MandelbrotRenderer::screen_to_complex(const int x, const int y) const {
-    float x_progress = (float)x / width;
-    float y_progress = (float)y / height;
+    float x_progress = (float)x / (float)width;
+    float y_progress = (float)y / (float)height;
 
     Complex top_left{centre.re - zoom_size, centre.im - zoom_size*aspect_ratio};
 
@@ -130,10 +128,6 @@ void MandelbrotRenderer::zoom_out_to(const int x, const int y) {
 void MandelbrotRenderer::zoom_out_to(const Complex& coords) {
     zoom_size /= config.zoom_factor;
     this->centre = coords;
-}
-
-void MandelbrotRenderer::scroll(int dx, int dy) {
-    centre = centre + Complex(dx * 8 * zoom_size / width, -dy * 8 * zoom_size / height);
 }
 
 int MandelbrotRenderer::compute(const Complex &k) const {
