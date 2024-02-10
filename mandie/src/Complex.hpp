@@ -55,7 +55,6 @@ public:
     }
 };
 
-#define ComplexType float
-typedef ComplexTemplate<ComplexType> Complex;
+typedef ComplexTemplate<float> Complex;
 
 #endif // MANDELBROT_COMPLEX_HPP
