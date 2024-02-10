@@ -6,8 +6,8 @@
 #include <array>
 #include <memory>
 
-#include "../ConwayGrid.hpp"
-#include "../asm/fast_draw.h"
+
+#include "../types.hpp"
 
 #include "../mandie/Colour.hpp"
 #include "../mandie/MandelbrotRenderer.hpp"
