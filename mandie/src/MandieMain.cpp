@@ -9,6 +9,7 @@
 #include "Colour.hpp"
 #include "MandelbrotRenderer.hpp"
 #include "Config.hpp"
+#include "Screen.hpp"
 
 #ifndef VsetScreen
 #define VsetScreen Vsetscreen
@@ -33,16 +34,13 @@ constexpr int16_t NTSC = 0x00;
 
 constexpr int16_t REZ_FROM_MODE = 3;
 
-constexpr int16_t SCREEN_WIDTH = 640;
-constexpr int16_t SCREEN_HEIGHT = 480;
-
 void natfeats_init();
 uint32_t read_system_timer();
 
-void draw(MandelbrotRenderer &mandie, uint16_t *screen) {
+void draw(MandelbrotRenderer &mandie, Screen& screen) {
     uint32_t time_before = read_system_timer();
 
-    mandie.render_to_buffer((Colour*)screen);
+    mandie.render_to_buffer(reinterpret_cast<Colour *>(screen.data()));
 
     uint32_t time_after_draw = read_system_timer();
 
@@ -59,10 +57,7 @@ int main(int argc, char *argv[]) {
 
     Cursconf(0, 0);
 
-    using ScreenArray = std::array<uint16_t, SCREEN_WIDTH * SCREEN_HEIGHT>;
-
-    std::unique_ptr<ScreenArray> screen = make_unique<ScreenArray>();
-    uint16_t* physical_screen = screen->data();
+    std::unique_ptr<Screen> screen = make_unique<Screen>();
     screen->fill(0xFFFF);
 
     int16_t saved_rez = VsetMode(-1);
@@ -70,11 +65,11 @@ int main(int argc, char *argv[]) {
     void *saved_logbase = Logbase();
     void *saved_physbase = Physbase();
 
-    VsetScreen(physical_screen, physical_screen, REZ_FROM_MODE, PLANES_16 | WIDTH_640 | VGA | NTSC);
+    VsetScreen(screen->data(), screen->data(), REZ_FROM_MODE, PLANES_16 | WIDTH_640 | VGA | NTSC);
 
     bool quit = false;
     while (!quit) {
-        draw(*mandie, physical_screen);
+        draw(*mandie, *screen);
 
         uint32_t key = Cconin();
         nf_debugprintf("key: %08X\n", key);
