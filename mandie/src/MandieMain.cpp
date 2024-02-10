@@ -37,15 +37,10 @@ constexpr int16_t SCREEN_WIDTH = 640;
 constexpr int16_t SCREEN_HEIGHT = 480;
 
 using ScreenArray = std::array<uint16_t, SCREEN_WIDTH * SCREEN_HEIGHT>;
-
-ScreenArray screen1;
-ScreenArray screen2;
-
-uint16_t *logical_screen = screen1.data();
-uint16_t *physical_screen = screen2.data();
+ScreenArray screen;
+uint16_t *physical_screen = screen.data();
 
 void natfeats_init();
-
 uint32_t read_system_timer();
 
 void draw(MandelbrotRenderer &mandie) {
@@ -68,15 +63,14 @@ int main(int argc, char *argv[]) {
 
     Cursconf(0, 0);
 
-    screen1.fill(0xFFFF);
-    screen2.fill(0xFFFF);
+    screen.fill(0xFFFF);
 
     int16_t saved_rez = VsetMode(-1);
 
     void *saved_logbase = Logbase();
     void *saved_physbase = Physbase();
 
-    VsetScreen(logical_screen, physical_screen, REZ_FROM_MODE, PLANES_16 | WIDTH_640 | VGA | NTSC);
+    VsetScreen(physical_screen, physical_screen, REZ_FROM_MODE, PLANES_16 | WIDTH_640 | VGA | NTSC);
 
     bool quit = false;
     while (!quit) {
