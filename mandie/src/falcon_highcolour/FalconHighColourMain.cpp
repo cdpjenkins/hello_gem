@@ -1,11 +1,8 @@
 #include <stdio.h>
 
 #include <mint/sysbind.h>
-#include <mint/linea.h>
-
 #include <mint/arch/nf_ops.h>
 
-#include <cstring>
 #include <array>
 #include <memory>
 
@@ -43,12 +40,6 @@ constexpr int16 SCREEN_WIDTH = 640;
 constexpr int16 SCREEN_HEIGHT = 480;
 
 constexpr int16 CELL_SIZE = 8;
-constexpr int16 CELL_SIZE_MINUS_PADDING = max(CELL_SIZE - 1, 1);
-constexpr int16 WIDTH_IN_BLOCKS = SCREEN_WIDTH / 16;
-constexpr int16 WIDTH_IN_CELLS = SCREEN_WIDTH / CELL_SIZE;
-constexpr int16 HEIGHT_IN_CELLS = SCREEN_HEIGHT / CELL_SIZE;
-
-using Grid = ConwayGrid<SCREEN_WIDTH / CELL_SIZE, SCREEN_HEIGHT / CELL_SIZE>;
 
 using ScreenArray = std::array<uint16, SCREEN_WIDTH * SCREEN_HEIGHT>;
 
