@@ -21,6 +21,14 @@
 #define VsetScreen Vsetscreen
 #endif
 
+enum ScanCode {
+    UP = 72,
+    DOWN = 80,
+    LEFT = 75,
+    RIGHT = 77,
+    KEY_Q = 16
+};
+
 constexpr int16 PLANES_1 = 0x00;
 constexpr int16 PLANES_2 = 0x01;
 constexpr int16 PLANES_4 = 0x02;
@@ -91,7 +99,8 @@ int main(int argc, char *argv[]) {
 
     uint32_t key_now = Cconin();
 
-    printf("key now: %08X\n", key_now);
+    printf("key: %08X\n", key_now);
+    nf_debugprintf("key: %08X\n", key_now);
     Cconin();
 
     std::unique_ptr<Grid> grid = make_unique<Grid>();
@@ -137,42 +146,42 @@ int main(int argc, char *argv[]) {
         nf_debugprintf("draw: %dms\n", (time_after_draw - time_before) * 5);
 
         uint32_t key = Cconin();
+        nf_debugprintf("key: %08X\n", key_now);
         uint16_t ascii = (key & 0x000000FF);
         uint16_t scancode = key >> 16;
-        if (ascii == 'Q' || ascii == 'q') {
-            quit = true;
-        }
-        if (ascii == 'z') {
-            mandie->zoom_in();
-        }
-        if (ascii == 'x') {
-            mandie->zoom_out();
-        }
 
-        if (scancode == 72) {
-            // up arrow
-            mandie->centre = mandie->centre + Complex(0, -1 / mandie->zoom_size);
-        } 
-
-        if (scancode == 80) {
-            // down arrow
-            mandie->centre = mandie->centre + Complex(0, 1 / mandie->zoom_size);
-        } 
-
-        if (scancode == 75) {
-            // left arrow
-            mandie->centre = mandie->centre + Complex(-1 / mandie->zoom_size, 0);
+        switch (ascii) {
+            case 'q':
+            case 'Q':
+                quit = true;
+                break;
+            case 'z':
+            case 'Z':
+                mandie->zoom_in();
+                break;
+            case 'x':
+            case 'X':
+                mandie->zoom_out();
+                break;
         }
 
-        if (scancode == 77) {
-            // right arrow
-            mandie->centre = mandie->centre + Complex(-1 / mandie->zoom_size, 0);
+        switch (scancode) {
+            case UP:
+                mandie->centre = mandie->centre + Complex(0, -1 / mandie->zoom_size);
+                break;
+            case DOWN:
+                mandie->centre = mandie->centre + Complex(0, 1 / mandie->zoom_size);
+                break;
+            case LEFT:
+                mandie->centre = mandie->centre + Complex(-1 / mandie->zoom_size, 0);
+                break;
+            case RIGHT:
+                mandie->centre = mandie->centre + Complex(1 / mandie->zoom_size, 0);
+                break;
         }
     }
 
     VsetScreen(saved_logbase, saved_physbase, REZ_FROM_MODE, saved_rez);
-
-    Cconin();
 
     return 0;
 }
