@@ -36,17 +36,13 @@ constexpr int16_t REZ_FROM_MODE = 3;
 constexpr int16_t SCREEN_WIDTH = 640;
 constexpr int16_t SCREEN_HEIGHT = 480;
 
-using ScreenArray = std::array<uint16_t, SCREEN_WIDTH * SCREEN_HEIGHT>;
-ScreenArray screen;
-uint16_t *physical_screen = screen.data();
-
 void natfeats_init();
 uint32_t read_system_timer();
 
-void draw(MandelbrotRenderer &mandie) {
+void draw(MandelbrotRenderer &mandie, uint16_t *screen) {
     uint32_t time_before = read_system_timer();
 
-    mandie.render_to_buffer((Colour*)physical_screen);
+    mandie.render_to_buffer((Colour*)screen);
 
     uint32_t time_after_draw = read_system_timer();
 
@@ -63,7 +59,11 @@ int main(int argc, char *argv[]) {
 
     Cursconf(0, 0);
 
-    screen.fill(0xFFFF);
+    using ScreenArray = std::array<uint16_t, SCREEN_WIDTH * SCREEN_HEIGHT>;
+
+    std::unique_ptr<ScreenArray> screen = make_unique<ScreenArray>();
+    uint16_t* physical_screen = screen->data();
+    screen->fill(0xFFFF);
 
     int16_t saved_rez = VsetMode(-1);
 
@@ -74,7 +74,7 @@ int main(int argc, char *argv[]) {
 
     bool quit = false;
     while (!quit) {
-        draw(*mandie);
+        draw(*mandie, physical_screen);
 
         uint32_t key = Cconin();
         nf_debugprintf("key: %08X\n", key);
