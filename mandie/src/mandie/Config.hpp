@@ -10,13 +10,13 @@ class Config {
 public:
     int iteration_depth = 800;
     int depth_increment = 500;
-    double zoom_factor = 0.7;
-    double max_zoom = 0.000000000000000000001;
+    float zoom_factor = 0.7;
+    float max_zoom = 0.000000000000000000001;
     string pngs_dir = "pngs"s;
     bool auto_zoom = false;
     Complex zoom_to = Complex(0, 0);
     Complex initial_coords = Complex(0, 0);
-    double initial_zoom = 4.0;
+    float initial_zoom = 4.0;
 
     static Config parse(int argc, char** argv);
 

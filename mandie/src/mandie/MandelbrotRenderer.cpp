@@ -20,7 +20,7 @@ MandelbrotRenderer::MandelbrotRenderer(int width,
                                        const Config &config,
                                        Colour* buffer,
                                        const Complex& centre,
-                                       double zoom_size) :
+                                       float zoom_size) :
         width(width),
         height(height),
         buffer(buffer),
@@ -98,16 +98,16 @@ void MandelbrotRenderer::render_to_buffer(const Mandelbrot& mandelbrot) {
 }
 
 Complex MandelbrotRenderer::screen_to_complex(const int x, const int y) const {
-    double x_progress = (double)x / width;
-    double y_progress = (double)y / height;
+    float x_progress = (float)x / width;
+    float y_progress = (float)y / height;
 
     Complex top_left{centre.re - zoom_size, centre.im - zoom_size*aspect_ratio};
 
-    double complex_width = zoom_size * 2;
-    double complex_height = zoom_size * 2 * aspect_ratio;
+    float complex_width = zoom_size * 2;
+    float complex_height = zoom_size * 2 * aspect_ratio;
 
-    double re = top_left.re + complex_width * x_progress;
-    double im = top_left.im + complex_height * y_progress;
+    float re = top_left.re + complex_width * x_progress;
+    float im = top_left.im + complex_height * y_progress;
 
     return Complex{re, im};
 }

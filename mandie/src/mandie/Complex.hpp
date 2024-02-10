@@ -6,7 +6,6 @@
 #include <cmath>
 using namespace std;
 
-// TODO - turns out there is a complex class in the std library that we could just use...
 template <typename T>
 class ComplexTemplate {
 public:
@@ -52,10 +51,11 @@ public:
         string im_string;
         getline(coords_string_stream, re_string, ',');
         getline(coords_string_stream, im_string, ',');
-        return ComplexTemplate{stod(re_string), stod(im_string)};
+        return ComplexTemplate{stof(re_string), stof(im_string)};
     }
 };
 
-typedef ComplexTemplate<float> Complex;
+#define ComplexType float
+typedef ComplexTemplate<ComplexType> Complex;
 
 #endif // MANDELBROT_COMPLEX_HPP

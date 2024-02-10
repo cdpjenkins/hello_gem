@@ -11,9 +11,9 @@ Config Config::parse(int argc, char** argv) {
         if (arg_key == "--iteration-depth") {
             config.iteration_depth = stoi(argv[++i]);
         } else if (arg_key == "--zoom-factor") {
-            config.zoom_factor = stod(argv[++i]);
+            config.zoom_factor = stof(argv[++i]);
         } else if (arg_key == "--max-zoom") {
-            config.max_zoom = stod(argv[++i]);
+            config.max_zoom = stof(argv[++i]);
         } else if (arg_key == "--pngs-dir") {
             config.pngs_dir = argv[++i];
         } else if (arg_key == "--auto-zoom-to") {
@@ -26,7 +26,7 @@ Config Config::parse(int argc, char** argv) {
             Complex complex = Complex::parse(arg);
             config.initial_coords = complex;
         } else if (arg_key == "--initial-zoom") {
-            config.initial_zoom = stod(argv[++i]);
+            config.initial_zoom = stof(argv[++i]);
         } else if (arg_key == "--width") {
             config.initial_width = stoi(argv[++i]);
         } else if (arg_key == "--height") {

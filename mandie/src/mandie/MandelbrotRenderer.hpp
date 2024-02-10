@@ -16,7 +16,7 @@ public:
         const Config& config,
         Colour* buffer,
         const Complex& centre = Complex(0, 0),
-        double zoom_size = 4.0
+        float zoom_size = 4.0
     );
 
     void render_to_buffer(const Mandelbrot& render_future);
@@ -35,7 +35,7 @@ public:
     int width;
     int height;
 
-    double zoom_size = 4;
+    float zoom_size = 4;
     Complex centre = Complex(0, 0);
 
     Colour* buffer;
@@ -48,7 +48,7 @@ private:
     [[nodiscard]]
     Complex screen_to_complex(int x, int y) const;
 
-    double aspect_ratio = (double)height / width;
+    float aspect_ratio = (float)height / width;
 };
 
 Colour iterations_to_rgb(int iterations);
