@@ -43,11 +43,11 @@ src/asm/%.o: src/asm/%.s
 
 dist/highcol.tos: src/falcon_highcolour/FalconHighColourMain.o src/STScreen.o src/asm/fast_draw.o src/*.hpp \
 					src/mandie/Complex.o src/mandie/Config.o src/mandie/Mandelbrot.o \
-					src/mandie/MandelbrotRenderer.o  src/mandie/RenderedMandelbrot.o \
+					src/mandie/MandelbrotRenderer.o 
 
 	${CXX} ${CXXFLAGS} src/falcon_highcolour/FalconHighColourMain.o src/STScreen.o src/asm/fast_draw.o \
 						src/mandie/Complex.o src/mandie/Config.o src/mandie/Mandelbrot.o \
-						src/mandie/MandelbrotRenderer.o  src/mandie/RenderedMandelbrot.o \
+						src/mandie/MandelbrotRenderer.o  \
 						-o dist/highcol.tos -lgcc
 
 dist/falctest.tos: src/falcon_highcolour/test.o

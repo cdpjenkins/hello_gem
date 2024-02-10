@@ -79,34 +79,22 @@ void draw(Grid& grid, MandelbrotRenderer& mandie) {
     Mandelbrot mandelbrot{50};
 
     mandie.render_to_buffer(mandelbrot);
-
-    // memcpy(pixel_ptr, mandie.rendered_mandelbrot.buffer.get(), mandie.screen_width * mandie.screen_height * sizeof(Colour));
-
-    Colour* row_ptr = pixel_ptr;
-    Colour* src_ptr = mandie.rendered_mandelbrot.buffer.get();
-    for (int y = 0; y < mandie.screen_height; y++) {
-        for (int x = 0; x < mandie.screen_width; x++) {
-            Colour this_colour = *src_ptr++;
-
-            row_ptr[x] = this_colour;
-        }
-        row_ptr += 640;
-    }
 }
 
 int main(int argc, char *argv[]) {
-    printf("guck you %d\n", sizeof(Colour));
+    bool quit = false;
 
-    printf("poofoo %04X\n", Colour(31, 0, 0));
+    uint32_t key_now = Cconin();
+
+    printf("key now: %08X\n", key_now);
     Cconin();
-
 
     std::unique_ptr<Grid> grid = make_unique<Grid>();
 
     Config config;
 
     std::unique_ptr<MandelbrotRenderer> mandie = make_unique<MandelbrotRenderer>(
-        128, 96, config
+        640, 480, config, (Colour*)physical_screen
     );
 
     STScreen screen;
@@ -130,7 +118,6 @@ int main(int argc, char *argv[]) {
     VsetScreen(logical_screen, physical_screen, REZ_FROM_MODE, PLANES_16 | WIDTH_640 | VGA | NTSC);
 
     grid->run();
-    bool quit = false;
 
     Super(0);
 
@@ -142,45 +129,45 @@ int main(int argc, char *argv[]) {
     while (!quit) {
         time_before_step = *timer;
 
-        // printf("about to step for first time\n");
-
-        grid->step();
-
-        // printf("done step\n");
-
         time_after_step_before_draw = *timer;
 
         draw(*grid, *mandie);
 
         time_after_draw = *timer;
 
-        Vsync();
-
-        // uint16 *temp;
-        // temp = logical_screen;
-        // logical_screen = physical_screen;
-        // physical_screen = temp;
-
-        // VsetScreen(logical_screen, physical_screen, -1, -1);
-
-        while (Cconis()) {
-            char ascii = read_key();
-
-            switch (ascii) {
-                case 'q':
-                case 'Q':
-                    quit = true;
-                    break;
-                case 'r':
-                case 'R':
-                    grid->run();
-                    break;
-                case 'p':
-                case 'P':
-                    grid->pause();
-                    break;
-            }
+        uint32_t key = Cconin();
+        uint16_t ascii = (key & 0x000000FF);
+        uint16_t scancode = key >> 16;
+        if (ascii == 'Q' || ascii == 'q') {
+            quit = true;
         }
+        if (ascii == 'z') {
+            mandie->zoom_in();
+        }
+        if (ascii == 'x') {
+            mandie->zoom_out();
+        }
+
+        if (scancode == 72) {
+            // up arrow
+            mandie->centre = mandie->centre + Complex(0, -1 / mandie->zoom_size);
+        } 
+
+        if (scancode == 80) {
+            // down arrow
+            mandie->centre = mandie->centre + Complex(0, 1 / mandie->zoom_size);
+        } 
+
+        if (scancode == 75) {
+            // left arrow
+            mandie->centre = mandie->centre + Complex(-1 / mandie->zoom_size, 0);
+        }
+
+        if (scancode == 77) {
+            // right arrow
+            mandie->centre = mandie->centre + Complex(-1 / mandie->zoom_size, 0);
+        } 
+
     }
 
     VsetScreen(saved_logbase, saved_physbase, REZ_FROM_MODE, saved_rez);

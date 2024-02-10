@@ -15,17 +15,18 @@ const int colour_cycle_period = 256;
 # define M_PI_4		0.785398163397448309116	/* pi/4 */
 
 
-MandelbrotRenderer::MandelbrotRenderer(int screen_width,
-                                       int screen_height,
+MandelbrotRenderer::MandelbrotRenderer(int width,
+                                       int height,
                                        const Config &config,
+                                       Colour* buffer,
                                        const Complex& centre,
                                        double zoom_size) :
-        screen_width(screen_width),
-        screen_height(screen_height),
+        width(width),
+        height(height),
+        buffer(buffer),
         config(config),
         centre(centre),
-        zoom_size(zoom_size),
-        rendered_mandelbrot(screen_width, screen_height)
+        zoom_size(zoom_size)
 {}
 
 Colour iterations_to_rgb(int iterations) {
@@ -81,21 +82,24 @@ uint8_t ston(double stour) {
 }
 
 void MandelbrotRenderer::render_to_buffer(const Mandelbrot& mandelbrot) {
-    for (int y = 0; y < screen_height; y++) {
-        for (int x = 0; x < screen_width; x++) {
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
             // this is probably very inefficient with all the divides and multiplies
             Complex k = screen_to_complex(x, y);
 
             int n = mandelbrot.compute(k);
 
-            rendered_mandelbrot.set_pixel(x, y, iterations_to_rgb(n));
+            // rendered_mandelbrot.set_pixel(x, y, iterations_to_rgb(n));
+
+            buffer[y * width + x] = iterations_to_rgb(n);
+
         }
     }
 }
 
 Complex MandelbrotRenderer::screen_to_complex(const int x, const int y) const {
-    double x_progress = (double)x / screen_width;
-    double y_progress = (double)y / screen_height;
+    double x_progress = (double)x / width;
+    double y_progress = (double)y / height;
 
     Complex top_left{centre.re - zoom_size, centre.im - zoom_size*aspect_ratio};
 
@@ -108,6 +112,10 @@ Complex MandelbrotRenderer::screen_to_complex(const int x, const int y) const {
     return Complex{re, im};
 }
 
+void MandelbrotRenderer::zoom_in() {
+    zoom_in_to(this->centre);
+}
+
 void MandelbrotRenderer::zoom_in_to(const int x, const int y) {
     centre = screen_to_complex(x, y);
 
@@ -117,15 +125,22 @@ void MandelbrotRenderer::zoom_in_to(const int x, const int y) {
 void MandelbrotRenderer::zoom_in_to(const Complex& coords) {
     zoom_size *= config.zoom_factor;
     this->centre = coords;
-    cout << coords.re << " + " << coords.im << "i" << " " << zoom_size << endl;
+}
+
+void MandelbrotRenderer::zoom_out() {
+    zoom_out_to(this->centre);
 }
 
 void MandelbrotRenderer::zoom_out_to(const int x, const int y) {
     centre = screen_to_complex(x, y);
     zoom_size /= config.zoom_factor;
-    cout << x << ", " << y << endl;
+}
+
+void MandelbrotRenderer::zoom_out_to(const Complex& coords) {
+    zoom_size /= config.zoom_factor;
+    this->centre = coords;
 }
 
 void MandelbrotRenderer::scroll(int dx, int dy) {
-    centre = centre + Complex(dx * 8 * zoom_size / screen_width, -dy * 8 * zoom_size / screen_height);
+    centre = centre + Complex(dx * 8 * zoom_size / width, -dy * 8 * zoom_size / height);
 }
