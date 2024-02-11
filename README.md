@@ -15,8 +15,12 @@ challenging to work with.
 
 ## Contents
 
-|                                     |                                                                     |
-|-------------------------------------|---------------------------------------------------------------------|
-| conway, cppconway and fastcppconway | Implementations of Conway's Game Of Life in C and C++               |
-| mandie                              | Mandelbrot generator that uses 68040 FPU and Falcon highcolour mode |
+### [cppconway](cppconway)
+Implementation of Conway's Game of Life in C++ running both in GEM and full screen.
 
+![Conway's Game of Life](cppconway/images/conway_full.png)
+
+### [mandie](mandie)
+Mandelbrot generator that uses 68040 FPU and Falcon highcolour mode.
+
+![Mandelbrot set](mandie/images/mandie.png)
