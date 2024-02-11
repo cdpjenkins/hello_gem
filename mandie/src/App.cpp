@@ -5,7 +5,7 @@
 #endif
 
 App::App() :
-        mandie{make_unique<MandelbrotRenderer>(640, 480, config)} {
+        mandie{make_unique<MandelbrotRenderer>(SCREEN_WIDTH, SCREEN_HEIGHT, config)} {
     natfeats_init();
     screen_init();
 }
