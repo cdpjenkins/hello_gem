@@ -37,23 +37,21 @@ constexpr int16_t REZ_FROM_MODE = 3;
 void natfeats_init();
 uint32_t read_system_timer();
 
-void draw(MandelbrotRenderer &mandie, Screen &screen) {
+void draw_timed(MandelbrotRenderer &mandie, Screen &screen) {
     uint32_t time_before = read_system_timer();
 
     mandie.render_to_buffer(reinterpret_cast<Colour *>(screen.get_frame_buffer()));
 
     uint32_t time_after_draw = read_system_timer();
 
-    nf_debugprintf("draw: %dms\n", (time_after_draw - time_before) * 5);
+    nf_debugprintf("draw_timed: %dms\n", (time_after_draw - time_before) * 5);
 }
 
 int main(int argc, char *argv[]) {
     natfeats_init();
 
     Config config;
-    std::unique_ptr<MandelbrotRenderer> mandie = make_unique<MandelbrotRenderer>(
-        640, 480, config
-    );
+    std::unique_ptr<MandelbrotRenderer> mandie = make_unique<MandelbrotRenderer>(640, 480, config);
 
     Cursconf(0, 0);
 
@@ -69,7 +67,7 @@ int main(int argc, char *argv[]) {
 
     bool quit = false;
     while (!quit) {
-        draw(*mandie, screen);
+        draw_timed(*mandie, screen);
 
         uint32_t key = Cconin();
         nf_debugprintf("key: %08X\n", key);

@@ -13,10 +13,11 @@ CC=$(PREFIX)gcc
 CXX=$(PREFIX)g++
 AS=$(PREFIX)as
 
-MANDIE_OBJS=src/MandieMain.o src/Config.o src/MandelbrotRenderer.o
+MANDIE_OBJS=src/Main.o src/Config.o src/MandelbrotRenderer.o
+MANDIE_EXECUTABLE=dist/mandie.tos
 
 all: make_dist \
-	dist/mandie.tos
+	$(MANDIE_EXECUTABLE)
 
 make_dist:
 	mkdir -p dist
@@ -24,7 +25,7 @@ make_dist:
 %.o : %.cpp src/*.hpp Makefile
 	${CXX} -c $(CXXFLAGS) $< -o $@
 
-dist/mandie.tos: $(MANDIE_OBJS) \
+$(MANDIE_EXECUTABLE): $(MANDIE_OBJS) \
 					src/*.hpp \
 					Makefile
 	${CXX} ${CXXFLAGS} $(MANDIE_OBJS) \
