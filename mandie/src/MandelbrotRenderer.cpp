@@ -7,11 +7,10 @@ using namespace std;
 
 const int colour_cycle_period = 256;
 
-// URGH
+// URGH - MiNTLib and/or gcc doesn't appear to have these
 # define M_PI		3.14159265358979323846	/* pi */
 # define M_PI_2		1.57079632679489661923	/* pi/2 */
 # define M_PI_4		0.785398163397448309116	/* pi/4 */
-
 
 MandelbrotRenderer::MandelbrotRenderer(int width, int height, const Config &config, const Complex &centre,
                                        float zoom_size) :
@@ -68,10 +67,6 @@ Colour iterations_to_rgb_using_trig(int iterations) {
     uint8_t b = uint8_t(sin(theta - M_PI_2) * 15 + 15);
 
     return Colour{r, g, b};
-}
-
-uint8_t ston(double stour) {
-    return stour * 127 + 127;
 }
 
 void MandelbrotRenderer::render_to_buffer(Colour *buffer) {
