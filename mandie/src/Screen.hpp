@@ -1,6 +1,7 @@
 #ifndef MANDIE_SCREEN_HPP
 #define MANDIE_SCREEN_HPP
 
+#include <array>
 #include <cstdint>
 #include <memory>
 

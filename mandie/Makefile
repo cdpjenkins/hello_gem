@@ -13,7 +13,7 @@ CC=$(PREFIX)gcc
 CXX=$(PREFIX)g++
 AS=$(PREFIX)as
 
-MANDIE_OBJS=src/Main.o src/Config.o src/MandelbrotRenderer.o
+MANDIE_OBJS=src/Main.o src/App.o src/Config.o src/MandelbrotRenderer.o
 MANDIE_EXECUTABLE=dist/mandie.tos
 
 all: make_dist \

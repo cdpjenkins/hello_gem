@@ -1,12 +1,13 @@
-//
-// Created by Chris Jenkins on 11/02/2024.
-//
-
 #ifndef MANDIE_APP_HPP
 #define MANDIE_APP_HPP
 
+#include <cstdint>
+
 #include <mint/sysbind.h>
 #include <mint/arch/nf_ops.h>
+
+#include "MandelbrotRenderer.hpp"
+#include "Screen.hpp"
 
 constexpr int16_t PLANES_1 = 0x00;
 constexpr int16_t PLANES_2 = 0x01;
@@ -19,35 +20,27 @@ constexpr int16_t NTSC = 0x00;
 
 constexpr int16_t REZ_FROM_MODE = 3;
 
-struct App {
+enum ScanCode {
+    UP = 72,
+    DOWN = 80,
+    LEFT = 75,
+    RIGHT = 77,
+    KEY_Q = 16
+};
 
-    App() {
-        natfeats_init();
+class App {
+public:
+    App();
+    ~App();
 
-        Cursconf(0, 0);
+    int main_loop();
 
-        screen.clear();
-
-        saved_rez = VsetMode(-1);
-        saved_logbase = Logbase();
-        saved_physbase = Physbase();
-
-        VsetScreen(screen.get_frame_buffer(), screen.get_frame_buffer(), REZ_FROM_MODE, PLANES_16 | WIDTH_640 | VGA | NTSC);
-    }
-
-    ~App() {
-        VsetScreen(saved_logbase, saved_physbase, REZ_FROM_MODE, saved_rez);
-    }
-
-    void natfeats_init() {
-        nf_ops *nf_context = nf_init();
-        if (!nf_context) {
-            printf("Unable to initialise natfeats\n");
-        } else {
-            printf("Natfeats is initialised: %08X\n", nf_context);
-            nf_debugprintf("Natfeats is initialised: %08X\n", nf_context);
-        }
-    }
+private:
+    static void natfeats_init();
+    void screen_init();
+    void draw_timed(Screen &screen);
+    static uint32_t read_system_timer_in_supervisor_mode();
+    static uint32_t read_system_timer();
 
     int16_t saved_rez;
     void* saved_logbase;
@@ -58,7 +51,7 @@ struct App {
     Config config;
     std::unique_ptr<MandelbrotRenderer> mandie = make_unique<MandelbrotRenderer>(640, 480, config);
 
+    void screen_restore() const;
 };
-
 
 #endif //MANDIE_APP_HPP
