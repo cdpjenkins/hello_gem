@@ -44,16 +44,16 @@ int App::main_loop() {
 
         switch (scancode) {
             case UP:
-                mandie.centre = mandie.centre + Complex(0, -1 / mandie.zoom_size);
+                mandie.centre = mandie.centre + Complex(0, -0.25 * mandie.zoom_size);
                 break;
             case DOWN:
-                mandie.centre = mandie.centre + Complex(0, 1 / mandie.zoom_size);
+                mandie.centre = mandie.centre + Complex(0, 0.25 * mandie.zoom_size);
                 break;
             case LEFT:
-                mandie.centre = mandie.centre + Complex(-1 / mandie.zoom_size, 0);
+                mandie.centre = mandie.centre + Complex(-0.25 * mandie.zoom_size, 0);
                 break;
             case RIGHT:
-                mandie.centre = mandie.centre + Complex(1 / mandie.zoom_size, 0);
+                mandie.centre = mandie.centre + Complex(0.25 * mandie.zoom_size, 0);
                 break;
             default:
                 // meh don't care about other keys
