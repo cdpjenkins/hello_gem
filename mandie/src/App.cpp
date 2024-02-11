@@ -4,7 +4,8 @@
 #define VsetScreen Vsetscreen
 #endif
 
-App::App() {
+App::App() :
+        mandie{make_unique<MandelbrotRenderer>(640, 480, config)} {
     natfeats_init();
     screen_init();
 }

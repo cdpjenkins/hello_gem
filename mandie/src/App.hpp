@@ -49,7 +49,7 @@ private:
     Screen screen;
 
     Config config;
-    std::unique_ptr<MandelbrotRenderer> mandie = make_unique<MandelbrotRenderer>(640, 480, config);
+    std::unique_ptr<MandelbrotRenderer> mandie;
 
     void screen_restore() const;
 };
