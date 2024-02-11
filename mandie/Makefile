@@ -13,21 +13,21 @@ CC=$(PREFIX)gcc
 CXX=$(PREFIX)g++
 AS=$(PREFIX)as
 
+MANDIE_OBJS=src/MandieMain.o src/Config.o src/MandelbrotRenderer.o
+
 all: make_dist \
 	dist/mandie.tos
 
 make_dist:
 	mkdir -p dist
 
-%.o : %.cpp src/*.hpp
+%.o : %.cpp src/*.hpp Makefile
 	${CXX} -c $(CXXFLAGS) $< -o $@
 
-dist/mandie.tos: src/MandieMain.o src/*.hpp \
-					src/Config.o \
-					src/MandelbrotRenderer.o
-	${CXX} ${CXXFLAGS} src/MandieMain.o \
-						src/Config.o \
-						src/MandelbrotRenderer.o  \
+dist/mandie.tos: $(MANDIE_OBJS) \
+					src/*.hpp \
+					Makefile
+	${CXX} ${CXXFLAGS} $(MANDIE_OBJS) \
 						-o dist/mandie.tos -lgcc
 
 

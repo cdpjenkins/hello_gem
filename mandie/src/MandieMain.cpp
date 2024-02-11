@@ -37,10 +37,10 @@ constexpr int16_t REZ_FROM_MODE = 3;
 void natfeats_init();
 uint32_t read_system_timer();
 
-void draw(MandelbrotRenderer &mandie, Screen& screen) {
+void draw(MandelbrotRenderer &mandie, Screen &screen) {
     uint32_t time_before = read_system_timer();
 
-    mandie.render_to_buffer(reinterpret_cast<Colour *>(screen.data()));
+    mandie.render_to_buffer(reinterpret_cast<Colour *>(screen.get_frame_buffer()));
 
     uint32_t time_after_draw = read_system_timer();
 
@@ -57,19 +57,19 @@ int main(int argc, char *argv[]) {
 
     Cursconf(0, 0);
 
-    std::unique_ptr<Screen> screen = make_unique<Screen>();
-    screen->fill(0xFFFF);
+    Screen screen;
+    screen.clear();
 
     int16_t saved_rez = VsetMode(-1);
 
     void *saved_logbase = Logbase();
     void *saved_physbase = Physbase();
 
-    VsetScreen(screen->data(), screen->data(), REZ_FROM_MODE, PLANES_16 | WIDTH_640 | VGA | NTSC);
+    VsetScreen(screen.get_frame_buffer(), screen.get_frame_buffer(), REZ_FROM_MODE, PLANES_16 | WIDTH_640 | VGA | NTSC);
 
     bool quit = false;
     while (!quit) {
-        draw(*mandie, *screen);
+        draw(*mandie, screen);
 
         uint32_t key = Cconin();
         nf_debugprintf("key: %08X\n", key);
